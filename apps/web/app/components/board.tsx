@@ -84,7 +84,15 @@ function Digits({ value }: { value: string }) {
  * One lab, one card: its reset counter, its collective tank, its ranking.
  * The lab's color lives here and only here.
  */
-export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: Date }) {
+export function LabUniverse({
+  board,
+  now,
+  highlight = null,
+}: {
+  board: PublicLeaderboardV1;
+  now: Date;
+  highlight?: string | null;
+}) {
   const { title, accent, Mark } = TOOL[board.tool];
   const days = board.global.daysSinceReset;
   const median = board.global.medianRemainingPercent;

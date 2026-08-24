@@ -13,7 +13,12 @@ import { nextMilestone, TheLoop } from "./components/loop";
 
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ claimed?: string }>;
+}) {
+  const { claimed: justClaimed } = await searchParams;
   const now = new Date();
   const database = await siteDatabase();
   const requestHeaders = await headers();
@@ -141,9 +146,15 @@ export default async function Home() {
           <TheLoop stats={movement} boards={boards} />
         </section>
 
+        {justClaimed && (
+          <div className="fade-up mx-auto mt-10 flex max-w-md items-center justify-center gap-2 rounded-full border border-ok/40 bg-ok/10 px-5 py-2.5 text-center text-sm text-ok">
+            <span aria-hidden>✓</span> welcome to the record,{" "}
+            <span className="font-semibold">@{justClaimed.slice(0, 40)}</span> — that's you below.
+          </div>
+        )}
         <section className="fade-up fade-up-3 mt-14 grid items-start gap-5 lg:grid-cols-2">
-          <LabUniverse board={codex} now={now} />
-          <LabUniverse board={claude} now={now} />
+          <LabUniverse board={codex} now={now} highlight={justClaimed ?? null} />
+          <LabUniverse board={claude} now={now} highlight={justClaimed ?? null} />
         </section>
       </main>
 

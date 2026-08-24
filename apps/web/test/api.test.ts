@@ -514,7 +514,8 @@ describe("claim flow", () => {
         headers: { cookie, "x-forwarded-for": "203.0.113.1" },
       }),
     );
-    expect(first.status).toBe(200);
+    expect(first.status).toBe(303);
+    expect(first.headers.get("location")).toContain("claimed=octocat");
     expect(first.headers.get("set-cookie")).toContain("Max-Age=0");
     expect(fetchMock).toHaveBeenCalledTimes(3);
     expect(

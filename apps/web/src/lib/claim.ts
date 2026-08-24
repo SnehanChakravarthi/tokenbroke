@@ -51,14 +51,17 @@ function cookieHeader(value: string, maxAge: number): string {
   return `${COOKIE_NAME}=${value}; Path=/api/claim/callback; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=Lax`;
 }
 
-function responseWithDeletedCookie(body: string, status: number): Response {
-  return new Response(body, {
-    status,
-    headers: {
-      "content-type": "text/html; charset=utf-8",
-      "set-cookie": cookieHeader("", 0),
-    },
+function responseWithDeletedCookie(
+  body: string,
+  status: number,
+  extra: { location?: string } = {},
+): Response {
+  const headers = new Headers({
+    "content-type": "text/html; charset=utf-8",
+    "set-cookie": cookieHeader("", 0),
   });
+  if (extra.location) headers.set("location", extra.location);
+  return new Response(body, { status, headers });
 }
 
 function pendingCookie(pending: PendingClaim, secret: string): string {
@@ -604,12 +607,11 @@ async function runClaimCallback(
   if (!user) return responseWithDeletedCookie("GitHub authorization failed", 400);
   const bound = await bindClaim(database, pending, user, now);
   if (bound) invalidateLeaderboardCache();
-  return bound
-    ? responseWithDeletedCookie(
-        "<!doctype html><h1>Claim complete</h1><p>Your row is yours.</p>",
-        200,
-      )
-    : responseWithDeletedCookie("Claim rejected", 400);
+  if (!bound) return responseWithDeletedCookie("Claim rejected", 400);
+  // Land the new claimant on the board itself, with their row spotlit.
+  const home = new URL("/", configuredOrigin(request));
+  home.searchParams.set("claimed", user.login);
+  return responseWithDeletedCookie("", 303, { location: home.toString() });
 }
 
 export async function handleClaimCallback(
