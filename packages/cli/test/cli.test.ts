@@ -120,3 +120,24 @@ describe("reportFailure hygiene", () => {
     expect(lines.join("\n")).not.toContain("EACCES");
   });
 });
+
+describe("bin entry under npx-style symlink", () => {
+  it("runs main when invoked through a symlink like npm's .bin shim", async () => {
+    const { execFile } = await import("node:child_process");
+    const { mkdtemp, symlink, rm } = await import("node:fs/promises");
+    const { tmpdir } = await import("node:os");
+    const { join, resolve } = await import("node:path");
+    const { promisify } = await import("node:util");
+    const dir = await mkdtemp(join(tmpdir(), "tokenbroke-bin-"));
+    const link = join(dir, "tokenbroke");
+    await symlink(resolve("dist/index.js"), link);
+    try {
+      const { stdout } = await promisify(execFile)("node", [link, "--dry-run"], {
+        env: { ...process.env, TOKENBROKE_HOME: join(dir, "home") },
+      });
+      expect(stdout).toContain("network skipped");
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+});

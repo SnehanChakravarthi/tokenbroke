@@ -1,6 +1,6 @@
 {
   "name": "tokenbroke",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Are you tokenbroke? Prove it. Reads your local Codex CLI / Claude Code usage and ranks you on the leaderboard of the most rate-limited developers alive.",
   "license": "MIT",
   "type": "module",
@@ -30,5 +30,21 @@
     "tsup": "^8.5.0",
     "typescript": "^5",
     "vitest": "^3.2.0"
-  }
+  },
+  "homepage": "https://tokenbroke.lol",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SnehanChakravarthi/tokenbroke.git",
+    "directory": "packages/cli"
+  },
+  "bugs": "https://github.com/SnehanChakravarthi/tokenbroke/issues",
+  "keywords": [
+    "rate-limit",
+    "claude-code",
+    "codex",
+    "leaderboard",
+    "cli",
+    "tokenbroke"
+  ],
+  "author": "Snehan Chakravarthi (https://x.com/theteknosaur)"
 }

@@ -1,3 +1,4 @@
+import { realpathSync } from "node:fs";
 import { resolve } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { pathToFileURL } from "node:url";
@@ -217,5 +218,15 @@ export async function main(args = process.argv.slice(2)): Promise<number> {
   }
 }
 
-const invokedPath = process.argv[1] ? pathToFileURL(resolve(process.argv[1])).href : "";
-if (import.meta.url === invokedPath) process.exitCode = await main();
+// npm executes bins through a .bin symlink: realpath it, or import.meta.url (the real
+// path) never matches and the CLI silently does nothing under npx.
+function invokedHref(): string {
+  const invoked = process.argv[1];
+  if (!invoked) return "";
+  try {
+    return pathToFileURL(realpathSync(invoked)).href;
+  } catch {
+    return pathToFileURL(resolve(invoked)).href;
+  }
+}
+if (import.meta.url === invokedHref()) process.exitCode = await main();
