@@ -13,7 +13,7 @@ export function CopyCommand({ command }: { command: string }) {
           setTimeout(() => setCopied(false), 1600);
         });
       }}
-      className="group inline-flex w-full items-center justify-between gap-6 border border-line bg-panel px-5 py-4 text-left transition-colors hover:border-ember/60 sm:w-auto sm:min-w-[26rem]"
+      className="raised group inline-flex w-full items-center justify-between gap-6 px-5 py-4 text-left hover:border-ember/60 sm:w-auto sm:min-w-[26rem]"
       aria-label={`Copy ${command}`}
     >
       <span className="text-lg text-paper sm:text-xl">

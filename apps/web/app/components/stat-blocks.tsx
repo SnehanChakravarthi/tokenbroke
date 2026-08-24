@@ -10,7 +10,7 @@ function CounterDigits({ value }: { value: string }) {
         <span
           // biome-ignore lint/suspicious/noArrayIndexKey: static digit strip
           key={index}
-          className="display inline-block min-w-[1.35em] border border-line bg-ink px-1 py-1 text-center text-3xl font-black tabular-nums text-paper sm:text-4xl"
+          className="keycap display inline-block min-w-[1.35em] px-1 py-1 text-center text-3xl font-black tabular-nums text-paper sm:text-4xl"
         >
           {digit}
         </span>
@@ -23,7 +23,7 @@ function CounterDigits({ value }: { value: string }) {
 export function DaysSince({ board }: { board: PublicLeaderboardV1 }) {
   const days = board.global.daysSinceReset;
   return (
-    <div className="flex flex-col justify-between gap-4 border border-line bg-panel/60 p-4">
+    <div className="panel flex flex-col justify-between gap-4 p-4">
       <p className="text-[11px] uppercase tracking-[0.22em] text-muted">
         days since last <span className="text-paper">{TOOL_SHORT[board.tool]}</span> reset
       </p>
@@ -53,7 +53,7 @@ export function PovertyMeter({ board }: { board: PublicLeaderboardV1 }) {
   const value = median === null ? 0 : Math.max(0, Math.min(100, median));
   const tone = severity === "broke" ? "text-broke" : severity === "warn" ? "text-warn" : "text-ok";
   return (
-    <div className="flex flex-col justify-between gap-4 border border-line bg-panel/60 p-4">
+    <div className="panel flex flex-col justify-between gap-4 p-4">
       <p className="text-[11px] uppercase tracking-[0.22em] text-muted">
         <span className="text-paper">{TOOL_SHORT[board.tool]}</span> median remaining
       </p>
@@ -67,7 +67,7 @@ export function PovertyMeter({ board }: { board: PublicLeaderboardV1 }) {
           aria-label={`Median remaining ${median ?? "unknown"} percent; the poverty line sits at 10 percent`}
         >
           <div
-            className={`meter-cells absolute inset-y-0 left-0 ${tone}`}
+            className={`meter-cells absolute inset-y-[2px] left-[2px] rounded-[5px] ${tone}`}
             style={{ width: `${value}%` }}
           />
           <div className="absolute inset-y-[-4px] left-[10%] w-px bg-broke" />

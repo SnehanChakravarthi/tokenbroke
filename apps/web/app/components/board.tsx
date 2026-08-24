@@ -1,5 +1,6 @@
 import type { PublicLeaderboardV1 } from "@/src/lib/leaderboard";
 import { resetsIn } from "./format";
+import { ClaudeCodeMark, CodexMark } from "./icons";
 
 const TOOL_TITLE = { codex: "CODEX", "claude-code": "CLAUDE CODE" } as const;
 
@@ -14,7 +15,7 @@ function Monogram({ name, claimed }: { name: string; claimed: boolean }) {
   return (
     <span
       aria-hidden
-      className={`grid size-6 shrink-0 place-items-center text-[11px] font-bold uppercase ${
+      className={`grid size-6 shrink-0 place-items-center rounded-[6px] text-[11px] font-bold uppercase shadow-[inset_0_1px_0_rgba(236,228,208,0.08),0_1px_2px_rgba(0,0,0,0.6)] ${
         claimed ? "bg-ember/20 text-ember" : "bg-panel-2 text-faint"
       }`}
     >
@@ -31,7 +32,12 @@ export function Board({ board, now }: { board: PublicLeaderboardV1; now: Date })
       className="border border-line bg-panel/60"
     >
       <header className="flex items-baseline justify-between gap-4 border-b border-line px-4 py-3">
-        <h3 className="display text-sm font-extrabold tracking-[0.22em] text-paper">
+        <h3 className="display flex items-center gap-2.5 text-sm font-extrabold tracking-[0.22em] text-paper">
+          {board.tool === "codex" ? (
+            <CodexMark className="size-4 text-dim" />
+          ) : (
+            <ClaudeCodeMark className="size-4 text-dim" />
+          )}
           {TOOL_TITLE[board.tool]}
         </h3>
         <p className="text-[11px] uppercase tracking-[0.18em] text-faint">
