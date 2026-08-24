@@ -1,7 +1,6 @@
 import { BRAND } from "@tokenbroke/shared";
 import type { PublicLeaderboardV1 } from "@/src/lib/leaderboard";
 import type { MovementStats } from "@/src/lib/movement";
-import { CopyCommand } from "./copy-command";
 
 /** Animated flow connector: dashes drifting toward the next node. */
 function Flow() {
@@ -77,14 +76,13 @@ export function TheLoop({
   };
   return (
     <div className="relative">
-      <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[1.5fr_auto_1fr_auto_1.2fr_auto_1.2fr] lg:items-start lg:gap-3">
+      <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[1fr_auto_1fr_auto_1.2fr_auto_1.2fr] lg:items-start lg:gap-3">
         <Node step="01" label="run it">
-          <CopyCommand command={BRAND.cliCommand} />
-          <p className="mt-2.5 text-[10px] uppercase tracking-[0.14em] leading-relaxed text-muted">
-            reads 2 numbers — never your code · anonymous
-            <br />
-            auto-updates: <span className="text-dim">hooks install</span>
+          <p className="text-sm font-semibold text-paper">
+            <span className="text-faint">$ </span>
+            {BRAND.cliCommand}
           </p>
+          <p className="mt-1 text-[11px] text-muted">5 seconds. anonymous.</p>
         </Node>
         <Flow />
         <Node step="02" label="you're counted">
@@ -126,25 +124,25 @@ export function TheLoop({
 }
 
 const MILESTONES = [
-  { at: 100, label: "a support group", emoji: "🤝" },
-  { at: 1_000, label: "a statistic", emoji: "📊" },
-  { at: 10_000, label: "a headline", emoji: "📣" },
-  { at: 50_000, label: "an open letter", emoji: "✍️" },
-  { at: 100_000, label: "we schedule the resets", emoji: "🗓️" },
+  { at: 100, label: "a support group" },
+  { at: 1_000, label: "a statistic" },
+  { at: 10_000, label: "a headline" },
+  { at: 50_000, label: "an open letter" },
+  { at: 100_000, label: "we schedule the resets" },
 ];
 
 /**
- * The avalanche as a crescendo: each milestone node is physically bigger than
- * the last — small now, a force later. Passed nodes fill; the next one pulses.
+ * The avalanche as a crescendo: circles that grow from a speck to a force,
+ * joined by a thickening line — all centered on one axis, counts inside so
+ * the magnitude is the icon. Labels hang below, out of the alignment math.
  */
 export function MilestoneBar({ stats }: { stats: MovementStats }) {
   const count = Math.max(1, stats.devsOnRecord);
   const nextIndex = MILESTONES.findIndex((milestone) => milestone.at > count);
   const next = nextIndex === -1 ? null : MILESTONES[nextIndex];
-  const SIZES = [22, 30, 40, 52, 66];
+  const SIZES = [26, 34, 44, 56, 70];
   const HEIGHTS = [3, 5, 7, 10];
 
-  // Fraction of the current gap already crossed, log-scaled.
   const segmentFill = (index: number): number => {
     const from = index === 0 ? 1 : (MILESTONES[index]?.at ?? 1);
     const to = MILESTONES[index + 1]?.at ?? 100_000;
@@ -153,18 +151,20 @@ export function MilestoneBar({ stats }: { stats: MovementStats }) {
     return (Math.log10(count) - Math.log10(from)) / (Math.log10(to) - Math.log10(from));
   };
 
+  const short = (at: number): string => (at >= 1000 ? `${at / 1000}k` : String(at));
+
   return (
     <div>
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center pb-7">
         {MILESTONES.map((milestone, index) => {
-          const size = SIZES[index] ?? 24;
+          const size = SIZES[index] ?? 28;
           const reached = count >= milestone.at;
           const isNext = index === nextIndex;
           return (
             <span key={milestone.at} className="flex items-center">
               {index > 0 && (
                 <span
-                  className="relative w-6 overflow-hidden rounded-full bg-line sm:w-10"
+                  className="relative -mx-px w-7 overflow-hidden rounded-full bg-line sm:w-12"
                   style={{ height: HEIGHTS[index - 1] ?? 4 }}
                   aria-hidden
                 >
@@ -174,35 +174,41 @@ export function MilestoneBar({ stats }: { stats: MovementStats }) {
                   />
                 </span>
               )}
-              <span className="flex flex-col items-center gap-1.5">
+              <span
+                className="relative grid place-items-center"
+                style={{ width: size, height: size }}
+              >
                 <span
                   role="img"
-                  aria-label={`${milestone.at.toLocaleString("en-US")}: ${milestone.label}${reached ? " (reached)" : ""}`}
+                  aria-label={`${milestone.at.toLocaleString("en-US")} developers: ${milestone.label}${reached ? " (reached)" : ""}`}
                   title={`${milestone.at.toLocaleString("en-US")} — ${milestone.label}`}
-                  className={`grid place-items-center rounded-full transition-transform ${
+                  className={`display grid size-full place-items-center rounded-full font-black tabular-nums ${
                     reached
-                      ? "bg-broke text-ink shadow-[0_0_18px_rgba(255,98,87,0.45)]"
+                      ? "bg-broke text-ink shadow-[0_0_20px_rgba(255,98,87,0.5)]"
                       : isNext
-                        ? "pip border-2 border-broke bg-broke/15 text-paper"
-                        : "border border-line bg-panel-2/60 text-dim"
+                        ? "pip border-2 border-broke bg-broke/10 text-paper"
+                        : "border border-line bg-panel-2/60 text-muted"
                   }`}
-                  style={{ width: size, height: size, fontSize: size * 0.42 }}
+                  style={{ fontSize: Math.max(10, size * 0.3) }}
                 >
-                  {milestone.emoji}
+                  {short(milestone.at)}
                 </span>
-                <span
-                  className={`text-[9px] uppercase tracking-[0.12em] tabular-nums ${
-                    reached ? "text-broke" : isNext ? "text-paper" : "text-faint"
-                  }`}
-                >
-                  {milestone.at >= 1000 ? `${milestone.at / 1000}k` : milestone.at}
-                </span>
+                {(isNext || index === MILESTONES.length - 1) && (
+                  <span
+                    className={`absolute top-full mt-1.5 whitespace-nowrap text-[9px] uppercase tracking-[0.1em] ${
+                      isNext ? "text-paper" : "text-faint"
+                    } ${index === MILESTONES.length - 1 ? "right-0 text-right" : "left-1/2 -translate-x-1/2 text-center"}`}
+                    aria-hidden
+                  >
+                    {milestone.label}
+                  </span>
+                )}
               </span>
             </span>
           );
         })}
       </div>
-      <p className="mt-3 text-center text-[11px] uppercase tracking-[0.16em] text-muted">
+      <p className="mt-2 text-center text-[11px] uppercase tracking-[0.16em] text-muted">
         {next ? (
           <>
             <span className="pip mr-1.5 inline-block size-1.5 rounded-full bg-broke align-middle" />
@@ -214,6 +220,10 @@ export function MilestoneBar({ stats }: { stats: MovementStats }) {
         ) : (
           <span className="text-ok">terminal milestone reached</span>
         )}
+      </p>
+      <p className="mt-2 text-center text-[11px] leading-relaxed text-dim">
+        one small <span className="text-paper">{BRAND.cliCommand}</span> for a dev —{" "}
+        <span className="text-paper">one giant leap for devkind.</span>
       </p>
     </div>
   );

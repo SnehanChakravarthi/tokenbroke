@@ -4,6 +4,7 @@ import { getPublicLeaderboard } from "@/src/lib/leaderboard";
 import { movementStats } from "@/src/lib/movement";
 import { recordPageView, viewStats } from "@/src/lib/views";
 import { LabUniverse } from "./components/board";
+import { CopyCommand } from "./components/copy-command";
 import { FlapDigits } from "./components/flap";
 import { SEVERITY_LABEL, severityFor } from "./components/format";
 import { TheHands } from "./components/hands";
@@ -55,9 +56,9 @@ export default async function Home() {
       </header>
 
       <main className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        {/* Hero: the condition — with the live pulse right under the wordmark. */}
+        {/* Hero: the whole story in one read — question, purpose, the hands, the ask. */}
         <section className="fade-up flex flex-col items-center pt-10 text-center sm:pt-14">
-          <p className="panel flex flex-wrap items-center justify-center gap-x-3 gap-y-1 !rounded-full px-4 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted">
+          <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-full border border-line bg-panel px-4 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted">
             <span className="flex items-center gap-1.5">
               <span className="pip inline-block size-1.5 rounded-full bg-ok" aria-hidden />
               <FlapDigits
@@ -93,10 +94,27 @@ export default async function Home() {
           <h1 className="display mt-8 max-w-3xl text-[clamp(2.6rem,11vw,5.5rem)] font-black leading-[0.95] tracking-tight text-paper [text-wrap:balance]">
             ARE YOU <span className="text-broke">TOKENBROKE?</span>
           </h1>
-          <p className="mt-5 max-w-md text-sm leading-relaxed text-dim sm:text-base">
-            Nobody measures how rate-limited we are.{" "}
-            <span className="whitespace-nowrap text-paper">So we do.</span>
+          <p className="mt-5 max-w-lg text-sm leading-relaxed text-dim sm:text-base">
+            The public record of how rate-limited developers really are —{" "}
+            <span className="text-paper">measured by us, because nobody else will.</span>
           </p>
+
+          <div className="fade-up fade-up-1 mt-10">
+            <TheHands />
+          </div>
+
+          <div className="fade-up fade-up-2 mt-10 flex flex-col items-center">
+            <p className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted">
+              becoming part of it takes one command
+            </p>
+            <CopyCommand command={BRAND.cliCommand} />
+            <p className="mt-3 text-[10px] uppercase tracking-[0.16em] leading-relaxed text-muted">
+              reads 2 numbers — never your code
+              <span className="mx-2 text-faint">·</span>anonymous, no signup
+              <span className="mx-2 text-faint">·</span>auto-updates:{" "}
+              <span className="text-dim">hooks install</span>
+            </p>
+          </div>
         </section>
 
         {/* The record: the number that only goes up, and where it's headed. */}
@@ -113,10 +131,6 @@ export default async function Home() {
         {/* The loop: why one row matters. */}
         <section className="fade-up fade-up-2 mt-14" aria-label="How it works">
           <TheLoop stats={movement} boards={boards} />
-        </section>
-
-        <section className="fade-up fade-up-2 mt-10" aria-label="The hands">
-          <TheHands />
         </section>
 
         <section className="fade-up fade-up-3 mt-14 grid items-start gap-5 lg:grid-cols-2">

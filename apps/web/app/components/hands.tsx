@@ -23,10 +23,9 @@ const HANDS = [
  */
 export function TheHands() {
   return (
-    <div className="flex flex-col items-center gap-4">
-      <p className="max-w-md text-center text-[12px] leading-relaxed text-dim">
-        Every run makes the number harder to ignore — until these two have to play their hand.
-        <span className="text-faint"> (affectionately)</span>
+    <div className="flex flex-col items-center gap-5">
+      <p className="text-[11px] uppercase tracking-[0.22em] text-muted">
+        this record exists to move two hands
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3">
         {HANDS.map((hand) => (
@@ -51,6 +50,12 @@ export function TheHands() {
           </a>
         ))}
       </div>
+      <p className="max-w-lg text-center text-sm leading-relaxed text-dim">
+        When enough of us are on the record, generosity stops being a support ticket and starts
+        being policy: <span className="text-paper">resets get scheduled, budgets get bigger,</span>{" "}
+        and intelligence gets <span className="text-paper">distributed — not rationed.</span>{" "}
+        <span className="text-faint">(affectionately)</span>
+      </p>
     </div>
   );
 }
