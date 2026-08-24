@@ -222,6 +222,8 @@ export function claimIp(headers: Pick<Headers, "get">): string {
 }
 
 function normalizeXHandle(value: FormDataEntryValue | null): string | null | undefined {
+  // The form no longer carries this field (handles import from GitHub socials); absent means none.
+  if (value === null) return null;
   if (typeof value !== "string") return undefined;
   const normalized = value.trim().replace(/^@/, "");
   if (normalized.length === 0) return null;
