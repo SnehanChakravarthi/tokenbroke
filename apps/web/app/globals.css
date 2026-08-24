@@ -19,66 +19,67 @@
   --font-mono: var(--font-plex-mono);
 }
 
-/* Light is home: bright, optimistic, a rally in daylight. */
+/* Light is home: warm paper ground, true-white surfaces, saturated accents that read happy.
+   Contrast ladder (ground → panel → well): 94% → 100% → 89%, lines at ~82%. */
 :root {
   color-scheme: light;
-  --ink: #f6f5f0;
+  --ink: #f2f0ea;
   --panel: #ffffff;
-  --panel-2: #efeee8;
-  --line: #dddcd2;
-  --line-soft: #e7e6dd;
-  --paper: #1b1c20;
-  --dim: #4c5158;
-  --muted: #6d727c;
-  --faint: #a2a7ae;
-  --ok: #0e9152;
-  --warn: #c07c00;
-  --broke: #e8432e;
-  --codex: #2b8fff;
-  --claude: #d97757;
-  --glow-default: rgba(43, 143, 255, 0.08);
+  --panel-2: #e9e6de;
+  --line: #d3d0c5;
+  --line-soft: #e2dfd6;
+  --paper: #16171b;
+  --dim: #40444d;
+  --muted: #666b75;
+  --faint: #9ba0a8;
+  --ok: #128a4c;
+  --warn: #b4750a;
+  --broke: #e03a26;
+  --codex: #1d7be8;
+  --claude: #c05b38;
+  --glow-default: rgba(29, 123, 232, 0.07);
   --surface-hi: #ffffff;
-  --surface-lo: #f4f3ec;
-  --key-border: #d8d7cc;
+  --surface-lo: #f6f4ee;
+  --key-border: #cbc8bc;
   --key-hi: #ffffff;
-  --key-lo: #ecebe2;
-  --well-border: #dcdbd1;
-  --well-bg: #edece4;
-  --edge-light: rgba(255, 255, 255, 0.9);
-  --edge-dark: rgba(27, 28, 32, 0.08);
-  --drop: rgba(27, 28, 32, 0.14);
+  --key-lo: #ebe8df;
+  --well-border: #cfccc1;
+  --well-bg: #e7e4db;
+  --edge-light: rgba(255, 255, 255, 0.95);
+  --edge-dark: rgba(22, 23, 27, 0.12);
+  --drop: rgba(22, 23, 27, 0.22);
   --scanline: transparent;
 }
 
-/* The console after dark. */
+/* The console after dark: blue-slate cast, brighter text, wider surface steps. */
 .dark {
   color-scheme: dark;
-  --ink: #0a0b0d;
-  --panel: #12141a;
-  --panel-2: #181b22;
-  --line: #262a33;
-  --line-soft: #1d2027;
-  --paper: #e7e9ee;
-  --dim: #9aa1ad;
-  --muted: #7e8592;
-  --faint: #545b68;
-  --ok: #3dd68c;
-  --warn: #f2b84b;
-  --broke: #ff4d4d;
-  --codex: #4d9fff;
-  --claude: #e08a6d;
-  --glow-default: rgba(154, 168, 190, 0.11);
-  --surface-hi: #181c24;
-  --surface-lo: #101319;
-  --key-border: #333947;
-  --key-hi: #1e222b;
-  --key-lo: #0a0c10;
-  --well-border: #1c1f27;
-  --well-bg: #07080b;
-  --edge-light: rgba(231, 233, 238, 0.07);
-  --edge-dark: rgba(0, 0, 0, 0.5);
-  --drop: rgba(0, 0, 0, 0.9);
-  --scanline: rgba(231, 233, 238, 0.02);
+  --ink: #0b0c10;
+  --panel: #151823;
+  --panel-2: #1c2130;
+  --line: #2e3442;
+  --line-soft: #222736;
+  --paper: #edeff4;
+  --dim: #a6adbb;
+  --muted: #848c9c;
+  --faint: #566074;
+  --ok: #34d383;
+  --warn: #f0b040;
+  --broke: #ff5a45;
+  --codex: #5aa5ff;
+  --claude: #e68a66;
+  --glow-default: rgba(90, 165, 255, 0.1);
+  --surface-hi: #1b2030;
+  --surface-lo: #12151f;
+  --key-border: #39415a;
+  --key-hi: #232a3d;
+  --key-lo: #0d1017;
+  --well-border: #202636;
+  --well-bg: #07080c;
+  --edge-light: rgba(237, 239, 244, 0.08);
+  --edge-dark: rgba(0, 0, 0, 0.55);
+  --drop: rgba(0, 0, 0, 0.95);
+  --scanline: rgba(237, 239, 244, 0.02);
 }
 
 body {

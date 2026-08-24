@@ -24,8 +24,8 @@ function CounterDigits({ value }: { value: string }) {
 export function DaysSince({ board }: { board: PublicLeaderboardV1 }) {
   const days = board.global.daysSinceReset;
   return (
-    <div className="flex flex-col justify-between gap-4 px-1 py-2 sm:px-5">
-      <p className="text-[11px] uppercase tracking-[0.22em] text-muted">
+    <div className="px-1 py-2 sm:px-5">
+      <p className="min-h-[2.6rem] text-[11px] uppercase tracking-[0.22em] text-muted">
         days since last <span className={TOOL_TEXT[board.tool]}>{TOOL_SHORT[board.tool]}</span>{" "}
         reset
       </p>
@@ -55,8 +55,8 @@ export function PovertyMeter({ board }: { board: PublicLeaderboardV1 }) {
   const value = median === null ? 0 : Math.max(0, Math.min(100, median));
   const tone = severity === "broke" ? "text-broke" : severity === "warn" ? "text-warn" : "text-ok";
   return (
-    <div className="flex flex-col justify-between gap-4 px-1 py-2 sm:px-5">
-      <p className="text-[11px] uppercase tracking-[0.22em] text-muted">
+    <div className="px-1 py-2 sm:px-5">
+      <p className="min-h-[2.6rem] text-[11px] uppercase tracking-[0.22em] text-muted">
         <span className={TOOL_TEXT[board.tool]}>{TOOL_SHORT[board.tool]}</span> · tokens left, all
         of us
       </p>
