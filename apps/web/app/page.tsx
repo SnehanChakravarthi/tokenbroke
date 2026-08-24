@@ -2,8 +2,9 @@ import { BRAND } from "@tokenbroke/shared";
 import { siteDatabase } from "@/src/lib/dev-db";
 import { getPublicLeaderboard } from "@/src/lib/leaderboard";
 import { movementStats } from "@/src/lib/movement";
+import { recordPageView, viewStats } from "@/src/lib/views";
 import { LabUniverse } from "./components/board";
-import { CopyCommand } from "./components/copy-command";
+import { FlapDigits } from "./components/flap";
 import { SEVERITY_LABEL, severityFor } from "./components/format";
 import { MilestoneBar, TheLoop } from "./components/loop";
 import { MovementCount } from "./components/movement";
@@ -15,10 +16,12 @@ export const dynamic = "force-dynamic";
 export default async function Home() {
   const now = new Date();
   const database = await siteDatabase();
-  const [codex, claude, movement] = await Promise.all([
+  await recordPageView(database, now);
+  const [codex, claude, movement, views] = await Promise.all([
     getPublicLeaderboard("codex", { now, database }),
     getPublicLeaderboard("claude-code", { now, database }),
     movementStats(database),
+    viewStats(database, now),
   ]);
   const boards = [codex, claude];
   const worst = boards
@@ -30,13 +33,6 @@ export default async function Home() {
           ? "warn"
           : "ok",
     );
-  const bannerTone =
-    worst === "broke"
-      ? "text-broke bg-broke/10"
-      : worst === "warn"
-        ? "text-warn bg-warn/10"
-        : "text-ok bg-ok/10";
-
   const glow =
     worst === "broke"
       ? "rgba(232, 67, 46, 0.10)"
@@ -46,15 +42,6 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen" style={{ "--glow-color": glow } as React.CSSProperties}>
-      <div className="px-2 pt-2 sm:px-3 sm:pt-3">
-        <div
-          className={`flex items-center justify-center gap-2 rounded-lg px-4 py-1.5 text-center text-[11px] font-bold uppercase tracking-[0.28em] ${bannerTone}`}
-        >
-          <span className="pip inline-block size-1.5 rounded-full bg-current" aria-hidden />
-          token availability: {SEVERITY_LABEL[worst]}
-        </div>
-      </div>
-
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 pt-5 sm:px-6">
         <p className="display text-lg font-black tracking-tight text-paper">{BRAND.name}</p>
         <div className="flex items-center gap-4">
@@ -66,27 +53,47 @@ export default async function Home() {
       </header>
 
       <main className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        {/* Hero: one centered rally — the condition, the ask, nothing else. */}
-        <section className="fade-up flex flex-col items-center pt-14 text-center sm:pt-20">
-          <p className="mb-5 flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-muted">
-            <span className="pip inline-block size-1.5 rounded-full bg-broke" aria-hidden />
-            the public record of running dry
+        {/* Hero: the condition — with the live pulse right under the wordmark. */}
+        <section className="fade-up flex flex-col items-center pt-10 text-center sm:pt-14">
+          <p className="well flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-full px-4 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted">
+            <span className="flex items-center gap-1.5">
+              <span className="pip inline-block size-1.5 rounded-full bg-ok" aria-hidden />
+              <FlapDigits
+                value={views.onlineNow.toLocaleString("en-US")}
+                charClassName="tabular-nums text-paper"
+                gapClassName="gap-0"
+              />{" "}
+              online now
+            </span>
+            <span className="text-faint" aria-hidden>
+              ·
+            </span>
+            <span>
+              <FlapDigits
+                value={views.totalViews.toLocaleString("en-US")}
+                charClassName="tabular-nums text-paper"
+                gapClassName="gap-0"
+              />{" "}
+              visits
+            </span>
+            <span className="text-faint" aria-hidden>
+              ·
+            </span>
+            <span>
+              <FlapDigits
+                value={movement.devsOnRecord.toLocaleString("en-US")}
+                charClassName="tabular-nums text-paper"
+                gapClassName="gap-0"
+              />{" "}
+              on the record
+            </span>
           </p>
-          <h1 className="display max-w-3xl text-[clamp(2.6rem,11vw,5.5rem)] font-black leading-[0.95] tracking-tight text-paper [text-wrap:balance]">
+          <h1 className="display mt-8 max-w-3xl text-[clamp(2.6rem,11vw,5.5rem)] font-black leading-[0.95] tracking-tight text-paper [text-wrap:balance]">
             ARE YOU <span className="text-broke">TOKENBROKE?</span>
           </h1>
           <p className="mt-5 max-w-md text-sm leading-relaxed text-dim sm:text-base">
             Nobody measures how rate-limited we are.{" "}
             <span className="whitespace-nowrap text-paper">So we do.</span>
-          </p>
-          <div className="mt-8">
-            <CopyCommand command={BRAND.cliCommand} />
-          </div>
-          <p className="mt-4 text-[10px] uppercase tracking-[0.16em] leading-relaxed text-muted">
-            reads 2 numbers — never your code
-            <span className="mx-2 text-faint">·</span>anonymous, no signup
-            <span className="mx-2 text-faint">·</span>auto-updates:{" "}
-            <span className="text-dim">hooks install</span>
           </p>
         </section>
 

@@ -61,6 +61,23 @@ export async function seedFictionalBoard(database: Database, now = new Date()): 
 
   // Reset #1 is seeded by the migration itself; the dev seed adds volume, not history.
 
+  // Page-view volume so the live strip breathes in dev.
+  for (let h = 0; h < 46; h++) {
+    await database.query(
+      `insert into rate_buckets (scope, key_hash, bucket_start, count) values ('views-hour', 'home', $1, $2)
+       on conflict (scope, key_hash, bucket_start) do update set count = rate_buckets.count + excluded.count`,
+      [
+        new Date(Math.floor(now.getTime() / hour) * hour - h * hour),
+        18 + Math.floor(random() * 70),
+      ],
+    );
+  }
+  await database.query(
+    `insert into rate_buckets (scope, key_hash, bucket_start, count) values ('views-minute', 'home', $1, $2)
+     on conflict (scope, key_hash, bucket_start) do update set count = rate_buckets.count + excluded.count`,
+    [new Date(Math.floor(now.getTime() / 60_000) * 60_000), 2 + Math.floor(random() * 5)],
+  );
+
   let claimedRemaining = FICTIONAL_LOGINS.length;
   for (let index = 0; index < 46; index++) {
     const deviceId = `dev-seed-${index.toString().padStart(3, "0")}`;

@@ -1,6 +1,7 @@
 import { BRAND } from "@tokenbroke/shared";
 import type { PublicLeaderboardV1 } from "@/src/lib/leaderboard";
 import type { MovementStats } from "@/src/lib/movement";
+import { CopyCommand } from "./copy-command";
 
 /** Animated flow connector: dashes drifting toward the next node. */
 function Flow() {
@@ -76,11 +77,13 @@ export function TheLoop({
   };
   return (
     <div className="relative">
-      <div className="flex flex-col gap-6 lg:flex-row lg:gap-3">
+      <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[1.5fr_auto_1fr_auto_1.2fr_auto_1.2fr] lg:items-start lg:gap-3">
         <Node step="01" label="run it">
-          <p className="text-sm font-semibold text-paper">
-            <span className="text-faint">$ </span>
-            {BRAND.cliCommand}
+          <CopyCommand command={BRAND.cliCommand} />
+          <p className="mt-2.5 text-[10px] uppercase tracking-[0.14em] leading-relaxed text-muted">
+            reads 2 numbers — never your code · anonymous
+            <br />
+            auto-updates: <span className="text-dim">hooks install</span>
           </p>
         </Node>
         <Flow />
@@ -144,10 +147,16 @@ export function MilestoneBar({ stats }: { stats: MovementStats }) {
   const next = MILESTONES.find((milestone) => milestone.at > count);
   return (
     <div>
-      <div className="well relative h-4 overflow-visible">
+      <div className="well relative h-5 overflow-visible">
         <div
-          className="absolute inset-y-[2px] left-[2px] rounded-[5px] bg-gradient-to-r from-faint/40 to-broke/85"
-          style={{ width: `calc(${Math.max(position, 2)}% - 2px)` }}
+          className="absolute inset-y-[3px] left-[3px] rounded-full bg-gradient-to-r from-faint/40 to-broke/85"
+          style={{ width: `calc(${Math.max(position, 2)}% - 3px)` }}
+        />
+        {/* you are here */}
+        <span
+          className="pip absolute top-1/2 size-3 -translate-y-1/2 rounded-full border-2 border-panel bg-broke shadow-[0_1px_4px_rgba(16,24,40,0.35)]"
+          style={{ left: `calc(${Math.max(position, 2)}% - 6px)` }}
+          aria-hidden
         />
         {MILESTONES.map((milestone) => {
           const at = (Math.log10(milestone.at) / max) * 100;
@@ -155,7 +164,7 @@ export function MilestoneBar({ stats }: { stats: MovementStats }) {
           return (
             <span
               key={milestone.at}
-              className={`absolute top-[-3px] h-[22px] w-px ${reached ? "bg-ok" : "bg-faint/60"}`}
+              className={`absolute top-[-4px] h-[28px] w-px ${reached ? "bg-ok" : "bg-faint/50"}`}
               style={{ left: `${at}%` }}
               title={`${milestone.at.toLocaleString("en-US")} — ${milestone.label}`}
             />

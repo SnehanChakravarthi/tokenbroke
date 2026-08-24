@@ -254,6 +254,26 @@ body {
     0 1px 0 var(--edge-dark);
 }
 
+.flap::after {
+  content: "";
+  position: absolute;
+  inset: 50% 2px auto 2px;
+  height: 1px;
+  background: var(--edge-dark);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.flap-plain::after {
+  content: none;
+}
+.flap-plain {
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  min-width: 0.4em !important;
+  color: var(--faint);
+}
+
 .meter-cells {
   background-image: repeating-linear-gradient(90deg, currentColor 0 6px, transparent 6px 9px);
 }

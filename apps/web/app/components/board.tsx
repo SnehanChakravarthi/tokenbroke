@@ -1,5 +1,6 @@
 import type { PublicLeaderboardV1 } from "@/src/lib/leaderboard";
-import { resetsIn, severityFor } from "./format";
+import { FlapDigits } from "./flap";
+import { resetsIn } from "./format";
 import { ClaudeCodeMark, CodexMark } from "./icons";
 
 const TOOL = {
@@ -41,17 +42,11 @@ function Monogram({
 
 function Digits({ value }: { value: string }) {
   return (
-    <span className="inline-flex gap-[2px]" aria-hidden>
-      {value.split("").map((digit, index) => (
-        <span
-          // biome-ignore lint/suspicious/noArrayIndexKey: static digit strip
-          key={index}
-          className="keycap display inline-block min-w-[1.2em] px-0.5 py-0.5 text-center text-2xl font-black tabular-nums text-paper"
-        >
-          {digit}
-        </span>
-      ))}
-    </span>
+    <FlapDigits
+      value={value}
+      gapClassName="gap-[2px]"
+      charClassName="keycap display inline-block min-w-[1.2em] px-0.5 py-0.5 text-center text-2xl font-black tabular-nums text-paper"
+    />
   );
 }
 
@@ -63,9 +58,6 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
   const { title, accent, Mark } = TOOL[board.tool];
   const days = board.global.daysSinceReset;
   const median = board.global.medianRemainingPercent;
-  const severity = severityFor(median);
-  const fillTone =
-    severity === "broke" ? "text-broke" : severity === "warn" ? "text-warn" : "text-ok";
   const rows = board.rows.slice(0, 12);
 
   return (
@@ -118,7 +110,7 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
           >
             {median !== null && (
               <div
-                className={`meter-cells absolute inset-y-[2px] left-[2px] rounded-[4px] ${fillTone}`}
+                className="meter-cells absolute inset-y-[2px] left-[2px] rounded-[4px] text-ok"
                 style={{ width: `${Math.max(2, Math.min(100, median))}%` }}
               />
             )}

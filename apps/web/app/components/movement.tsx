@@ -1,21 +1,15 @@
 import type { MovementStats } from "@/src/lib/movement";
+import { FlapDigits } from "./flap";
 
-function Digits({ value, tone = "text-paper" }: { value: number; tone?: string }) {
+function Digits({ value }: { value: number }) {
   const text = value.toLocaleString("en-US");
   return (
-    <span className="inline-flex gap-[3px]" role="img" aria-label={`${text} developers`}>
-      {text.split("").map((char, index) => (
-        <span
-          // biome-ignore lint/suspicious/noArrayIndexKey: static digit strip
-          key={index}
-          className={`display inline-block px-0.5 text-center text-5xl font-black tabular-nums sm:text-7xl ${
-            char === "," ? "text-faint" : `keycap min-w-[0.72em] ${tone}`
-          }`}
-        >
-          {char}
-        </span>
-      ))}
-    </span>
+    <FlapDigits
+      value={text}
+      label={`${text} developers`}
+      gapClassName="gap-[3px]"
+      charClassName="keycap display inline-block min-w-[0.72em] px-0.5 text-center text-5xl font-black tabular-nums text-paper sm:text-7xl [&.flap-plain]:keycap-none"
+    />
   );
 }
 
