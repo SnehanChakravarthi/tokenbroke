@@ -59,11 +59,7 @@ export async function seedFictionalBoard(database: Database, now = new Date()): 
   const random = mulberry32(0x70_6f_76_21);
   const hour = 60 * 60 * 1_000;
 
-  await database.query(
-    `insert into resets (tool, announced_at, landed_at, source, note)
-     values ('codex', $1, $2, 'admin', 'dev seed: reset #1')`,
-    [new Date(now.getTime() - 30 * hour), new Date(now.getTime() - 26 * hour)],
-  );
+  // Reset #1 is seeded by the migration itself; the dev seed adds volume, not history.
 
   let claimedRemaining = FICTIONAL_LOGINS.length;
   for (let index = 0; index < 46; index++) {
@@ -99,6 +95,23 @@ export async function seedFictionalBoard(database: Database, now = new Date()): 
         new Date(now.getTime() - random() * 20 * hour),
       ],
     );
+
+    // Lightweight submission rows so the movement ledger has volume in dev.
+    const submissionCount = 1 + Math.floor(random() * 6);
+    for (let n = 0; n < submissionCount; n++) {
+      await database.query(
+        `insert into submissions
+           (device_id, received_at, submitted_at, trigger, schema_version, cli_version,
+            platform_os, nonce, raw_body, signature)
+         values ($1, $2, $2, 'manual', 1, '0.0.0-dev', 'darwin', $3, $4, 'dev-seed')`,
+        [
+          deviceId,
+          new Date(now.getTime() - random() * 60 * hour),
+          `dev-seed-${index}-${n}`,
+          Buffer.alloc(0),
+        ],
+      );
+    }
 
     // Misery shape: a starving head of the board, a rationing middle, a comfortable tail.
     const bucket = random();
