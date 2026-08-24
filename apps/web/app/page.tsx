@@ -9,7 +9,6 @@ import { FlapDigits } from "./components/flap";
 import { SEVERITY_LABEL, severityFor } from "./components/format";
 import { TheHands } from "./components/hands";
 import { MilestoneBar, TheLoop } from "./components/loop";
-import { MovementCount } from "./components/movement";
 import { Ticker } from "./components/ticker";
 
 export const dynamic = "force-dynamic";
@@ -79,22 +78,23 @@ export default async function Home() {
               />{" "}
               visits
             </span>
-            <span className="text-faint" aria-hidden>
-              ·
-            </span>
-            <span>
-              <FlapDigits
-                value={movement.devsOnRecord.toLocaleString("en-US")}
-                charClassName="tabular-nums text-paper"
-                gapClassName="gap-0"
-              />{" "}
-              on the record
-            </span>
           </p>
           <h1 className="display mt-8 max-w-3xl text-[clamp(2.6rem,11vw,5.5rem)] font-black leading-[0.95] tracking-tight text-paper [text-wrap:balance]">
             ARE YOU <span className="text-broke">TOKENBROKE?</span>
           </h1>
-          <p className="mt-5 max-w-lg text-sm leading-relaxed text-dim sm:text-base">
+          <p className="display mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-2xl font-black tracking-tight text-paper sm:text-4xl">
+            <FlapDigits
+              value={movement.devsOnRecord.toLocaleString("en-US")}
+              label={`${movement.devsOnRecord.toLocaleString("en-US")} developers on the record`}
+              gapClassName="gap-[3px]"
+              charClassName="keycap inline-block min-w-[0.85em] px-1 py-0.5 text-center tabular-nums"
+            />
+            <span>of us are.</span>
+          </p>
+          <div className="mt-5">
+            <MilestoneBar stats={movement} compact />
+          </div>
+          <p className="mt-7 max-w-lg text-sm leading-relaxed text-dim sm:text-base">
             The public record of how rate-limited developers really are —{" "}
             <span className="text-paper">measured by us, because nobody else will.</span>
           </p>
@@ -104,8 +104,9 @@ export default async function Home() {
           </div>
 
           <div className="fade-up fade-up-2 mt-10 flex flex-col items-center">
-            <p className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted">
-              becoming part of it takes one command
+            <p className="mb-3 max-w-md text-center text-[12px] leading-relaxed text-dim">
+              That's one small command for a dev —{" "}
+              <span className="text-paper">one giant leap for devkind:</span>
             </p>
             <CopyCommand command={BRAND.cliCommand} />
             <p className="mt-3 text-[10px] uppercase tracking-[0.16em] leading-relaxed text-muted">
@@ -114,17 +115,6 @@ export default async function Home() {
               <span className="mx-2 text-faint">·</span>auto-updates:{" "}
               <span className="text-dim">hooks install</span>
             </p>
-          </div>
-        </section>
-
-        {/* The record: the number that only goes up, and where it's headed. */}
-        <section
-          className="fade-up fade-up-1 mx-auto mt-14 flex max-w-2xl flex-col items-center text-center"
-          aria-label="The record"
-        >
-          <MovementCount stats={movement} />
-          <div className="mt-7 w-full">
-            <MilestoneBar stats={movement} />
           </div>
         </section>
 
@@ -154,7 +144,14 @@ export default async function Home() {
             The CLI reads usage and rate-limit state from your machine, on your machine, and submits
             only when you run it. Never prompts, never code, never conversations.
             <span className="mt-2 block text-muted">
-              built by <span className="text-paper">Snehan Chakravarthi</span>
+              built by{" "}
+              <a
+                href="https://x.com/theteknosaur"
+                className="text-paper underline decoration-dotted underline-offset-2"
+              >
+                Snehan Chakravarthi
+              </a>{" "}
+              · @theteknosaur
             </span>
           </p>
         </div>

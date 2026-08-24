@@ -136,12 +136,18 @@ const MILESTONES = [
  * joined by a thickening line — all centered on one axis, counts inside so
  * the magnitude is the icon. Labels hang below, out of the alignment math.
  */
-export function MilestoneBar({ stats }: { stats: MovementStats }) {
+export function MilestoneBar({
+  stats,
+  compact = false,
+}: {
+  stats: MovementStats;
+  compact?: boolean;
+}) {
   const count = Math.max(1, stats.devsOnRecord);
   const nextIndex = MILESTONES.findIndex((milestone) => milestone.at > count);
   const next = nextIndex === -1 ? null : MILESTONES[nextIndex];
-  const SIZES = [26, 34, 44, 56, 70];
-  const HEIGHTS = [3, 5, 7, 10];
+  const SIZES = compact ? [12, 16, 21, 27, 34] : [26, 34, 44, 56, 70];
+  const HEIGHTS = compact ? [2, 3, 4, 5] : [3, 5, 7, 10];
 
   const segmentFill = (index: number): number => {
     const from = index === 0 ? 1 : (MILESTONES[index]?.at ?? 1);
@@ -155,7 +161,7 @@ export function MilestoneBar({ stats }: { stats: MovementStats }) {
 
   return (
     <div>
-      <div className="flex items-center justify-center pb-7">
+      <div className={`flex items-center justify-center ${compact ? "pb-0" : "pb-7"}`}>
         {MILESTONES.map((milestone, index) => {
           const size = SIZES[index] ?? 28;
           const reached = count >= milestone.at;
@@ -164,7 +170,7 @@ export function MilestoneBar({ stats }: { stats: MovementStats }) {
             <span key={milestone.at} className="flex items-center">
               {index > 0 && (
                 <span
-                  className="relative -mx-px w-7 overflow-hidden rounded-full bg-line sm:w-12"
+                  className={`relative -mx-px overflow-hidden rounded-full bg-line ${compact ? "w-4 sm:w-6" : "w-7 sm:w-12"}`}
                   style={{ height: HEIGHTS[index - 1] ?? 4 }}
                   aria-hidden
                 >
@@ -189,11 +195,11 @@ export function MilestoneBar({ stats }: { stats: MovementStats }) {
                         ? "pip border-2 border-broke bg-broke/10 text-paper"
                         : "border border-line bg-panel-2/60 text-muted"
                   }`}
-                  style={{ fontSize: Math.max(10, size * 0.3) }}
+                  style={{ fontSize: Math.max(compact ? 6 : 10, size * 0.3) }}
                 >
-                  {short(milestone.at)}
+                  {compact && size < 20 ? "" : short(milestone.at)}
                 </span>
-                {(isNext || index === MILESTONES.length - 1) && (
+                {!compact && (isNext || index === MILESTONES.length - 1) && (
                   <span
                     className={`absolute top-full mt-1.5 whitespace-nowrap text-[9px] uppercase tracking-[0.1em] ${
                       isNext ? "text-paper" : "text-faint"
@@ -221,10 +227,12 @@ export function MilestoneBar({ stats }: { stats: MovementStats }) {
           <span className="text-ok">terminal milestone reached</span>
         )}
       </p>
-      <p className="mt-2 text-center text-[11px] leading-relaxed text-dim">
-        one small <span className="text-paper">{BRAND.cliCommand}</span> for a dev —{" "}
-        <span className="text-paper">one giant leap for devkind.</span>
-      </p>
+      {!compact && (
+        <p className="mt-2 text-center text-[11px] leading-relaxed text-dim">
+          one small <span className="text-paper">{BRAND.cliCommand}</span> for a dev —{" "}
+          <span className="text-paper">one giant leap for devkind.</span>
+        </p>
+      )}
     </div>
   );
 }
