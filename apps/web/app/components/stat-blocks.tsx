@@ -2,6 +2,7 @@ import type { PublicLeaderboardV1 } from "@/src/lib/leaderboard";
 import { severityFor } from "./format";
 
 const TOOL_SHORT = { codex: "CODEX", "claude-code": "CLAUDE CODE" } as const;
+const TOOL_TEXT = { codex: "text-codex", "claude-code": "text-claude" } as const;
 
 function CounterDigits({ value }: { value: string }) {
   return (
@@ -25,7 +26,8 @@ export function DaysSince({ board }: { board: PublicLeaderboardV1 }) {
   return (
     <div className="panel flex flex-col justify-between gap-4 p-4">
       <p className="text-[11px] uppercase tracking-[0.22em] text-muted">
-        days since last <span className="text-paper">{TOOL_SHORT[board.tool]}</span> reset
+        days since last <span className={TOOL_TEXT[board.tool]}>{TOOL_SHORT[board.tool]}</span>{" "}
+        reset
       </p>
       {days === null ? (
         <div>
@@ -55,7 +57,7 @@ export function PovertyMeter({ board }: { board: PublicLeaderboardV1 }) {
   return (
     <div className="panel flex flex-col justify-between gap-4 p-4">
       <p className="text-[11px] uppercase tracking-[0.22em] text-muted">
-        <span className="text-paper">{TOOL_SHORT[board.tool]}</span> median remaining
+        <span className={TOOL_TEXT[board.tool]}>{TOOL_SHORT[board.tool]}</span> median remaining
       </p>
       <div>
         <p className={`display text-3xl font-black tabular-nums sm:text-4xl ${tone}`}>

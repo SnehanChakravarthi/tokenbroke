@@ -93,7 +93,7 @@ export default async function Home() {
         </section>
       </main>
 
-      <div className="mt-12">
+      <div className="mx-auto mt-12 w-full max-w-6xl px-4 sm:px-6">
         <Ticker boards={boards} />
       </div>
 

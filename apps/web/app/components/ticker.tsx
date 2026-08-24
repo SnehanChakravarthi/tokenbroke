@@ -14,7 +14,7 @@ export function Ticker({ boards }: { boards: PublicLeaderboardV1[] }) {
   if (entries.length === 0) return null;
   const loop = [...entries, ...entries];
   return (
-    <div className="overflow-hidden border-y border-line bg-panel/40" aria-hidden>
+    <div className="well overflow-hidden" aria-hidden>
       <div className="ticker-track flex w-max gap-10 whitespace-nowrap px-6 py-2">
         {loop.map((entry, index) => (
           <span
@@ -22,8 +22,8 @@ export function Ticker({ boards }: { boards: PublicLeaderboardV1[] }) {
             key={index}
             className="text-[11px] uppercase tracking-[0.16em] text-muted"
           >
-            <span className="text-faint">▸</span> {entry.name}{" "}
-            <span className="text-faint">filed at</span>{" "}
+            <span className={entry.tool === "codex" ? "text-codex/70" : "text-claude/70"}>▸</span>{" "}
+            {entry.name} <span className="text-faint">filed at</span>{" "}
             <span className={entry.remaining <= 10 ? "text-broke" : "text-dim"}>
               {entry.remaining}% · {entry.tool}
             </span>

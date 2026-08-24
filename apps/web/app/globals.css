@@ -1,20 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  /* Warm near-black console. Statuspage severity language, played straight. */
-  --color-ink: #0c0a07;
-  --color-panel: #131009;
-  --color-panel-2: #1a160d;
-  --color-line: #2b2413;
-  --color-line-soft: #201b0e;
-  --color-paper: #ece4d0;
-  --color-dim: #9d927a;
-  --color-muted: #8d8368;
-  --color-faint: #5c553f;
-  --color-ok: #4bc97b;
-  --color-warn: #e5a33c;
-  --color-broke: #ff5c33;
-  --color-ember: #ff8952;
+  /* Neutral cold-steel console: the observatory is lab-neutral; each board wears its lab's color.
+     Codex azure and Claude clay are the labs' documented brand accents. */
+  --color-ink: #0a0b0d;
+  --color-panel: #12141a;
+  --color-panel-2: #181b22;
+  --color-line: #262a33;
+  --color-line-soft: #1d2027;
+  --color-paper: #e7e9ee;
+  --color-dim: #9aa1ad;
+  --color-muted: #7e8592;
+  --color-faint: #545b68;
+  --color-ok: #3dd68c;
+  --color-warn: #f2b84b;
+  --color-broke: #ff4d4d;
+  --color-codex: #2b8fff;
+  --color-claude: #d97757;
 
   --font-display: var(--font-archivo);
   --font-mono: var(--font-plex-mono);
@@ -43,8 +45,8 @@ body {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(120% 90% at 50% 0%, rgba(255, 137, 82, 0.07), transparent 55%),
-    repeating-linear-gradient(0deg, rgba(236, 228, 208, 0.022) 0 1px, transparent 1px 3px);
+    radial-gradient(120% 90% at 50% 0%, rgba(154, 161, 173, 0.06), transparent 55%),
+    repeating-linear-gradient(0deg, rgba(231, 233, 238, 0.02) 0 1px, transparent 1px 3px);
   pointer-events: none;
 }
 
@@ -101,9 +103,9 @@ body {
 .panel {
   border-radius: 10px;
   border: 1px solid var(--color-line);
-  background: linear-gradient(180deg, #17130b 0%, #100d07 100%);
+  background: linear-gradient(180deg, #161920 0%, #0f1116 100%);
   box-shadow:
-    inset 0 1px 0 rgba(236, 228, 208, 0.05),
+    inset 0 1px 0 rgba(231, 233, 238, 0.05),
     inset 0 -1px 0 rgba(0, 0, 0, 0.5),
     0 14px 28px -22px rgba(0, 0, 0, 0.95);
 }
@@ -111,10 +113,10 @@ body {
 /* Counter digits as keycaps. */
 .keycap {
   border-radius: 7px;
-  border: 1px solid #35301c;
-  background: linear-gradient(180deg, #221d10 0%, #14100a 78%, #0b0906 100%);
+  border: 1px solid #333947;
+  background: linear-gradient(180deg, #1e222b 0%, #12151b 78%, #0a0c10 100%);
   box-shadow:
-    inset 0 1px 0 rgba(236, 228, 208, 0.09),
+    inset 0 1px 0 rgba(231, 233, 238, 0.09),
     0 2px 0 #05040366,
     0 3px 8px -2px rgba(0, 0, 0, 0.8);
 }
@@ -122,19 +124,19 @@ body {
 /* Recessed wells: meters, the command line. */
 .well {
   border-radius: 8px;
-  border: 1px solid #221c0f;
-  background: #0a0805;
+  border: 1px solid #1c1f27;
+  background: #07080b;
   box-shadow:
     inset 0 2px 5px rgba(0, 0, 0, 0.75),
-    inset 0 -1px 0 rgba(236, 228, 208, 0.03);
+    inset 0 -1px 0 rgba(231, 233, 238, 0.03);
 }
 
 .raised {
   border-radius: 9px;
   border: 1px solid var(--color-line);
-  background: linear-gradient(180deg, #1b160c 0%, #120e08 100%);
+  background: linear-gradient(180deg, #1a1e26 0%, #10131a 100%);
   box-shadow:
-    inset 0 1px 0 rgba(236, 228, 208, 0.07),
+    inset 0 1px 0 rgba(231, 233, 238, 0.07),
     0 2px 0 rgba(0, 0, 0, 0.45),
     0 10px 20px -14px rgba(0, 0, 0, 0.9);
   transition:
@@ -145,7 +147,7 @@ body {
 .raised:hover {
   transform: translateY(-1px);
   box-shadow:
-    inset 0 1px 0 rgba(236, 228, 208, 0.09),
+    inset 0 1px 0 rgba(231, 233, 238, 0.09),
     0 3px 0 rgba(0, 0, 0, 0.45),
     0 14px 26px -14px rgba(0, 0, 0, 0.9);
 }
