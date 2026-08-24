@@ -16,9 +16,3 @@ export function severityFor(medianRemaining: number | null): "ok" | "warn" | "br
   if (medianRemaining <= 35) return "warn";
   return "ok";
 }
-
-export const SEVERITY_LABEL = {
-  ok: "OPERATIONAL",
-  warn: "DEGRADED",
-  broke: "TOKEN POVERTY",
-} as const;

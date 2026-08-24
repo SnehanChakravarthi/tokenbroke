@@ -231,11 +231,13 @@ body {
 .flap-plain::after {
   content: none;
 }
-.flap-plain {
-  border: none !important;
-  background: none !important;
-  box-shadow: none !important;
-  min-width: 0.4em !important;
+/* Non-digit characters (commas) in a keycap strip: bare glyphs, no key. Doubled class outranks
+   .keycap without resorting to !important. */
+.flap-plain.flap-plain {
+  border: none;
+  background: none;
+  box-shadow: none;
+  min-width: 0.4em;
   color: var(--faint);
 }
 

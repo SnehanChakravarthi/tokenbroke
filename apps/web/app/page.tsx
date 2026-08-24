@@ -6,7 +6,7 @@ import { recordPageView, viewStats } from "@/src/lib/views";
 import { LabUniverse } from "./components/board";
 import { CopyCommand } from "./components/copy-command";
 import { FlapDigits } from "./components/flap";
-import { SEVERITY_LABEL, severityFor } from "./components/format";
+import { severityFor } from "./components/format";
 import { TheHands } from "./components/hands";
 import { nextMilestone, TheLoop } from "./components/loop";
 
