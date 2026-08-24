@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "tokenbroke": "./dist/index.js"
+    "tokenbroke": "dist/index.js"
   },
   "files": [
     "dist"
