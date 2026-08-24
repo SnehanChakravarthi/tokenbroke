@@ -21,3 +21,5 @@ dist/
 .DS_Store
 *.log
 coverage/
+.vercel
+.env*
