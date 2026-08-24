@@ -19,71 +19,78 @@
   --font-mono: var(--font-plex-mono);
 }
 
-/* Light is home: warm paper ground, true-white surfaces, saturated accents that read happy.
-   Contrast ladder (ground → panel → well): 94% → 100% → 89%, lines at ~82%. */
+/* Light: dawn sky. Pale azure into white into faint peach, on graph paper —
+   this is a measuring instrument, so the page sits on a dot grid. */
 :root {
   color-scheme: light;
-  --ink: #f2f0ea;
+  --bg-top: #e9f2fe;
+  --bg-mid: #fcfdfd;
+  --bg-bot: #fdf1e8;
+  --dot: rgba(16, 24, 40, 0.07);
+  --ink: #f7fafd;
   --panel: #ffffff;
-  --panel-2: #e9e6de;
-  --line: #d3d0c5;
-  --line-soft: #e2dfd6;
-  --paper: #16171b;
-  --dim: #40444d;
-  --muted: #666b75;
-  --faint: #9ba0a8;
-  --ok: #128a4c;
-  --warn: #b4750a;
-  --broke: #e03a26;
-  --codex: #1d7be8;
-  --claude: #c05b38;
-  --glow-default: rgba(29, 123, 232, 0.07);
+  --panel-2: #edf1f7;
+  --line: #d7dfe9;
+  --line-soft: #e4e9f1;
+  --paper: #101828;
+  --dim: #3d4a61;
+  --muted: #5d6b82;
+  --faint: #98a4b8;
+  --ok: #0ba05f;
+  --warn: #d97706;
+  --broke: #f0442c;
+  --codex: #2563eb;
+  --claude: #cc5a2e;
+  --glow-default: rgba(37, 99, 235, 0.06);
   --surface-hi: #ffffff;
-  --surface-lo: #f6f4ee;
-  --key-border: #cbc8bc;
+  --surface-lo: #f3f6fa;
+  --key-border: #cbd5e4;
   --key-hi: #ffffff;
-  --key-lo: #ebe8df;
-  --well-border: #cfccc1;
-  --well-bg: #e7e4db;
+  --key-lo: #e9eef6;
+  --well-border: #d2dae6;
+  --well-bg: #eaeef5;
   --edge-light: rgba(255, 255, 255, 0.95);
-  --edge-dark: rgba(22, 23, 27, 0.12);
-  --drop: rgba(22, 23, 27, 0.22);
-  --scanline: transparent;
+  --edge-dark: rgba(16, 24, 40, 0.12);
+  --drop: rgba(16, 24, 40, 0.2);
 }
 
-/* The console after dark: blue-slate cast, brighter text, wider surface steps. */
+/* Dark: midnight indigo, same graph paper, signal-bright accents. */
 .dark {
   color-scheme: dark;
-  --ink: #0b0c10;
-  --panel: #151823;
-  --panel-2: #1c2130;
-  --line: #2e3442;
-  --line-soft: #222736;
-  --paper: #edeff4;
-  --dim: #a6adbb;
-  --muted: #848c9c;
-  --faint: #566074;
-  --ok: #34d383;
-  --warn: #f0b040;
-  --broke: #ff5a45;
-  --codex: #5aa5ff;
-  --claude: #e68a66;
-  --glow-default: rgba(90, 165, 255, 0.1);
-  --surface-hi: #1b2030;
-  --surface-lo: #12151f;
-  --key-border: #39415a;
-  --key-hi: #232a3d;
-  --key-lo: #0d1017;
-  --well-border: #202636;
-  --well-bg: #07080c;
-  --edge-light: rgba(237, 239, 244, 0.08);
+  --bg-top: #141b36;
+  --bg-mid: #0c101f;
+  --bg-bot: #120e1e;
+  --dot: rgba(237, 240, 248, 0.05);
+  --ink: #0c101f;
+  --panel: #171e33;
+  --panel-2: #1e2740;
+  --line: #2d3854;
+  --line-soft: #232c45;
+  --paper: #edf0f8;
+  --dim: #a8b2c7;
+  --muted: #8592ab;
+  --faint: #576480;
+  --ok: #2dd4a0;
+  --warn: #fbbf24;
+  --broke: #ff5c4d;
+  --codex: #60a5fa;
+  --claude: #fb923c;
+  --glow-default: rgba(96, 165, 250, 0.1);
+  --surface-hi: #1c2440;
+  --surface-lo: #131a2e;
+  --key-border: #38456b;
+  --key-hi: #242e4e;
+  --key-lo: #0e1424;
+  --well-border: #222b46;
+  --well-bg: #080b15;
+  --edge-light: rgba(237, 240, 248, 0.08);
   --edge-dark: rgba(0, 0, 0, 0.55);
   --drop: rgba(0, 0, 0, 0.95);
-  --scanline: rgba(237, 239, 244, 0.02);
 }
 
 body {
-  background: var(--ink);
+  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 42%, var(--bg-bot) 100%) fixed
+    var(--ink);
   color: var(--paper);
   font-family: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
   -webkit-font-smoothing: antialiased;
@@ -104,7 +111,7 @@ body {
   z-index: -1;
   background:
     radial-gradient(110% 70% at 50% 0%, var(--glow-color, var(--glow-default)), transparent 60%),
-    repeating-linear-gradient(0deg, var(--scanline) 0 1px, transparent 1px 3px);
+    radial-gradient(circle, var(--dot) 1px, transparent 1.5px) 0 0 / 24px 24px;
   pointer-events: none;
 }
 
