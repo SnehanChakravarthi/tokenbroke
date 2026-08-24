@@ -1,0 +1,34 @@
+{
+  "oauthAccount": {
+    "accountUuid": "fixture-account-never-export",
+    "emailAddress": "sentinel-email-never-export@example.invalid",
+    "organizationRateLimitTier": null,
+    "organizationType": "org_owned_by_user@corp.example",
+    "subscriptionType": "default_claude_max_20x"
+  },
+  "cachedUsageUtilization": {
+    "fetchedAtMs": 1787392800000,
+    "utilization": {
+      "limits": [
+        {
+          "kind": "session",
+          "group": "session",
+          "percent": 12.5,
+          "severity": "normal",
+          "resets_at": "2026-08-22T11:00:00.000Z",
+          "scope": null,
+          "is_active": true
+        },
+        {
+          "kind": "weekly overflow user@corp.example",
+          "group": "weekly",
+          "percent": 88,
+          "severity": "warning",
+          "resets_at": "2026-08-27T07:00:00.000Z",
+          "scope": { "model": { "display_name": "Fable <script>alert(1)</script>" } },
+          "is_active": true
+        }
+      ]
+    }
+  }
+}

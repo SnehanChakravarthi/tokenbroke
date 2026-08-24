@@ -1,0 +1,2 @@
+{"timestamp":"2026-08-22T09:00:00.000Z","type":"session_meta","payload":{"id":"fixture-session-never-export","instructions":"SENTINEL_CODEX_SESSION_CONTENT"}}
+{"timestamp":"2026-08-22T09:01:00.000Z","type":"event_msg","payload":{"type":"token_count","rate_limits":{"limit_id":"codex","primary":{"used_percent":40,"window_minutes":300,"resets_at":1787396400},"secondary":{"used_percent":22,"window_minutes":10080,"resets_at":1787994000},"plan_type":"plus"},"info":{"last_token_usage":{"input_tokens":999999}},"message":"SENTINEL_CODEX_EVENT_CONTENT"}}

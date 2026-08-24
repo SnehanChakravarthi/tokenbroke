@@ -1,0 +1,13 @@
+{
+  "cachedUsageUtilization": {
+    "fetchedAtMs": 1787392800000,
+    "utilization": {
+      "five_hour": { "resets_at": "2026-08-22T11:00:00.000Z", "utilization": 7 },
+      "seven_day": { "utilization": 31, "resets_at": null }
+    }
+  },
+  "oauthAccount": {
+    "subscriptionType": "unverified_fixture_tier",
+    "emailAddress": "SENTINEL_FLAT_EMAIL@example.invalid"
+  }
+}

@@ -1,0 +1,2 @@
+{"payload":{"rate_limits":{"secondary":{"resets_at":null,"window_minutes":null,"used_percent":64},"primary":{"resets_at":1787997600,"window_minutes":10080,"used_percent":51},"plan_type":"plus","limit_id":"codex_other"},"type":"token_count","content":"SENTINEL_REORDERED_CONTENT"},"type":"event_msg","timestamp":"2026-08-22T10:00:00.000Z"}
+{"type":"event_msg","timestamp":"2026-08-22T10:01:00.000Z","payload":{"type":"token_count","rate_limits":{"limit_id":"codex","primary":{"used_percent":42,"window_minutes":300,"resets_at":1787396400},"secondary":null,"plan_type":"plus"}}}

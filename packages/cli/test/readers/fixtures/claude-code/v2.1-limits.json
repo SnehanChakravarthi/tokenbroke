@@ -1,0 +1,40 @@
+{
+  "oauthAccount": {
+    "accountUuid": "fixture-account-never-export",
+    "emailAddress": "sentinel-email-never-export@example.invalid",
+    "organizationRateLimitTier": "default_claude_max_5x",
+    "organizationType": "claude_max",
+    "subscriptionType": null
+  },
+  "cachedUsageUtilization": {
+    "fetchedAtMs": 1787392800000,
+    "accountUuid": "fixture-cached-account-never-export",
+    "utilization": {
+      "limits": [
+        {
+          "kind": "session",
+          "group": "session",
+          "percent": 12.5,
+          "severity": "normal",
+          "resets_at": "2026-08-22T11:00:00.000Z",
+          "scope": null,
+          "is_active": false,
+          "content": "SENTINEL_CLAUDE_LIMIT_CONTENT"
+        },
+        {
+          "kind": "weekly_scoped",
+          "group": "weekly",
+          "percent": 43,
+          "severity": "warning",
+          "resets_at": "2026-08-27T07:00:00.000Z",
+          "scope": { "model": { "display_name": "Fable" } },
+          "is_active": true
+        }
+      ],
+      "five_hour": { "utilization": 99, "resets_at": "2026-08-22T12:00:00.000Z" },
+      "seven_day": { "utilization": 98, "resets_at": "2026-08-27T08:00:00.000Z" },
+      "extra_usage": { "private_note": "SENTINEL_CLAUDE_EXTRA_CONTENT" }
+    }
+  },
+  "projects": { "/private/project": "SENTINEL_CLAUDE_PROJECT_CONTENT" }
+}
