@@ -254,11 +254,14 @@ bun run readers        this machine's local readings as JSON (drain summarized; 
 
 ## 14. Current status / next steps
 
-**Status (2026-08-24):** RFC 001–004 decided and **implemented** (readers; shared contracts/scoring/
-signing/validation/plausibility; CLI; web API + Drizzle/Neon schema + claim flow). All reviewed by
-Claude Code with Opus adversarial audits — see each RFC's Review section. 118 tests, CLI E2E + web
-PGlite E2E green. Nothing deployed. Codex reset #1 landed 2026-08-24 (owner now ~73% Codex remaining).
-Phase 1 code is complete except the visible site UI (awaiting owner design references) and OG cards.
+**Status (2026-08-24, PRODUCTION LIVE):** https://tokenbroke.vercel.app serves the real site
+against Neon (project `tokenbroke`, personal Vercel scope, functions pinned iad1, GitHub
+SnehanChakravarthi/tokenbroke private, push-to-deploy). Migrations applied; reset history seeded.
+**First real offering filed** by the owner's CLI from their machine — the full pipeline
+(readers → signing → API → transaction → rank → board) verified in production. Deployment gotchas
+solved: project `framework` must be set explicitly (was null → global NOT_FOUND despite Ready
+builds); Vercel env vars from the Neon integration are Sensitive (not pullable — local ops use
+owner-pasted .env.local); protection is preview-only.
 
 **Decided:** Neon + Drizzle. npm package `tokenbroke`. Biome + vitest + bun workspaces. Versioned API
 (`/api/v1/submissions`, `schemaVersion: 1`). Ed25519 device identity, one stream per key. Hook-driven
