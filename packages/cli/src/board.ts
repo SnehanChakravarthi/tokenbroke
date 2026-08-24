@@ -183,45 +183,172 @@ function readingFor(readings: LocalReadings, tool: ToolId): ToolReading | null {
   return readings.find((reading) => reading.tool === tool) ?? null;
 }
 
+/* ---------- The offering receipt ---------- */
+
+const W = 56;
+
+const PIXEL_WORDMARK = [
+  "▀█▀ █▀█ █▄▀ █▀▀ █▄░█ █▄▄ █▀█ █▀█ █▄▀ █▀▀",
+  "░█░ █▄█ █░█ ██▄ █░▀█ █▄█ █▀▄ █▄█ █░█ ██▄",
+];
+
+type Tone = "red" | "green" | "yellow" | "blue" | "orange" | "dim" | "bold";
+const CODES: Record<Tone, string> = {
+  red: "\u001b[91m",
+  green: "\u001b[92m",
+  yellow: "\u001b[93m",
+  blue: "\u001b[94m",
+  orange: "\u001b[38;5;208m",
+  dim: "\u001b[90m",
+  bold: "\u001b[1m",
+};
+const RESET = "\u001b[0m";
+
+function paint(value: string, tone: Tone): string {
+  return process.stdout.isTTY ? `${CODES[tone]}${value}${RESET}` : value;
+}
+
+function stripAnsi(value: string): string {
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: ANSI stripping needs the escape byte
+  return value.replace(/\u001b\[[0-9;]*m/g, "");
+}
+
+function center(value: string): string {
+  const pad = Math.max(0, Math.floor((W - stripAnsi(value).length) / 2));
+  return " ".repeat(pad) + value;
+}
+
+function tear(): string {
+  const side = "─ ".repeat(Math.floor((W - 4) / 4));
+  return paint(`${side}8< ${side}`.slice(0, W), "dim");
+}
+
+function dots(): string {
+  return paint("·".repeat(W), "dim");
+}
+
+function kv(label: string, value: string): string {
+  return `  ${paint(label.padEnd(18), "dim")}${value}`;
+}
+
+function severityTone(remaining: number): Tone {
+  if (remaining <= 10) return "red";
+  if (remaining <= 30) return "yellow";
+  return "green";
+}
+
+function chargeBar(remaining: number): string {
+  const cells = Math.round(Math.max(0, Math.min(100, remaining)) / 10);
+  return paint("▓".repeat(cells) + "░".repeat(10 - cells), severityTone(remaining));
+}
+
+function toolTone(tool: ToolId): Tone {
+  return tool === "codex" ? "blue" : "orange";
+}
+
+function receiptRow(row: LeaderboardRow): string {
+  const marker = row.isYou ? paint(" ◀ you", "red") : "";
+  const badge = row.claimed ? "" : ` [${COPY.anonymousBadge}]`;
+  const name = truncate(`${row.name}${badge}`, 26).padEnd(26);
+  const remaining = `${String(Math.round(row.remainingPercent)).padStart(3)}%`;
+  return `  ${paint(`#${row.rank}`.padStart(4), row.rank <= 3 ? "bold" : "dim")} ${name} ${paint(remaining, severityTone(row.remainingPercent))} ${paint(timeRemaining(row.resetsAt).padStart(6), "dim")}${marker}`;
+}
+
+function stamp(text: string, tone: Tone): string[] {
+  const inner = ` ${text} `;
+  return [
+    center(paint(`┌${"─".repeat(inner.length)}┐`, tone)),
+    center(paint(`│${inner}│`, tone)),
+    center(paint(`└${"─".repeat(inner.length)}┘`, tone)),
+  ];
+}
+
 export function renderBoard(response: SubmissionSuccessV1, readings: LocalReadings): string {
   const now = new Date();
-  const lines: string[] = [COPY.header];
+  const lines: string[] = ["", tear()];
+  for (const row of PIXEL_WORDMARK) lines.push(center(paint(row, "red")));
+  lines.push(center(paint("t o k e n b r o k e . l o l", "dim")), dots());
+
+  lines.push(kv("OFFERING RECEIPT", paint(`№ ${response.identity.deviceId.slice(0, 9)}`, "bold")));
+  lines.push(
+    kv(
+      "FILED BY",
+      response.identity.claimed
+        ? paint(`@${response.identity.claimed.githubLogin}`, "bold")
+        : response.identity.anonymousName,
+    ),
+  );
+  lines.push(kv("DATE", now.toISOString().slice(0, 16).replace("T", " ")));
+
   for (const result of response.perTool) {
+    lines.push(dots());
     const label = TOOL_LABELS[result.tool];
     const reading = readingFor(readings, result.tool);
-    lines.push("", fit(COPY.boardTitle(label)));
-    if (reading === null || reading.install !== "found") {
-      // No reading for this tool means no numbers, ever — never borrow the other tool's.
-      lines.push(...wrap(COPY.oneToolMissing(label)));
-    } else if (reading.observation !== "ok" || reading.windows.length === 0) {
-      lines.push(...wrap(COPY.noSnapshot(label)));
-    } else {
-      lines.push(...ownStatusLines(reading, now));
-      const state = stateLine(reading, result.rankable, result.misery, now);
-      if (state) {
-        lines.push(...wrap(state));
-      } else {
-        for (const row of rowsForBlock(result.top, result.neighbors)) {
-          lines.push(row === null ? "  …" : renderRow(row));
-        }
-        lines.push(...wrap(result.roast));
-      }
-    }
-    const global = response.global.perTool.find((item) => item.tool === result.tool);
+    const plan = reading?.plan.label ?? "";
     lines.push(
-      ...wrap(
-        COPY.collective(
-          response.global.devs,
-          global?.medianRemainingPercent ?? null,
-          global?.daysSinceReset ?? null,
-        ),
-      ),
+      `  ${paint(label.toUpperCase(), toolTone(result.tool))}${plan ? paint(` · ${plan}`, "dim") : ""}`,
+    );
+    if (reading === null || reading.install !== "found") {
+      lines.push(`  ${COPY.oneToolMissing(label)}`);
+      continue;
+    }
+    if (reading.observation !== "ok" || reading.windows.length === 0) {
+      lines.push(`  ${COPY.noSnapshot(label)}`);
+      continue;
+    }
+    for (const { window, classified } of reading.windows
+      .map((window) => ({ window, classified: classify(window, reading.tool) }))
+      .filter(({ classified }) => classified.role !== "ignored")
+      .sort(
+        (left, right) => ROLE_ORDER[left.classified.role] - ROLE_ORDER[right.classified.role],
+      )) {
+      const remaining = Math.max(0, Math.round(100 - window.usedPercent));
+      lines.push(
+        `    ${classified.shortLabel.padEnd(9)} ${chargeBar(remaining)} ${paint(`${String(remaining).padStart(3)}% left`, severityTone(remaining))}  ${paint(`resets ${timeRemaining(window.resetsAt, now)}`, "dim")}`,
+      );
+    }
+    const state = stateLine(reading, result.rankable, result.misery, now);
+    if (state) {
+      lines.push(`  ${paint(`VERDICT: ${state.toUpperCase()}`, "dim")}`);
+    } else {
+      lines.push("");
+      for (const row of rowsForBlock(result.top, result.neighbors)) {
+        lines.push(row === null ? paint("   ····", "dim") : receiptRow(row));
+      }
+      lines.push("");
+      if (result.rank !== null) {
+        const tone: Tone = result.rank <= 3 ? "red" : "yellow";
+        lines.push(...stamp(`#${result.rank} BROKEST ON ${label.toUpperCase()}`, tone));
+      }
+      lines.push(center(paint(result.roast, "bold")));
+    }
+  }
+
+  lines.push(dots(), `  ${paint("THE RECORD", "bold")}`);
+  lines.push(
+    `    ${response.global.devs} dev${response.global.devs === 1 ? "" : "s"} on the record`,
+  );
+  for (const item of response.global.perTool) {
+    const median = item.medianRemainingPercent;
+    lines.push(
+      `    ${paint(TOOL_LABELS[item.tool].toLowerCase().padEnd(12), toolTone(item.tool))}${paint(
+        `median ${median === null ? "—" : `${Math.round(median)}%`} · ${item.daysSinceReset ?? "—"} days since reset`,
+        "dim",
+      )}`,
     );
   }
+
+  lines.push(dots());
   if (response.identity.claimed) {
-    lines.push("", fit(COPY.claimed(response.identity.claimed.githubLogin)));
+    lines.push(`  ${COPY.claimed(response.identity.claimed.githubLogin)}`);
   } else if (response.claim) {
-    lines.push("", ...COPY.claim(response.claim.code).split("\n").flatMap(wrap));
+    lines.push(`  ${paint("CLAIM THIS ROW", "bold")} ${paint("(github, optional)", "dim")}`);
+    lines.push(`  → ${paint(response.claim.url, "bold")}`);
+    lines.push(`  ${paint("vanity is free. rank is earned.", "dim")}`);
   }
+  lines.push(dots());
+  lines.push(center(paint("one small command for a dev —", "dim")));
+  lines.push(center(paint("one giant leap for devkind.", "bold")));
+  lines.push(tear(), "");
   return lines.join("\n");
 }

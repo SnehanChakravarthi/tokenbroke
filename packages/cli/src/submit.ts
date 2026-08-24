@@ -103,20 +103,32 @@ export async function submitReadings(
   const payload = buildSubmission(readings, identity, options);
   const body = Buffer.from(canonicalJson(payload));
   const signature = signBytes(body, identity.privateKey);
+  // 30s allows a cold serverless function + suspended database to wake. Redirects are
+  // handled manually: Node's fetch cannot replay a byte body through a 307/308, and the
+  // signature must ride the exact same bytes to the final URL.
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10_000);
+  const timeout = setTimeout(() => controller.abort(), 30_000);
   let response: Response;
   try {
     const base = options.apiUrl ?? process.env.TOKENBROKE_API_URL ?? BRAND.siteUrl;
-    response = await (options.fetchImpl ?? fetch)(new URL(API_PATH_V1, base), {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-tokenbroke-signature": `ed25519=${signature}`,
-      },
-      body,
-      signal: controller.signal,
-    });
+    const doFetch = options.fetchImpl ?? fetch;
+    const post = (target: URL | string): Promise<Response> =>
+      doFetch(target, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-tokenbroke-signature": `ed25519=${signature}`,
+        },
+        body,
+        redirect: "manual",
+        signal: controller.signal,
+      });
+    response = await post(new URL(API_PATH_V1, base));
+    for (let hop = 0; hop < 3 && [301, 302, 307, 308].includes(response.status); hop++) {
+      const location = response.headers.get("location");
+      if (!location) break;
+      response = await post(new URL(location, new URL(API_PATH_V1, base)));
+    }
   } catch (error) {
     throw new SubmitNetworkError("could not reach the board", error);
   } finally {

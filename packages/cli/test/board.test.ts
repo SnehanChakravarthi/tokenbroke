@@ -25,18 +25,18 @@ describe("renderBoard", () => {
     if (!claude) throw new Error("missing Claude fixture");
     response.perTool[0] = { ...claude, rankable: false, misery: 0 };
     const output = renderBoard(response, [toolReading("claude-code", 12), toolReading("codex")]);
-    expect(output).toContain(COPY.notBroke);
+    expect(output).toContain(`VERDICT: ${COPY.notBroke.toUpperCase()}`);
     // "not broke" is a verdict on the numbers, so the numbers stay on screen.
-    expect(output).toContain("5h 88% remaining · resets in 4h 0m · Max 5x");
+    expect(output).toContain("5h");
+    expect(output).toContain("88% left");
+    expect(output).toContain("Max 5x");
   });
 
   it("renders the absent-tool line under its own heading, never the other tool's rows (F12c)", () => {
     const readings = [toolReading("codex"), toolReading("codex")] as unknown as LocalReadings;
     const output = renderBoard(successResponse(), readings);
-    const claudeBlock = output.slice(
-      output.indexOf(COPY.boardTitle("Claude Code")),
-      output.indexOf(COPY.boardTitle("Codex")),
-    );
+    // Receipt sections are headed by the bare uppercase tool name.
+    const claudeBlock = output.slice(output.indexOf("CLAUDE CODE"), output.indexOf("CODEX"));
     expect(claudeBlock).toContain(COPY.oneToolMissing("Claude Code"));
     expect(claudeBlock).not.toContain(COPY.youMarker);
     expect(claudeBlock).not.toContain("starving-crab-1");
@@ -48,12 +48,14 @@ describe("renderBoard", () => {
     if (!claude) throw new Error("missing Claude fixture");
     response.perTool[0] = { ...claude, misery: 0 };
     expect(renderBoard(response, [toolReading("claude-code", 40), toolReading("codex")])).toContain(
-      COPY.notBroke,
+      `VERDICT: ${COPY.notBroke.toUpperCase()}`,
     );
 
     const expired = toolReading("claude-code", 99, -1);
     response.perTool[0] = { ...claude, rankable: false, misery: null };
-    expect(renderBoard(response, [expired, toolReading("codex")])).toContain(COPY.sentenceServed);
+    expect(renderBoard(response, [expired, toolReading("codex")])).toContain(
+      COPY.sentenceServed.toUpperCase(),
+    );
 
     const noSnapshot = {
       ...toolReading("claude-code"),
