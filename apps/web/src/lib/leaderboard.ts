@@ -112,7 +112,21 @@ function leaderboardRow(
     remainingPercent: binding ? 100 - binding.usedPercent : 100,
     resetsAt: binding?.resetsAt ?? null,
     isYou: false,
+    modelScoped: worstScoped(state.reading),
   };
+}
+
+/** Worst model-scoped window (secondary by registry design): shown as a chip, never ranked. */
+function worstScoped(reading: ToolReading): { label: string; remainingPercent: number } | null {
+  let worst: { label: string; remainingPercent: number } | null = null;
+  for (const window of reading.windows) {
+    if (window.scope === null) continue;
+    const remaining = Math.round((100 - window.usedPercent) * 10) / 10;
+    if (worst === null || remaining < worst.remainingPercent) {
+      worst = { label: window.scope.toLowerCase(), remainingPercent: remaining };
+    }
+  }
+  return worst;
 }
 
 async function rebuild(

@@ -1,4 +1,5 @@
 import { BRAND } from "@tokenbroke/shared";
+import { headers } from "next/headers";
 import { siteDatabase } from "@/src/lib/dev-db";
 import { getPublicLeaderboard } from "@/src/lib/leaderboard";
 import { movementStats } from "@/src/lib/movement";
@@ -15,7 +16,12 @@ export const dynamic = "force-dynamic";
 export default async function Home() {
   const now = new Date();
   const database = await siteDatabase();
-  await recordPageView(database, now);
+  const requestHeaders = await headers();
+  const visitorIp =
+    requestHeaders.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() ??
+    requestHeaders.get("x-forwarded-for")?.split(",").at(-1)?.trim() ??
+    null;
+  await recordPageView(database, visitorIp, now);
   const [codex, claude, movement, views] = await Promise.all([
     getPublicLeaderboard("codex", { now, database }),
     getPublicLeaderboard("claude-code", { now, database }),
@@ -75,7 +81,7 @@ export default async function Home() {
                 charClassName="tabular-nums text-paper"
                 gapClassName="gap-0"
               />{" "}
-              visits
+              views
             </span>
           </p>
           <h1 className="display mt-8 max-w-3xl text-[clamp(2.6rem,11vw,5.5rem)] font-black leading-[0.95] tracking-tight text-paper [text-wrap:balance]">

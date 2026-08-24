@@ -27,6 +27,8 @@ export interface LeaderboardRow {
   remainingPercent: number;
   resetsAt: string | null;
   isYou: boolean;
+  /** Worst model-scoped weekly window (e.g. Claude's Fable limit): visible, never ranked. */
+  modelScoped?: { label: string; remainingPercent: number } | null;
 }
 
 export interface SubmissionSuccessV1 {

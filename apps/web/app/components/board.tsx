@@ -181,6 +181,11 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
                     <span className="block text-[10px] uppercase tracking-[0.14em] text-faint">
                       {row.plan ?? "plan unknown"}
                       {row.claimed ? "" : " · anon"}
+                      {row.modelScoped && (
+                        <span className={`ml-1.5 ${accent}`}>
+                          {row.modelScoped.label} {row.modelScoped.remainingPercent}%
+                        </span>
+                      )}
                     </span>
                   </span>
                 </span>

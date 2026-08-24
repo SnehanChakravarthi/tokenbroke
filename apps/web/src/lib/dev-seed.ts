@@ -72,11 +72,13 @@ export async function seedFictionalBoard(database: Database, now = new Date()): 
       ],
     );
   }
-  await database.query(
-    `insert into rate_buckets (scope, key_hash, bucket_start, count) values ('views-minute', 'home', $1, $2)
-     on conflict (scope, key_hash, bucket_start) do update set count = rate_buckets.count + excluded.count`,
-    [new Date(Math.floor(now.getTime() / 60_000) * 60_000), 2 + Math.floor(random() * 5)],
-  );
+  for (let v = 0; v < 4; v++) {
+    await database.query(
+      `insert into rate_buckets (scope, key_hash, bucket_start, count) values ('online', $1, $2, 1)
+       on conflict (scope, key_hash, bucket_start) do nothing`,
+      [`dev-visitor-${v}`, new Date(Math.floor(now.getTime() / 120_000) * 120_000)],
+    );
+  }
 
   let claimedRemaining = FICTIONAL_LOGINS.length;
   for (let index = 0; index < 46; index++) {
