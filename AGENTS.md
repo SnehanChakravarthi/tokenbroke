@@ -258,8 +258,7 @@ bun run readers        this machine's local readings as JSON (drain summarized; 
 (readers; shared contracts + scoring + signing; CLI identity/submit/hooks/board/stub server). All
 reviewed by Claude Code with Opus adversarial audits; see each RFC's Review section. 68 tests, E2E
 against the local stub passes, full manual run p50 82 ms. No DB schema, no web API, no site yet.
-**Note:** the owner's Codex weekly quota hit 100 % on 2026-08-23 (resets ~2026-08-27 19:17 UTC);
-Codex-side review/implementation is unavailable until then unless credits are purchased.
+Codex quota reset landed 2026-08-24 (reset #1 for the radar); Codex-side work available again.
 
 **Decided:** Neon + Drizzle. npm package `tokenbroke`. Biome + vitest + bun workspaces. Versioned API
 (`/api/v1/submissions`, `schemaVersion: 1`). Ed25519 device identity, one stream per key. Hook-driven
@@ -267,9 +266,11 @@ updates via native `Stop` hooks in both tools (Codex `hooks.json`, never `notify
 `--watch`. Structural window registry; misery = `hoursUntilReset × depletion³` with a 50 % floor;
 three-state freshness (fresh/stale/hidden); plan tier is a facet. Names assigned server-side.
 
+**Standing authority (2026-08-24):** Claude Code commits at milestones without asking. Pushing,
+remotes, and publishing still require an explicit owner ask.
+
 **Next:**
-1. RFC 004: Drizzle schema + web API (`/api/v1/submissions`, claim flow, GitHub OAuth) on Neon.
-   Second opinion from Codex when quota returns, or from an Opus agent in the adversarial role.
+1. RFC 004 (drafted) → Codex opinion → Decision → implement web API + schema on Neon.
 2. Board layout/voice polish (Claude Code + owner).
 3. Site after owner supplies design references.
 
