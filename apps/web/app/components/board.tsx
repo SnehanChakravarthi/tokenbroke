@@ -112,7 +112,7 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
         </p>
       </header>
 
-      <div className="relative grid grid-cols-2 gap-5 px-5 pb-5 pt-5">
+      <div className="relative grid gap-5 px-5 pb-5 pt-5 sm:grid-cols-2">
         <div>
           <p className="text-[10px] uppercase tracking-[0.2em] text-muted">days since reset</p>
           <div className="mt-2">

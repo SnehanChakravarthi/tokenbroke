@@ -76,7 +76,7 @@ export function TheLoop({
   };
   return (
     <div className="relative">
-      <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[1fr_auto_1fr_auto_1.2fr_auto_1.2fr] lg:items-start lg:gap-3">
+      <div className="grid gap-7 sm:grid-cols-2 sm:gap-8 lg:grid-cols-[1fr_auto_1fr_auto_1.2fr_auto_1.2fr] lg:items-start lg:gap-3">
         <Node step="01" label="run it">
           <p className="text-sm font-semibold text-paper">
             <span className="text-faint">$ </span>
