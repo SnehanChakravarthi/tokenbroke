@@ -5,10 +5,10 @@ import { movementStats } from "@/src/lib/movement";
 import { Board } from "./components/board";
 import { CopyCommand } from "./components/copy-command";
 import { SEVERITY_LABEL, severityFor } from "./components/format";
-import { Milestones, MovementCount, ResetLedger } from "./components/movement";
+import { MilestoneBar, TheLoop } from "./components/loop";
+import { MovementCount } from "./components/movement";
 import { DaysSince, PovertyMeter } from "./components/stat-blocks";
 import { Ticker } from "./components/ticker";
-import { TrustSteps } from "./components/trust-steps";
 
 export const dynamic = "force-dynamic";
 
@@ -58,78 +58,55 @@ export default async function Home() {
       </header>
 
       <main className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        {/* ACT I — recognition. This is about your Tuesday. */}
-        <section className="pt-14 sm:pt-20">
-          <h1 className="display max-w-3xl text-[clamp(2.4rem,10.5vw,4.5rem)] font-black leading-[0.95] tracking-tight text-paper sm:text-7xl">
-            ARE YOU
-            <br />
-            <span className="text-broke">TOKENBROKE?</span>
-          </h1>
-          <p className="mt-5 max-w-xl text-sm leading-relaxed text-dim sm:text-base">
-            You hit the limit mid-refactor. The countdown says four days. Your agent is asleep, your
-            branch is open, and somewhere a dashboard you'll never see knows exactly how many of us
-            are sitting here like this.
-          </p>
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-paper sm:text-base">
-            So we built the dashboard ourselves.
-          </p>
-        </section>
-
-        {/* ACT II — the movement. One number, its trajectory, and proof the loop closes. */}
-        <section className="mt-12 grid gap-10 lg:grid-cols-[1.2fr_1fr]" aria-label="The record">
-          <div>
-            <MovementCount stats={movement} />
-            <div className="mt-8 max-w-xl space-y-3 text-[13px] leading-relaxed text-dim">
-              <p>
-                Nobody publishes how rate-limited we actually are — the labs see the graphs, we see{" "}
-                <span className="text-paper">"come back Thursday."</span> So this is the public
-                record: real usage, read from real machines, filed by the people living it.
-              </p>
-              <p>
-                One dev out of tokens is a complaint.{" "}
-                <span className="text-paper">
-                  A thousand is a statistic. A hundred thousand is a negotiation.
-                </span>{" "}
-                Every row makes the number harder to ignore — and the number is the whole argument.
-                Resets happen when the pressure gets legible.{" "}
-                <span className="text-paper">We make it legible.</span>
-              </p>
-            </div>
-            <div className="mt-8">
-              <p className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted">
-                proof it works
-              </p>
-              <ResetLedger stats={movement} />
-            </div>
-          </div>
-          <div className="panel h-fit p-5">
-            <p className="mb-4 text-[11px] uppercase tracking-[0.22em] text-muted">
-              where this goes
-            </p>
-            <Milestones stats={movement} />
-          </div>
-        </section>
-
-        {/* ACT III — the ask. One command, trust handled. */}
-        <section className="panel mt-12 p-5 sm:p-7" aria-label="Join the record">
-          <div className="grid gap-6 lg:grid-cols-[auto_1fr] lg:items-start">
+        {/* Hero: the condition, the ask, and the mechanism — drawn, not written. */}
+        <section className="pt-12 sm:pt-16">
+          <div className="grid gap-8 lg:grid-cols-[1.05fr_1fr] lg:items-end">
             <div>
-              <p className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted">
-                add your row. this is the whole thing:
+              <h1 className="display max-w-3xl text-[clamp(2.4rem,10.5vw,4.5rem)] font-black leading-[0.95] tracking-tight text-paper sm:text-7xl">
+                ARE YOU
+                <br />
+                <span className="text-broke">TOKENBROKE?</span>
+              </h1>
+              <p className="mt-4 max-w-lg text-sm leading-relaxed text-dim sm:text-base">
+                Out of tokens with days on the clock? Nobody measures how rate-limited we are —
+                <span className="text-paper"> so we do.</span> Get on the record:
               </p>
-              <CopyCommand command={BRAND.cliCommand} />
-              <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-faint">
-                ~5 seconds · anonymous · open source · claim your row later if vanity wins
-              </p>
+              <div className="mt-6">
+                <CopyCommand command={BRAND.cliCommand} />
+              </div>
+              <ul className="mt-4 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.16em]">
+                {[
+                  "reads 2 numbers — never your code",
+                  "anonymous · no signup",
+                  "auto-updates: hooks install",
+                ].map((chip) => (
+                  <li key={chip} className="well px-2.5 py-1.5 text-muted">
+                    {chip}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <TrustSteps />
+            <div className="lg:pb-1">
+              <p className="mb-4 text-[11px] uppercase tracking-[0.22em] text-muted">
+                the record, growing
+              </p>
+              <MovementCount stats={movement} />
+              <div className="mt-7">
+                <MilestoneBar stats={movement} />
+              </div>
+            </div>
           </div>
+        </section>
+
+        {/* The loop: why one row matters. */}
+        <section className="mt-10" aria-label="How it works">
+          <TheLoop stats={movement} boards={boards} />
         </section>
 
         {/* ACT IV — the instruments and the dessert. */}
         <section
           aria-label="Aggregate state"
-          className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+          className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
         >
           <DaysSince board={codex} />
           <DaysSince board={claude} />
