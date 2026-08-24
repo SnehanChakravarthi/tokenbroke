@@ -1,0 +1,23 @@
+# deps
+node_modules/
+.bun/
+
+# builds
+.next/
+out/
+dist/
+*.tsbuildinfo
+.turbo/
+
+# env / secrets — never commit
+.env
+.env.*
+!.env.example
+
+# vercel
+.vercel/
+
+# misc
+.DS_Store
+*.log
+coverage/
