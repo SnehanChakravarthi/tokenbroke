@@ -269,10 +269,18 @@ three-state freshness (fresh/stale/hidden); plan tier is a facet. Names assigned
 **Standing authority (2026-08-24):** Claude Code commits at milestones without asking. Pushing,
 remotes, and publishing still require an explicit owner ask.
 
-**Next:**
-1. Claude Code reviews and commits the RFC 004 implementation.
-2. Board layout/voice polish (Claude Code + owner).
-3. Site after owner supplies design references.
+**Next (launch sequence, owner-confirmed direction):**
+1. Owner provisions: Neon project (pooled string), GitHub OAuth app, Vercel project + env
+   (DATABASE_URL, GITHUB_CLIENT_ID/SECRET, CLAIM_SECRET, ADMIN_TOKEN, APP_ORIGIN), region pinning.
+2. Preview deploy → run migrations → CLI E2E against the preview URL (TOKENBROKE_API_URL).
+3. Claim page styling in the site's design language (flow already works: GitHub OAuth + optional X
+   handle, tested against PGlite).
+4. OG cards (@vercel/og) + klaxon state.
+5. npm publish of `tokenbroke` (owner-triggered), domain to production, launch.
+Geo (future, foundation confirmed): coarse country/city from Vercel's x-vercel-ip-* headers at the
+API edge, stored as a nullable column at submission time; never from the CLI, never raw IPs. Not
+retroactive — history before the column stays geo-less. Requires a footer-disclosure update when it
+ships.
 
 **Open decisions (need owner sign-off):**
 - Misery constants (floor 50, exponent 3) are launch defaults to be calibrated on real data.
