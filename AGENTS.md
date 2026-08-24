@@ -270,7 +270,7 @@ three-state freshness (fresh/stale/hidden); plan tier is a facet. Names assigned
 remotes, and publishing still require an explicit owner ask.
 
 **Next:**
-1. RFC 004 (drafted) → Codex opinion → Decision → implement web API + schema on Neon.
+1. RFC 004 **decided** (see its §9) → Codex implements web API + schema; Claude Code reviews.
 2. Board layout/voice polish (Claude Code + owner).
 3. Site after owner supplies design references.
 

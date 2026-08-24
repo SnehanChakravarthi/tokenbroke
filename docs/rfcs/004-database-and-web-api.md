@@ -1,6 +1,6 @@
 # RFC 004 — Neon schema, submissions API, and the claim flow
 
-- Status: **Draft, awaiting Codex opinion** (`004-database-and-web-api.codex.md`)
+- Status: **Decided 2026-08-24** (see §9; Codex opinion in `004-database-and-web-api.codex.md`)
 - Author: Claude Code (Fable 5), 2026-08-24
 - Depends on: RFC 002 §9 (contract), RFC 003 §8 (scoring/freshness). The stub server
   (`packages/cli/scripts/stub-server.ts`) is the behavioral reference the real API must match,
@@ -136,4 +136,72 @@ env + `.env.local`, never committed. Drizzle migrations in `apps/web/drizzle/` v
 
 ## 9. Decision
 
-_Pending reconciliation with `004-database-and-web-api.codex.md`._
+Codex's review is accepted on every substantive point. §2–§6 are superseded as follows; where this
+section is silent, the draft stands.
+
+### 9.1 Schema (replaces §2's contested parts)
+- `submissions` stores **`raw_body bytea` + `signature text`** (the exact signed bytes), plus parsed
+  metadata columns (`device_id, received_at, submitted_at, trigger, schema_version, cli_version,
+  platform_os, nonce unique`). Immutable once accepted; not prunable in v1. No `payload jsonb`.
+- **No authoritative stored `misery`.** `tool_states` keeps the full current reading (windows JSONB,
+  observed/source times, plan, registry_version) — score is computed at read time with one `now`.
+  The `(tool, misery desc)` index is dropped.
+- `window_obs` → **`snapshot_obs`**: one row per submitted window per submission, keyed
+  `(device_id, tool, series_id, observed_at)`, carrying `submission_id fk`, `source = 'snapshot'`,
+  `used_percent, resets_at, window_minutes, raw_kind, scope, plan_raw, cli_version, registry_version`.
+  **Client drain is NOT normalized in v1** — it lives in the signed raw bodies; Phase 2 backfills a
+  partitioned drain table from them if anomaly work needs it.
+- `anonymous_name` stays unique; on collision the server retries, then widens the numeric suffix
+  (server-side extension of the shared generator's range). Revisit the 92k ceiling at ~50k devices.
+- `claim_codes` stores a **keyed digest** (HMAC with `CLAIM_SECRET`) of the code, not plaintext;
+  index `(device_id, expires_at)`.
+- `devices` gains `stable_hash` (for the rank tie-break) computed once at insert.
+
+### 9.2 Validation & write path (replaces §3)
+Order: body size cap (2 MiB) → syntactic parse with bounded key extraction → **exact-byte signature
+verify + `deviceIdFor` check** → `schemaVersion` → full shape validation via a new dep-free
+`validateSubmissionV1()` in `shared` (bounds every string/array/number: finite percentages 0–100,
+timestamp parseability, ≤ 2,000 drain samples total, seriesId consistency; **reject, never truncate**)
+→ skew (finite, ±10 min). The stub is refactored to this same order and module; rejection reasons
+keep RFC 002 §9.3's enum.
+
+Then **one pooled-`pg` transaction**: create-or-lock device row (`SELECT … FOR UPDATE`; key mismatch
+→ `signature`) → insert raw submission (nonce unique → `replay`) → claim `rate_buckets` via atomic
+conditional upsert (device-key quota 20/h primary; coarse IP abuse goes to Vercel WAF, no 60/h IP
+rule) → insert `snapshot_obs` → **monotonic per-tool upsert** of `tool_states` (only if incoming
+`observedAt` is strictly newer; equal → deterministic tie on submission nonce; never regress source
+time) → issue-or-reuse claim code (serialized by the device row lock) →
+`last_submitted_at = greatest(existing, incoming)` → commit. A rejection at any step rolls back
+everything including the raw insert and rate increments. Rank/neighbors/aggregates are computed
+**after commit**.
+
+### 9.3 Read path (replaces Q3's contested part)
+Launch: SQL filters `tool_states` to `observed_at > now() − 24 h`, selects minimal fields, shared
+TypeScript computes freshness + misery + order at one query-time `now`, result cached 30 s per tool.
+Operational budgets for moving rank into SQL: > ~10k active rows per tool, > ~5 MB cache fill, or
+> 250 ms rebuild p95 — metrics recorded from day one. The "collectively" median is defined as the
+tool's **weekly (7d) ranked band** series; documented in the response contract comment.
+
+### 9.4 Claim flow (tightens §5)
+Hand-rolled GitHub OAuth stays, with: mandatory high-entropy `state` **and S256 PKCE**; **no OAuth
+scopes** (public profile is enough); one HttpOnly/Secure/SameSite=Lax authenticated cookie carrying
+`{state, verifier, codeDigest, deviceId, redirectUri, iat, exp}`, HMAC-signed with `CLAIM_SECRET`,
+deleted on every callback outcome; the **X handle is collected on the claim page before OAuth** and
+travels in that cookie; code consumption + account/device binding is one transaction; the GitHub
+token is used once for `GET /user` and discarded; never log code/verifier/token/cookie.
+
+### 9.5 Infrastructure
+Pooled **`pg`** with a global Pool + Vercel `attachDatabasePool`, Neon **pooled** connection string,
+function pinned to Neon's region. The HTTP driver is not used in v1. Tests run against **PGlite**
+(in-process Postgres; dev-dependency of `apps/web` only) with the same Drizzle schema and
+migrations; SQL stays portable. Rate limiting: `rate_buckets(scope, key_hash, bucket_start, count)`
+with atomic conditional upsert inside the write transaction; claim-code attempts get per-IP and
+per-code buckets on the claim routes.
+
+### 9.6 Scope notes
+- "The stub is the spec" narrows to: **shared validation module, shared response contract
+  (structural, not key order), shared E2E expectations.** Concurrency, transactions, rate limiting,
+  and OAuth are tested against the real API with database-level concurrency tests (two racing
+  submissions, same-device claim-code race, nonce race).
+- Neon provisioning and Vercel env setup are owner actions at deploy time; the implementation must be
+  fully runnable and testable locally (PGlite) without any cloud account.
