@@ -2,12 +2,11 @@ import { BRAND } from "@tokenbroke/shared";
 import { siteDatabase } from "@/src/lib/dev-db";
 import { getPublicLeaderboard } from "@/src/lib/leaderboard";
 import { movementStats } from "@/src/lib/movement";
-import { Board } from "./components/board";
+import { LabUniverse } from "./components/board";
 import { CopyCommand } from "./components/copy-command";
 import { SEVERITY_LABEL, severityFor } from "./components/format";
 import { MilestoneBar, TheLoop } from "./components/loop";
 import { MovementCount } from "./components/movement";
-import { DaysSince, PovertyMeter } from "./components/stat-blocks";
 import { ThemeToggle } from "./components/theme-toggle";
 import { Ticker } from "./components/ticker";
 
@@ -107,20 +106,9 @@ export default async function Home() {
           <TheLoop stats={movement} boards={boards} />
         </section>
 
-        {/* ACT IV — the instruments and the dessert. */}
-        <section
-          aria-label="Aggregate state"
-          className="fade-up fade-up-3 mt-12 grid gap-y-6 border-y border-line-soft py-5 sm:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-line-soft"
-        >
-          <DaysSince board={codex} />
-          <DaysSince board={claude} />
-          <PovertyMeter board={codex} />
-          <PovertyMeter board={claude} />
-        </section>
-
-        <section className="fade-up fade-up-4 mt-10 grid items-start gap-3 lg:grid-cols-2">
-          <Board board={codex} now={now} />
-          <Board board={claude} now={now} />
+        <section className="fade-up fade-up-3 mt-14 grid items-start gap-5 lg:grid-cols-2">
+          <LabUniverse board={codex} now={now} />
+          <LabUniverse board={claude} now={now} />
         </section>
       </main>
 
