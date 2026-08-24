@@ -89,6 +89,25 @@ async function askOnStdin(question: string): Promise<string> {
   }
 }
 
+/** A tiny status line while readers and the network do their seconds of work. */
+function startSpinner(text: string): () => void {
+  if (!process.stdout.isTTY) {
+    console.log(text);
+    return () => {};
+  }
+  const frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+  let frame = 0;
+  process.stdout.write(`\u001b[?25l  ${frames[0]} ${text}`);
+  const timer = setInterval(() => {
+    frame = (frame + 1) % frames.length;
+    process.stdout.write(`\r  ${frames[frame]} ${text}`);
+  }, 90);
+  return () => {
+    clearInterval(timer);
+    process.stdout.write(`\r\u001b[2K\u001b[?25h`);
+  };
+}
+
 function openInBrowser(url: string): void {
   const [command, args] =
     process.platform === "darwin"
@@ -106,12 +125,12 @@ function openInBrowser(url: string): void {
 export async function maybeOfferClaim(
   response: SubmissionSuccessV1,
   options: HooksOfferOptions = {},
-): Promise<void> {
+): Promise<boolean> {
   const interactive = options.interactive ?? process.stdout.isTTY === true;
-  if (!interactive || response.identity.claimed || !response.claim) return;
+  if (!interactive || response.identity.claimed || !response.claim) return false;
   const paths = options.paths ?? tokenbrokePaths();
   const config = await loadConfig(paths);
-  if (config.claimPrompted) return;
+  if (config.claimPrompted) return false;
   const ask = options.ask ?? askOnStdin;
   const answer = (await ask(COPY.claimOffer(response.claim.url))).trim().toLowerCase();
   config.claimPrompted = true;
@@ -122,6 +141,7 @@ export async function maybeOfferClaim(
   } else {
     console.log(COPY.claimLater);
   }
+  return true;
 }
 
 export async function maybeOfferHooks(
@@ -193,7 +213,10 @@ async function manualCommand(args: string[], scriptPath: string): Promise<number
     return usage();
   }
 
+  const interactive = !json && !dryRun;
+  const stopReading = interactive ? startSpinner(COPY.reading) : () => {};
   const readings = await readAll();
+  stopReading();
   const tools = detectedTools(readings);
   if (dryRun) {
     // A rehearsal must not claim a row: the keypair lives and dies inside this process.
@@ -213,12 +236,15 @@ async function manualCommand(args: string[], scriptPath: string): Promise<number
     return 2;
   }
 
+  const stopSubmitting = interactive ? startSpinner(COPY.submitting) : () => {};
   let result: Awaited<ReturnType<typeof submitReadings>>;
   try {
     result = await submitReadings(readings);
   } catch (error) {
+    stopSubmitting();
     return reportFailure(error);
   }
+  stopSubmitting();
   if (json) {
     console.log(canonicalJson({ response: result.response, readings }));
   } else if (!result.response.ok) {
@@ -232,7 +258,12 @@ async function manualCommand(args: string[], scriptPath: string): Promise<number
   if (await pathExists(paths.bundledCli)) {
     await refreshBundledCli(scriptPath, paths, CLI_VERSION, true);
   }
-  if (!json) await maybeOfferClaim(result.response);
+  if (!json) {
+    const offered = await maybeOfferClaim(result.response);
+    if (!offered && !result.response.identity.claimed && result.response.claim) {
+      console.log(COPY.claimLine(result.response.claim.url));
+    }
+  }
   if (!json && !noHooksPrompt) await maybeOfferHooks(readings, scriptPath);
   return 0;
 }

@@ -2,57 +2,53 @@
 
 exports[`renderBoard > renders top rows, neighbors, server roast, collective state, and claim 1`] = `
 "
-─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ 8< ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ 
-        ▀█▀ █▀█ █▄▀ █▀▀ █▄░█ █▄▄ █▀█ █▀█ █▄▀ █▀▀
-        ░█░ █▄█ █░█ ██▄ █░▀█ █▄█ █▀▄ █▄█ █░█ ██▄
-              t o k e n b r o k e . l o l
-························································
-  OFFERING RECEIPT ···························· № device
-  FILED BY ···························· starving-crab-42
-  DATE ································ 2026-08-23 12:00
-························································
-  CLAUDE CODE · Max 5x
-  5h        ░░░░░░░░░░   2% ························· 4h
-
-    #1 starving-crab-1 [anon]       1%     1h
-    #2 tokenless-newt-2             2%     2h
-    #3 broke-moth-3 [anon]          3%     3h
-    #4 capped-vole-4                4%     4h
-    #5 starving-crab-42 [anon]      5%     5h ◀ you
-    #6 idle-toad-6                  6%     6h
-
-             ┌───────────────────────────┐
-             │ #5 BROKEST ON CLAUDE CODE │
-             └───────────────────────────┘
-You are the 5th brokest developer alive. Charity declined.
-························································
-  CODEX · Plus
-  5h        ░░░░░░░░░░   4% ························· 3h
-
-    #1 drained-newt-1 [anon]        1%     1h
-    #2 starving-crab-42             2%     2h ◀ you
-    #3 busted-mole-3 [anon]         3%     3h
-
-                ┌─────────────────────┐
-                │ #2 BROKEST ON CODEX │
-                └─────────────────────┘
-You are the 2nd brokest developer alive. Charity declined.
-························································
-  THE RECORD
-  devs on the record ······························ 4218
-  claude code median ················· 9% · reset 2d ago
-  codex median ······················ 12% · no reset yet
-························································
-  CLAIM THIS ROW ················ optional · ~30 seconds
-  you're anonymous. a github login puts your name
-  & avatar on this row — nothing else changes:
-  → https://tokenbroke.lol/claim/ABCD-1234
-························································
-             one small command for a dev —
-              one giant leap for devkind.
-
-                █▊▍█ ▏ ▊█▊▍█ ▏ ▊█▊▍█ ▏ ▊
-                    starving-crab-42
-─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ 8< ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ 
+╭╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌ 8< ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╮
+│        ▀█▀ █▀█ █▄▀ █▀▀ █▄░█ █▄▄ █▀█ █▀█ █▄▀ █▀▀        │
+│        ░█░ █▄█ █░█ ██▄ █░▀█ █▄█ █▀▄ █▄█ █░█ ██▄        │
+│              t o k e n b r o k e . l o l               │
+│              thank you for your offering               │
+│ ······················································ │
+│   OFFERING RECEIPT ·························· № device │
+│   FILED BY ·························· starving-crab-42 │
+│   DATE ······························ 2026-08-23 12:00 │
+│ ······················································ │
+│   CLAUDE CODE · Max 5x                                 │
+│   5h        ░░░░░░░░░░   2% ······················· 4h │
+│                                                        │
+│     #1 starving-crab-1 [anon]       1%     1h          │
+│     #2 tokenless-newt-2             2%     2h          │
+│     #3 broke-moth-3 [anon]          3%     3h          │
+│     #4 capped-vole-4                4%     4h          │
+│     #5 starving-crab-42 [anon]      5%     5h ◀ you    │
+│     #6 idle-toad-6                  6%     6h          │
+│                                                        │
+│             ┌───────────────────────────┐              │
+│             │ #5 BROKEST ON CLAUDE CODE │              │
+│             └───────────────────────────┘              │
+│ You are the 5th brokest developer alive. Charity declined. │
+│ ······················································ │
+│   CODEX · Plus                                         │
+│   5h        ░░░░░░░░░░   4% ······················· 3h │
+│                                                        │
+│     #1 drained-newt-1 [anon]        1%     1h          │
+│     #2 starving-crab-42             2%     2h ◀ you    │
+│     #3 busted-mole-3 [anon]         3%     3h          │
+│                                                        │
+│                ┌─────────────────────┐                 │
+│                │ #2 BROKEST ON CODEX │                 │
+│                └─────────────────────┘                 │
+│ You are the 2nd brokest developer alive. Charity declined. │
+│ ······················································ │
+│   THE RECORD                                           │
+│   devs on the record ···························· 4218 │
+│   claude code median ··············· 9% · reset 2d ago │
+│   codex median ···················· 12% · no reset yet │
+│ ······················································ │
+│             one small command for a dev —              │
+│              one giant leap for devkind.               │
+│                                                        │
+│                █▊▍█ ▏ ▊█▊▍█ ▏ ▊█▊▍█ ▏ ▊                │
+│                    starving-crab-42                    │
+╰╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌ 8< ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╯
 "
 `;

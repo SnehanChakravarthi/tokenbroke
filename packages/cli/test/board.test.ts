@@ -15,7 +15,8 @@ describe("renderBoard", () => {
     const output = renderBoard(successResponse(), localReadings());
     expect(output).toMatchSnapshot();
     expect(output).toContain(COPY.youMarker);
-    expect(output).toContain(`${BRAND.domain}/claim/ABCD-1234`);
+    // The claim link lives in the post-receipt prompt now, not on the paper itself.
+    expect(output).not.toContain(`${BRAND.domain}/claim/ABCD-1234`);
     for (const line of output.split("\n")) expect(line.length).toBeLessThanOrEqual(80);
   });
 

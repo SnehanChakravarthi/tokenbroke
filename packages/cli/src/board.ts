@@ -185,7 +185,8 @@ function readingFor(readings: LocalReadings, tool: ToolId): ToolReading | null {
 
 /* ---------- The offering receipt ---------- */
 
-const W = 56;
+const W = 58;
+const INNER = W - 4;
 
 const PIXEL_WORDMARK = [
   "▀█▀ █▀█ █▄▀ █▀▀ █▄░█ █▄▄ █▀█ █▀█ █▄▀ █▀▀",
@@ -214,17 +215,28 @@ function stripAnsi(value: string): string {
 }
 
 function center(value: string): string {
-  const pad = Math.max(0, Math.floor((W - stripAnsi(value).length) / 2));
+  const pad = Math.max(0, Math.floor((INNER - stripAnsi(value).length) / 2));
   return " ".repeat(pad) + value;
 }
 
-function tear(): string {
-  const side = "─ ".repeat(Math.floor((W - 4) / 4));
-  return paint(`${side}8< ${side}`.slice(0, W), "dim");
+function frameTop(): string {
+  const side = "╌".repeat(Math.floor((W - 6) / 2));
+  return paint(`╭${side} 8< ${side}`.slice(0, W - 1) + "╮", "dim");
+}
+
+function frameBottom(): string {
+  const side = "╌".repeat(Math.floor((W - 6) / 2));
+  return paint(`╰${side} 8< ${side}`.slice(0, W - 1) + "╯", "dim");
+}
+
+/** Contain a rendered line inside the paper's vertical edges. */
+function framed(line: string): string {
+  const pad = Math.max(0, W - 4 - stripAnsi(line).length);
+  return `${paint("│", "dim")} ${line}${" ".repeat(pad)} ${paint("│", "dim")}`;
 }
 
 function dots(): string {
-  return paint("·".repeat(W), "dim");
+  return paint("·".repeat(INNER), "dim");
 }
 
 function kv(label: string, value: string): string {
@@ -233,7 +245,7 @@ function kv(label: string, value: string): string {
 
 /** Receipt justification: label left, value right, dot leaders between. */
 function just(left: string, right: string): string {
-  const gap = W - stripAnsi(left).length - stripAnsi(right).length - 4;
+  const gap = INNER - stripAnsi(left).length - stripAnsi(right).length - 4;
   const leaders = paint(` ${"·".repeat(Math.max(1, gap))} `, "dim");
   return `  ${left}${leaders}${right}`;
 }
@@ -246,7 +258,7 @@ function barcode(deviceId: string): string {
     bars += GLYPHS[char.charCodeAt(0) % GLYPHS.length];
     if (char.charCodeAt(0) % 3 === 0) bars += " ";
   }
-  return center(paint(bars.slice(0, W - 8), "bold"));
+  return center(paint(bars.slice(0, INNER - 4), "bold"));
 }
 
 function severityTone(remaining: number): Tone {
@@ -283,9 +295,10 @@ function stamp(text: string, tone: Tone): string[] {
 
 export function renderBoard(response: SubmissionSuccessV1, readings: LocalReadings): string {
   const now = new Date();
-  const lines: string[] = ["", tear()];
+  const lines: string[] = [];
   for (const row of PIXEL_WORDMARK) lines.push(center(paint(row, "red")));
-  lines.push(center(paint("t o k e n b r o k e . l o l", "dim")), dots());
+  lines.push(center(paint("t o k e n b r o k e . l o l", "dim")));
+  lines.push(center(paint("thank you for your offering", "dim")), dots());
 
   lines.push(
     just(
@@ -370,20 +383,14 @@ export function renderBoard(response: SubmissionSuccessV1, readings: LocalReadin
     );
   }
 
-  lines.push(dots());
   if (response.identity.claimed) {
-    lines.push(`  ${COPY.claimed(response.identity.claimed.githubLogin)}`);
-  } else if (response.claim) {
-    lines.push(just(paint("CLAIM THIS ROW", "bold"), paint("optional · ~30 seconds", "dim")));
-    lines.push(`  ${paint("you're anonymous. a github login puts your name", "dim")}`);
-    lines.push(`  ${paint("& avatar on this row — nothing else changes:", "dim")}`);
-    lines.push(`  → ${paint(response.claim.url, "bold")}`);
+    lines.push(dots());
+    lines.push(center(paint(COPY.claimed(response.identity.claimed.githubLogin), "bold")));
   }
   lines.push(dots());
   lines.push(center(paint("one small command for a dev —", "dim")));
   lines.push(center(paint("one giant leap for devkind.", "bold")));
   lines.push("", barcode(response.identity.deviceId));
   lines.push(center(paint(response.identity.anonymousName, "dim")));
-  lines.push(tear(), "");
-  return lines.join("\n");
+  return ["", frameTop(), ...lines.map(framed), frameBottom(), ""].join("\n");
 }

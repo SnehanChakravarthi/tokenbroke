@@ -6,8 +6,8 @@ import { BRAND, claimUrl } from "@tokenbroke/shared";
 
 export const COPY = {
   header: `${BRAND.name} — are you ${BRAND.name}? prove it.`,
-  reading: "reading local usage state…",
-  submitting: "filing your offering…",
+  reading: "reading your local usage state…",
+  submitting: "filing your offering with the record…",
 
   boardTitle: (toolLabel: string): string =>
     `${toolLabel.toUpperCase()} · MOST RATE-LIMITED DEVELOPERS ALIVE`,
@@ -65,14 +65,19 @@ export const COPY = {
       `no other flags. that's the whole surface.`,
     ].join("\n"),
 
+  claimLine: (url: string): string => `claim your row (github, ~30s): ${url}`,
   claimOffer: (url: string): string =>
     [
       "",
       "  ┌─────────────────────────────────────────────┐",
-      "  │  this row is anonymous. claim it?           │",
-      "  │  github login → your name & avatar on the   │",
-      "  │  public board. ~30 seconds. nothing else    │",
-      "  │  changes. vanity is free — rank is earned.  │",
+      "  │  one favor: claim your row?                 │",
+      "  │                                             │",
+      "  │  it's anonymous right now. a github login   │",
+      "  │  (~30s) puts your name & avatar on the      │",
+      "  │  public board — and honestly, the record    │",
+      "  │  hits harder with real faces on it.         │",
+      "  │  nothing else changes. we'd love to have    │",
+      "  │  you on it properly.                        │",
       "  └─────────────────────────────────────────────┘",
       `  ${url}`,
       "  open in browser? [Y/n] ",
