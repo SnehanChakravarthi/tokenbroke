@@ -1,26 +1,102 @@
 @import "tailwindcss";
 
+@theme {
+  /* Warm near-black console. Statuspage severity language, played straight. */
+  --color-ink: #0c0a07;
+  --color-panel: #131009;
+  --color-panel-2: #1a160d;
+  --color-line: #2b2413;
+  --color-line-soft: #201b0e;
+  --color-paper: #ece4d0;
+  --color-dim: #9d927a;
+  --color-muted: #8d8368;
+  --color-faint: #5c553f;
+  --color-ok: #4bc97b;
+  --color-warn: #e5a33c;
+  --color-broke: #ff5c33;
+  --color-ember: #ff8952;
+
+  --font-display: var(--font-archivo);
+  --font-mono: var(--font-plex-mono);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Faint phosphor scanlines + vignette: atmosphere, not costume. */
+.console-surface {
+  position: relative;
+  isolation: isolate;
+  min-height: 100%;
+}
+.console-surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 137, 82, 0.07), transparent 55%),
+    repeating-linear-gradient(0deg, rgba(236, 228, 208, 0.022) 0 1px, transparent 1px 3px);
+  pointer-events: none;
+}
+
+.display {
+  font-family: var(--font-archivo), "Archivo", system-ui, sans-serif;
+}
+
+/* Blinking record dot */
+@keyframes pip {
+  0%,
+  60% {
+    opacity: 1;
+  }
+  61%,
+  100% {
+    opacity: 0.25;
+  }
+}
+.pip {
+  animation: pip 1.6s steps(1) infinite;
+}
+
+/* Ticker */
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.ticker-track {
+  animation: ticker-scroll 42s linear infinite;
+}
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+  }
+  .pip {
+    animation: none;
+  }
+}
+
+/* Depletion bar cells, drawn with a hard gradient so they read as segments, not a progress bar. */
+.meter-cells {
+  background-image: repeating-linear-gradient(90deg, currentColor 0 6px, transparent 6px 9px);
+}
+
+::selection {
+  background: var(--color-broke);
+  color: var(--color-ink);
 }
