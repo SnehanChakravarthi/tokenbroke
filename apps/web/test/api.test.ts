@@ -486,12 +486,19 @@ describe("claim flow", () => {
     expect(callback.headers.get("set-cookie")).toContain("Max-Age=0");
   });
 
-  it("binds once, carries the X handle, discards the token, and rejects cookie replay", async () => {
+  it("binds once, imports the verified X handle from GitHub socials, discards the token, and rejects cookie replay", async () => {
     const { cookie, state } = await startedClaim();
     const fetchMock = vi.fn(async (input: string | URL | Request) => {
       const url = String(input);
       if (url.includes("access_token")) {
         return Response.json({ access_token: "one-use-token" });
+      }
+      if (url.includes("social_accounts")) {
+        // The X handle now comes verified from the user's own GitHub profile.
+        return Response.json([
+          { provider: "generic", url: "https://example.com/blog" },
+          { provider: "twitter", url: "https://x.com/token_user" },
+        ]);
       }
       return Response.json({
         id: 12345,
@@ -509,7 +516,7 @@ describe("claim flow", () => {
     );
     expect(first.status).toBe(200);
     expect(first.headers.get("set-cookie")).toContain("Max-Age=0");
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
     expect(
       await database.query("select 1 from accounts where x_handle = 'token_user'"),
     ).toMatchObject({
@@ -523,7 +530,7 @@ describe("claim flow", () => {
     );
     expect(replay.status).toBe(400);
     expect(replay.headers.get("set-cookie")).toContain("Max-Age=0");
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 });
 

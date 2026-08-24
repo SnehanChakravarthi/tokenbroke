@@ -65,6 +65,20 @@ export const COPY = {
       `no other flags. that's the whole surface.`,
     ].join("\n"),
 
+  claimOffer: (url: string): string =>
+    [
+      "",
+      "  ┌─────────────────────────────────────────────┐",
+      "  │  this row is anonymous. claim it?           │",
+      "  │  github login → your name & avatar on the   │",
+      "  │  public board. ~30 seconds. nothing else    │",
+      "  │  changes. vanity is free — rank is earned.  │",
+      "  └─────────────────────────────────────────────┘",
+      `  ${url}`,
+      "  open in browser? [Y/n] ",
+    ].join("\n"),
+  claimOpening: "opening… sign in with github and you're on the board by name.",
+  claimLater: "no worries. the link is on your receipt whenever vanity wins.",
   hooksOffer: (tools: string[]): string =>
     [
       `keep your row fresh automatically?`,

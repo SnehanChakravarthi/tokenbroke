@@ -1,8 +1,9 @@
+import { spawn } from "node:child_process";
 import { realpathSync } from "node:fs";
 import { resolve } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { pathToFileURL } from "node:url";
-import type { LocalReadings, ToolId } from "@tokenbroke/shared";
+import type { LocalReadings, SubmissionSuccessV1, ToolId } from "@tokenbroke/shared";
 import { canonicalJson } from "@tokenbroke/shared/node/signing";
 import { renderBoard, renderDryRun } from "./board";
 import { COPY, TOOL_LABELS } from "./copy";
@@ -85,6 +86,41 @@ async function askOnStdin(question: string): Promise<string> {
     return await terminal.question(question);
   } finally {
     terminal.close();
+  }
+}
+
+function openInBrowser(url: string): void {
+  const [command, args] =
+    process.platform === "darwin"
+      ? ["open", [url]]
+      : process.platform === "win32"
+        ? ["cmd", ["/c", "start", "", url]]
+        : ["xdg-open", [url]];
+  try {
+    spawn(command, args, { detached: true, stdio: "ignore" }).unref();
+  } catch {
+    // The URL is printed either way; a missing opener is not an error worth surfacing.
+  }
+}
+
+export async function maybeOfferClaim(
+  response: SubmissionSuccessV1,
+  options: HooksOfferOptions = {},
+): Promise<void> {
+  const interactive = options.interactive ?? process.stdout.isTTY === true;
+  if (!interactive || response.identity.claimed || !response.claim) return;
+  const paths = options.paths ?? tokenbrokePaths();
+  const config = await loadConfig(paths);
+  if (config.claimPrompted) return;
+  const ask = options.ask ?? askOnStdin;
+  const answer = (await ask(COPY.claimOffer(response.claim.url))).trim().toLowerCase();
+  config.claimPrompted = true;
+  await saveConfig(config, paths);
+  if (answer === "" || answer === "y" || answer === "yes") {
+    console.log(COPY.claimOpening);
+    openInBrowser(response.claim.url);
+  } else {
+    console.log(COPY.claimLater);
   }
 }
 
@@ -196,6 +232,7 @@ async function manualCommand(args: string[], scriptPath: string): Promise<number
   if (await pathExists(paths.bundledCli)) {
     await refreshBundledCli(scriptPath, paths, CLI_VERSION, true);
   }
+  if (!json) await maybeOfferClaim(result.response);
   if (!json && !noHooksPrompt) await maybeOfferHooks(readings, scriptPath);
   return 0;
 }

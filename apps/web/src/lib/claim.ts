@@ -31,6 +31,8 @@ interface GitHubUser {
   login: string;
   avatarUrl: string;
   createdAt: Date;
+  /** X handle read from the user's own GitHub social accounts — verified by ownership, never typed. */
+  xHandle: string | null;
 }
 
 interface ClaimCodeRow {
@@ -414,7 +416,7 @@ function githubUser(value: unknown): GitHubUser | null {
   ) {
     return null;
   }
-  return { id, login, avatarUrl, createdAt: new Date(createdAt) };
+  return { id, login, avatarUrl, createdAt: new Date(createdAt), xHandle: null };
 }
 
 async function exchangeGitHub(
@@ -451,7 +453,37 @@ async function exchangeGitHub(
       "x-github-api-version": "2022-11-28",
     },
   });
-  return profile.ok ? githubUser((await profile.json()) as unknown) : null;
+  const user = profile.ok ? githubUser((await profile.json()) as unknown) : null;
+  if (!user) return null;
+  // Verified X handle: whatever the user themselves lists on their GitHub profile.
+  try {
+    const socials = await fetchImpl("https://api.github.com/user/social_accounts", {
+      headers: {
+        accept: "application/vnd.github+json",
+        authorization: `Bearer ${token}`,
+        "user-agent": BRAND.name,
+        "x-github-api-version": "2022-11-28",
+      },
+    });
+    if (socials.ok) user.xHandle = xHandleFromSocialAccounts((await socials.json()) as unknown);
+  } catch {
+    // Social accounts are a bonus; a claim never fails over them.
+  }
+  return user;
+}
+
+function xHandleFromSocialAccounts(value: unknown): string | null {
+  if (!Array.isArray(value)) return null;
+  for (const entry of value) {
+    if (typeof entry !== "object" || entry === null) continue;
+    const url = Object.getOwnPropertyDescriptor(entry, "url")?.value;
+    if (typeof url !== "string") continue;
+    const match = url.match(
+      /^https:\/\/(?:www\.)?(?:twitter\.com|x\.com)\/([A-Za-z0-9_]{1,15})\/?$/,
+    );
+    if (match?.[1]) return match[1];
+  }
+  return null;
 }
 
 async function bindClaim(
@@ -499,7 +531,7 @@ async function bindClaim(
          github_created_at = excluded.github_created_at,
          x_handle = coalesce(excluded.x_handle, accounts.x_handle)
        returning id`,
-        [user.id, user.login, user.avatarUrl, user.createdAt, pending.xHandle],
+        [user.id, user.login, user.avatarUrl, user.createdAt, user.xHandle],
       );
       const accountId = account.rows[0]?.id;
       if (!accountId) throw new ClaimBindRejection();

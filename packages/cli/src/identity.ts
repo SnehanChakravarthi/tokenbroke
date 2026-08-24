@@ -47,6 +47,7 @@ export interface TokenbrokeConfig {
   anonymousName?: string;
   claimCode?: string;
   hooksPrompted?: boolean;
+  claimPrompted?: boolean;
   hookBundleVersion?: string;
   hookInstalls?: Partial<Record<ToolId, HookInstallRecord>>;
 }
