@@ -53,7 +53,8 @@ export function PovertyMeter({ board }: { board: PublicLeaderboardV1 }) {
   const median = board.global.medianRemainingPercent;
   const severity = severityFor(median);
   const value = median === null ? 0 : Math.max(0, Math.min(100, median));
-  const tone = severity === "broke" ? "text-broke" : severity === "warn" ? "text-warn" : "text-ok";
+  const fillTone =
+    severity === "broke" ? "text-broke" : severity === "warn" ? "text-warn" : "text-ok";
   return (
     <div className="px-1 py-2 sm:px-5">
       <p className="min-h-[2.6rem] text-[11px] uppercase tracking-[0.22em] text-muted">
@@ -61,16 +62,16 @@ export function PovertyMeter({ board }: { board: PublicLeaderboardV1 }) {
         of us
       </p>
       <div>
-        <p className={`display text-3xl font-black tabular-nums sm:text-4xl ${tone}`}>
+        <p className="display text-3xl font-black tabular-nums text-paper sm:text-4xl">
           {median === null ? "—" : `${Math.round(median * 10) / 10}%`}
         </p>
         <div
-          className="relative mt-3 h-3 border border-line bg-ink"
+          className="well relative mt-3 h-3.5 overflow-hidden"
           role="img"
           aria-label={`Tokens left across everyone: ${median ?? "unknown"} percent; below 10 percent is broke`}
         >
           <div
-            className={`meter-cells absolute inset-y-[2px] left-[2px] rounded-[5px] ${tone}`}
+            className={`meter-cells absolute inset-y-[2px] left-[2px] rounded-[5px] ${fillTone}`}
             style={{ width: `${value}%` }}
           />
           <div className="absolute inset-y-[-4px] left-[10%] w-px bg-broke" />

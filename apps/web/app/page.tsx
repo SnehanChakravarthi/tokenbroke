@@ -33,10 +33,10 @@ export default async function Home() {
     );
   const bannerTone =
     worst === "broke"
-      ? "bg-broke text-ink"
+      ? "text-broke bg-broke/10"
       : worst === "warn"
-        ? "bg-warn text-ink"
-        : "bg-ok/90 text-ink";
+        ? "text-warn bg-warn/10"
+        : "text-ok bg-ok/10";
 
   const glow =
     worst === "broke"
@@ -49,17 +49,15 @@ export default async function Home() {
     <div className="min-h-screen" style={{ "--glow-color": glow } as React.CSSProperties}>
       <div className="px-2 pt-2 sm:px-3 sm:pt-3">
         <div
-          className={`rounded-lg px-4 py-1.5 text-center text-[11px] font-bold uppercase tracking-[0.28em] shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_6px_16px_-10px_rgba(0,0,0,0.9)] ${bannerTone}`}
+          className={`flex items-center justify-center gap-2 rounded-lg px-4 py-1.5 text-center text-[11px] font-bold uppercase tracking-[0.28em] ${bannerTone}`}
         >
+          <span className="pip inline-block size-1.5 rounded-full bg-current" aria-hidden />
           token availability: {SEVERITY_LABEL[worst]}
         </div>
       </div>
 
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 pt-5 sm:px-6">
-        <p className="display text-lg font-black tracking-tight text-paper">
-          {BRAND.name}
-          <span className="text-broke">_</span>
-        </p>
+        <p className="display text-lg font-black tracking-tight text-paper">{BRAND.name}</p>
         <div className="flex items-center gap-4">
           <p className="hidden text-[10px] uppercase tracking-[0.18em] text-faint sm:block">
             unaffiliated parody · reads local usage data only

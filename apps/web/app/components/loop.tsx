@@ -35,7 +35,7 @@ function Node({
 }) {
   return (
     <div className="relative flex-1">
-      <p className="display text-3xl font-black leading-none text-line" aria-hidden>
+      <p className="display text-3xl font-black leading-none text-faint/70" aria-hidden>
         {step}
       </p>
       <p className="mt-1.5 text-[10px] uppercase tracking-[0.2em] text-muted">{label}</p>
@@ -97,7 +97,7 @@ export function TheLoop({
           <div className="well relative mt-1 h-3 overflow-hidden">
             {median !== null && (
               <div
-                className="meter-cells absolute inset-y-[2px] left-[2px] rounded-[4px] text-warn"
+                className="meter-cells absolute inset-y-[2px] left-[2px] rounded-[4px] text-broke/80"
                 style={{ width: `${Math.max(2, Math.min(100, median))}%` }}
               />
             )}
@@ -146,7 +146,7 @@ export function MilestoneBar({ stats }: { stats: MovementStats }) {
     <div>
       <div className="well relative h-4 overflow-visible">
         <div
-          className="absolute inset-y-[2px] left-[2px] rounded-[5px] bg-gradient-to-r from-line to-warn/80"
+          className="absolute inset-y-[2px] left-[2px] rounded-[5px] bg-gradient-to-r from-faint/40 to-broke/85"
           style={{ width: `calc(${Math.max(position, 2)}% - 2px)` }}
         />
         {MILESTONES.map((milestone) => {

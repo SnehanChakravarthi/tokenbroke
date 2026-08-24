@@ -11,8 +11,8 @@ const TOOL_MONOGRAM = {
 
 function remainingTone(remaining: number): string {
   if (remaining <= 3) return "text-broke";
-  if (remaining <= 15) return "text-broke/80";
-  if (remaining <= 40) return "text-warn";
+  if (remaining <= 15) return "text-broke/75";
+  if (remaining <= 40) return "text-dim";
   return "text-dim";
 }
 
@@ -70,7 +70,7 @@ export function Board({ board, now }: { board: PublicLeaderboardV1; now: Date })
               <li
                 key={`${board.tool}-${row.rank}`}
                 className={`grid grid-cols-[2.2rem_1fr_auto] items-center gap-x-3 px-4 ${
-                  top3 ? "bg-panel-2/70 py-3" : "py-2.5"
+                  top3 ? "bg-panel-2 py-3" : "py-2.5"
                 }`}
               >
                 <span
