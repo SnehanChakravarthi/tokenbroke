@@ -131,6 +131,10 @@ const MILESTONES = [
   { at: 100_000, label: "we schedule the resets" },
 ];
 
+export function nextMilestone(count: number): { at: number; label: string } | null {
+  return MILESTONES.find((milestone) => milestone.at > Math.max(1, count)) ?? null;
+}
+
 /**
  * The avalanche as a crescendo: circles that grow from a speck to a force,
  * joined by a thickening line — all centered on one axis, counts inside so

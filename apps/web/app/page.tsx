@@ -8,8 +8,7 @@ import { CopyCommand } from "./components/copy-command";
 import { FlapDigits } from "./components/flap";
 import { SEVERITY_LABEL, severityFor } from "./components/format";
 import { TheHands } from "./components/hands";
-import { MilestoneBar, TheLoop } from "./components/loop";
-import { Ticker } from "./components/ticker";
+import { nextMilestone, TheLoop } from "./components/loop";
 
 export const dynamic = "force-dynamic";
 
@@ -91,9 +90,18 @@ export default async function Home() {
             />
             <span>of us are.</span>
           </p>
-          <div className="mt-5">
-            <MilestoneBar stats={movement} compact />
-          </div>
+          {nextMilestone(movement.devsOnRecord) && (
+            <p className="mt-4 text-[11px] uppercase tracking-[0.16em] text-muted">
+              <span className="pip mr-1.5 inline-block size-1.5 rounded-full bg-broke align-middle" />
+              <span className="text-paper">
+                {(
+                  (nextMilestone(movement.devsOnRecord)?.at ?? 0) - movement.devsOnRecord
+                ).toLocaleString("en-US")}{" "}
+                to "{nextMilestone(movement.devsOnRecord)?.label}"
+              </span>{" "}
+              — you count
+            </p>
+          )}
           <p className="mt-7 max-w-lg text-sm leading-relaxed text-dim sm:text-base">
             The public record of how rate-limited developers really are —{" "}
             <span className="text-paper">measured by us, because nobody else will.</span>
@@ -104,9 +112,13 @@ export default async function Home() {
           </div>
 
           <div className="fade-up fade-up-2 mt-10 flex flex-col items-center">
-            <p className="mb-3 max-w-md text-center text-[12px] leading-relaxed text-dim">
-              That's one small command for a dev —{" "}
-              <span className="text-paper">one giant leap for devkind:</span>
+            <p className="mb-4 text-center leading-snug">
+              <span className="block whitespace-nowrap text-[13px] text-dim sm:text-[15px]">
+                That's one small command for a dev —
+              </span>
+              <span className="display mt-0.5 block whitespace-nowrap text-base font-extrabold tracking-tight text-paper sm:text-lg">
+                one giant leap for devkind.
+              </span>
             </p>
             <CopyCommand command={BRAND.cliCommand} />
             <p className="mt-3 text-[10px] uppercase tracking-[0.16em] leading-relaxed text-muted">
@@ -128,10 +140,6 @@ export default async function Home() {
           <LabUniverse board={claude} now={now} />
         </section>
       </main>
-
-      <div className="mx-auto mt-12 w-full max-w-6xl px-4 sm:px-6">
-        <Ticker boards={boards} />
-      </div>
 
       <footer className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
         <div className="flex flex-col gap-3 text-[11px] leading-relaxed text-faint sm:flex-row sm:justify-between">
