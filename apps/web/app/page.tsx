@@ -6,6 +6,7 @@ import { recordPageView, viewStats } from "@/src/lib/views";
 import { LabUniverse } from "./components/board";
 import { FlapDigits } from "./components/flap";
 import { SEVERITY_LABEL, severityFor } from "./components/format";
+import { TheHands } from "./components/hands";
 import { MilestoneBar, TheLoop } from "./components/loop";
 import { MovementCount } from "./components/movement";
 import { Ticker } from "./components/ticker";
@@ -56,7 +57,7 @@ export default async function Home() {
       <main className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         {/* Hero: the condition — with the live pulse right under the wordmark. */}
         <section className="fade-up flex flex-col items-center pt-10 text-center sm:pt-14">
-          <p className="well flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-full px-4 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted">
+          <p className="panel flex flex-wrap items-center justify-center gap-x-3 gap-y-1 !rounded-full px-4 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted">
             <span className="flex items-center gap-1.5">
               <span className="pip inline-block size-1.5 rounded-full bg-ok" aria-hidden />
               <FlapDigits
@@ -114,6 +115,10 @@ export default async function Home() {
           <TheLoop stats={movement} boards={boards} />
         </section>
 
+        <section className="fade-up fade-up-2 mt-10" aria-label="The hands">
+          <TheHands />
+        </section>
+
         <section className="fade-up fade-up-3 mt-14 grid items-start gap-5 lg:grid-cols-2">
           <LabUniverse board={codex} now={now} />
           <LabUniverse board={claude} now={now} />
@@ -134,6 +139,9 @@ export default async function Home() {
           <p className="max-w-md sm:text-right">
             The CLI reads usage and rate-limit state from your machine, on your machine, and submits
             only when you run it. Never prompts, never code, never conversations.
+            <span className="mt-2 block text-muted">
+              built by <span className="text-paper">Snehan Chakravarthi</span>
+            </span>
           </p>
         </div>
       </footer>

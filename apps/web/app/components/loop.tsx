@@ -114,22 +114,12 @@ export function TheLoop({
           <p className="mt-1 text-[11px] text-muted">both labs have folded before.</p>
         </Node>
       </div>
-      <p className="mt-5 text-center text-[11px] uppercase tracking-[0.24em] leading-relaxed text-muted">
-        bigger number → sooner resets. we're counting until{" "}
-        <a
-          href="https://x.com/thsottiaux"
-          className="text-codex underline decoration-dotted underline-offset-2"
-        >
-          @thsottiaux
-        </a>{" "}
-        and{" "}
-        <a
-          href="https://x.com/bcherny"
-          className="text-claude underline decoration-dotted underline-offset-2"
-        >
-          @bcherny
-        </a>{" "}
-        have to play their hand. <span className="text-faint">(affectionately)</span>
+      <p className="mt-5 text-center text-[11px] uppercase tracking-[0.24em] text-muted">
+        bigger number{" "}
+        <span aria-hidden className="text-faint">
+          →
+        </span>{" "}
+        sooner resets. <span className="text-paper">that&apos;s the whole game.</span>
       </p>
     </div>
   );
@@ -143,60 +133,88 @@ const MILESTONES = [
   { at: 100_000, label: "we schedule the resets", emoji: "🗓️" },
 ];
 
-/** The avalanche as one log-scale line. */
+/**
+ * The avalanche as a crescendo: each milestone node is physically bigger than
+ * the last — small now, a force later. Passed nodes fill; the next one pulses.
+ */
 export function MilestoneBar({ stats }: { stats: MovementStats }) {
   const count = Math.max(1, stats.devsOnRecord);
-  const max = Math.log10(100_000);
-  const position = Math.min(100, (Math.log10(count) / max) * 100);
-  const next = MILESTONES.find((milestone) => milestone.at > count);
+  const nextIndex = MILESTONES.findIndex((milestone) => milestone.at > count);
+  const next = nextIndex === -1 ? null : MILESTONES[nextIndex];
+  const SIZES = [22, 30, 40, 52, 66];
+  const HEIGHTS = [3, 5, 7, 10];
+
+  // Fraction of the current gap already crossed, log-scaled.
+  const segmentFill = (index: number): number => {
+    const from = index === 0 ? 1 : (MILESTONES[index]?.at ?? 1);
+    const to = MILESTONES[index + 1]?.at ?? 100_000;
+    if (count >= to) return 1;
+    if (count <= from) return 0;
+    return (Math.log10(count) - Math.log10(from)) / (Math.log10(to) - Math.log10(from));
+  };
+
   return (
     <div>
-      <div className="well relative mt-8 h-5 overflow-visible">
-        <div
-          className="absolute inset-y-[3px] left-[3px] rounded-full bg-gradient-to-r from-faint/40 to-broke/85"
-          style={{ width: `calc(${Math.max(position, 2)}% - 3px)` }}
-        />
-        {/* you are here */}
-        <span
-          className="pip absolute top-1/2 size-3 -translate-y-1/2 rounded-full border-2 border-panel bg-broke shadow-[0_1px_4px_rgba(16,24,40,0.35)]"
-          style={{ left: `calc(${Math.max(position, 2)}% - 6px)` }}
-          aria-hidden
-        />
-        {MILESTONES.map((milestone) => {
-          const at = (Math.log10(milestone.at) / max) * 100;
+      <div className="flex items-center justify-center">
+        {MILESTONES.map((milestone, index) => {
+          const size = SIZES[index] ?? 24;
           const reached = count >= milestone.at;
+          const isNext = index === nextIndex;
           return (
-            <span
-              key={milestone.at}
-              className={`absolute -top-7 -translate-x-1/2 text-base ${
-                reached ? "" : "opacity-45 grayscale"
-              }`}
-              style={{ left: `${at}%` }}
-              title={`${milestone.at.toLocaleString("en-US")} — ${milestone.label}`}
-              aria-label={`${milestone.at.toLocaleString("en-US")}: ${milestone.label}${reached ? " (reached)" : ""}`}
-              role="img"
-            >
-              {milestone.emoji}
+            <span key={milestone.at} className="flex items-center">
+              {index > 0 && (
+                <span
+                  className="relative w-6 overflow-hidden rounded-full bg-line sm:w-10"
+                  style={{ height: HEIGHTS[index - 1] ?? 4 }}
+                  aria-hidden
+                >
+                  <span
+                    className="absolute inset-y-0 left-0 rounded-full bg-broke"
+                    style={{ width: `${segmentFill(index - 1) * 100}%` }}
+                  />
+                </span>
+              )}
+              <span className="flex flex-col items-center gap-1.5">
+                <span
+                  role="img"
+                  aria-label={`${milestone.at.toLocaleString("en-US")}: ${milestone.label}${reached ? " (reached)" : ""}`}
+                  title={`${milestone.at.toLocaleString("en-US")} — ${milestone.label}`}
+                  className={`grid place-items-center rounded-full transition-transform ${
+                    reached
+                      ? "bg-broke text-ink shadow-[0_0_18px_rgba(255,98,87,0.45)]"
+                      : isNext
+                        ? "pip border-2 border-broke bg-broke/15 text-paper"
+                        : "border border-line bg-panel-2/60 text-dim"
+                  }`}
+                  style={{ width: size, height: size, fontSize: size * 0.42 }}
+                >
+                  {milestone.emoji}
+                </span>
+                <span
+                  className={`text-[9px] uppercase tracking-[0.12em] tabular-nums ${
+                    reached ? "text-broke" : isNext ? "text-paper" : "text-faint"
+                  }`}
+                >
+                  {milestone.at >= 1000 ? `${milestone.at / 1000}k` : milestone.at}
+                </span>
+              </span>
             </span>
           );
         })}
       </div>
-      <div className="mt-2 flex items-baseline justify-between gap-3 text-[11px] uppercase tracking-[0.16em]">
-        <p className="text-muted">
-          {next ? (
-            <>
-              <span className="pip mr-1.5 inline-block size-1.5 rounded-full bg-broke align-middle" />
-              <span className="text-paper">
-                {(next.at - count).toLocaleString("en-US")} to "{next.label}"
-              </span>{" "}
-              — you count
-            </>
-          ) : (
-            <span className="text-ok">terminal milestone reached</span>
-          )}
-        </p>
-        <p className="hidden text-faint sm:block">100k — {MILESTONES[4]?.label}</p>
-      </div>
+      <p className="mt-3 text-center text-[11px] uppercase tracking-[0.16em] text-muted">
+        {next ? (
+          <>
+            <span className="pip mr-1.5 inline-block size-1.5 rounded-full bg-broke align-middle" />
+            <span className="text-paper">
+              {(next.at - count).toLocaleString("en-US")} to "{next.label}"
+            </span>{" "}
+            — you count
+          </>
+        ) : (
+          <span className="text-ok">terminal milestone reached</span>
+        )}
+      </p>
     </div>
   );
 }
