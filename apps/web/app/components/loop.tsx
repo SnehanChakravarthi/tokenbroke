@@ -9,7 +9,7 @@ function Flow() {
       viewBox="0 0 48 12"
       role="img"
       aria-label="flows into"
-      className="hidden h-3 w-12 shrink-0 self-center text-faint lg:block"
+      className="mt-6 hidden h-3 w-10 shrink-0 self-start text-faint lg:block"
     >
       <path
         d="M2 6h38"
@@ -28,19 +28,18 @@ function Node({
   step,
   label,
   children,
-  className = "",
 }: {
   step: string;
   label: string;
   children: React.ReactNode;
-  className?: string;
 }) {
   return (
-    <div className={`panel relative flex-1 px-4 py-3.5 ${className}`}>
-      <p className="mb-1.5 flex items-baseline gap-2 text-[10px] uppercase tracking-[0.2em] text-faint">
-        <span className="text-muted">{step}</span> {label}
+    <div className="relative flex-1">
+      <p className="display text-3xl font-black leading-none text-line" aria-hidden>
+        {step}
       </p>
-      {children}
+      <p className="mt-1.5 text-[10px] uppercase tracking-[0.2em] text-muted">{label}</p>
+      <div className="mt-2">{children}</div>
     </div>
   );
 }
@@ -62,10 +61,22 @@ export function TheLoop({
   const median = medians.length
     ? Math.round((medians.reduce((a, b) => a + b, 0) / medians.length) * 10) / 10
     : null;
-  const lastReset = stats.resets[0];
+  const lastResetFor = (tool: "codex" | "claude-code") =>
+    stats.resets.find((reset) => reset.tool === tool) ?? null;
+  const resetChip = (tool: "codex" | "claude-code", tone: string, name: string) => {
+    const reset = lastResetFor(tool);
+    if (!reset) return null;
+    const days = Math.floor((Date.now() - Date.parse(reset.landedAt)) / 86_400_000);
+    return (
+      <p key={tool} className="text-[12px] text-dim">
+        <span className="text-ok">✓</span> <span className={tone}>{name}</span>{" "}
+        <span className="tabular-nums text-paper">{days === 0 ? "today" : `${days}d ago`}</span>
+      </p>
+    );
+  };
   return (
     <div className="relative">
-      <div className="flex flex-col gap-2 lg:flex-row lg:gap-0">
+      <div className="flex flex-col gap-6 lg:flex-row lg:gap-3">
         <Node step="01" label="run it">
           <p className="text-sm font-semibold text-paper">
             <span className="text-faint">$ </span>
@@ -102,21 +113,12 @@ export function TheLoop({
           </p>
         </Node>
         <Flow />
-        <Node step="04" label="resets happen" className="border-ok/30">
-          {lastReset ? (
-            <p className="text-sm font-semibold text-ok">
-              ✓ №1 · codex ·{" "}
-              {new Date(lastReset.landedAt).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-              })}
-            </p>
-          ) : (
-            <p className="text-sm font-semibold text-ok">the part we're building toward</p>
-          )}
-          <p className="mt-1 text-[11px] text-muted">
-            claude code: <span className="text-broke">none on record. yet.</span>
-          </p>
+        <Node step="04" label="resets happen">
+          <div className="space-y-1">
+            {resetChip("codex", "text-codex", "codex")}
+            {resetChip("claude-code", "text-claude", "claude")}
+          </div>
+          <p className="mt-1 text-[11px] text-muted">both labs have folded before.</p>
         </Node>
       </div>
       <p className="mt-4 text-center text-[11px] uppercase tracking-[0.24em] text-muted lg:text-right">

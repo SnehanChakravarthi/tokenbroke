@@ -24,16 +24,16 @@ function CounterDigits({ value }: { value: string }) {
 export function DaysSince({ board }: { board: PublicLeaderboardV1 }) {
   const days = board.global.daysSinceReset;
   return (
-    <div className="panel flex flex-col justify-between gap-4 p-4">
+    <div className="flex flex-col justify-between gap-4 px-1 py-2 sm:px-5">
       <p className="text-[11px] uppercase tracking-[0.22em] text-muted">
         days since last <span className={TOOL_TEXT[board.tool]}>{TOOL_SHORT[board.tool]}</span>{" "}
         reset
       </p>
       {days === null ? (
         <div>
-          <p className="display text-3xl font-black text-broke sm:text-4xl">NO RESET</p>
+          <p className="display text-3xl font-black text-broke sm:text-4xl">NONE YET</p>
           <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-faint">
-            on record. ever.
+            in this record yet.
           </p>
         </div>
       ) : (
@@ -55,7 +55,7 @@ export function PovertyMeter({ board }: { board: PublicLeaderboardV1 }) {
   const value = median === null ? 0 : Math.max(0, Math.min(100, median));
   const tone = severity === "broke" ? "text-broke" : severity === "warn" ? "text-warn" : "text-ok";
   return (
-    <div className="panel flex flex-col justify-between gap-4 p-4">
+    <div className="flex flex-col justify-between gap-4 px-1 py-2 sm:px-5">
       <p className="text-[11px] uppercase tracking-[0.22em] text-muted">
         <span className={TOOL_TEXT[board.tool]}>{TOOL_SHORT[board.tool]}</span> median remaining
       </p>

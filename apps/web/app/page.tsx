@@ -37,8 +37,15 @@ export default async function Home() {
         ? "bg-warn text-ink"
         : "bg-ok/90 text-ink";
 
+  const glow =
+    worst === "broke"
+      ? "rgba(255, 77, 77, 0.10)"
+      : worst === "warn"
+        ? "rgba(242, 184, 75, 0.09)"
+        : "rgba(61, 214, 140, 0.07)";
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" style={{ "--glow-color": glow } as React.CSSProperties}>
       <div className="px-2 pt-2 sm:px-3 sm:pt-3">
         <div
           className={`rounded-lg px-4 py-1.5 text-center text-[11px] font-bold uppercase tracking-[0.28em] shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_6px_16px_-10px_rgba(0,0,0,0.9)] ${bannerTone}`}
@@ -59,10 +66,10 @@ export default async function Home() {
 
       <main className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         {/* Hero: the condition, the ask, and the mechanism — drawn, not written. */}
-        <section className="pt-12 sm:pt-16">
+        <section className="fade-up pt-12 sm:pt-16">
           <div className="grid gap-8 lg:grid-cols-[1.05fr_1fr] lg:items-end">
             <div>
-              <h1 className="display max-w-3xl text-[clamp(2.4rem,10.5vw,4.5rem)] font-black leading-[0.95] tracking-tight text-paper sm:text-7xl">
+              <h1 className="display max-w-3xl text-[clamp(2.4rem,10.5vw,4.5rem)] font-black leading-[0.95] tracking-tight text-paper [text-wrap:balance] sm:text-7xl">
                 ARE YOU
                 <br />
                 <span className="text-broke">TOKENBROKE?</span>
@@ -74,17 +81,12 @@ export default async function Home() {
               <div className="mt-6">
                 <CopyCommand command={BRAND.cliCommand} />
               </div>
-              <ul className="mt-4 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.16em]">
-                {[
-                  "reads 2 numbers — never your code",
-                  "anonymous · no signup",
-                  "auto-updates: hooks install",
-                ].map((chip) => (
-                  <li key={chip} className="well px-2.5 py-1.5 text-muted">
-                    {chip}
-                  </li>
-                ))}
-              </ul>
+              <p className="mt-4 text-[10px] uppercase tracking-[0.16em] leading-relaxed text-muted">
+                reads 2 numbers — never your code
+                <span className="mx-2 text-faint">·</span>anonymous, no signup
+                <span className="mx-2 text-faint">·</span>auto-updates:{" "}
+                <span className="text-dim">hooks install</span>
+              </p>
             </div>
             <div className="lg:pb-1">
               <p className="mb-4 text-[11px] uppercase tracking-[0.22em] text-muted">
@@ -99,14 +101,14 @@ export default async function Home() {
         </section>
 
         {/* The loop: why one row matters. */}
-        <section className="mt-10" aria-label="How it works">
+        <section className="fade-up fade-up-2 mt-14" aria-label="How it works">
           <TheLoop stats={movement} boards={boards} />
         </section>
 
         {/* ACT IV — the instruments and the dessert. */}
         <section
           aria-label="Aggregate state"
-          className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+          className="fade-up fade-up-3 mt-12 grid gap-y-6 border-y border-line-soft py-5 sm:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-line-soft"
         >
           <DaysSince board={codex} />
           <DaysSince board={claude} />
@@ -114,7 +116,7 @@ export default async function Home() {
           <PovertyMeter board={claude} />
         </section>
 
-        <section className="mt-10 grid items-start gap-3 lg:grid-cols-2">
+        <section className="fade-up fade-up-4 mt-10 grid items-start gap-3 lg:grid-cols-2">
           <Board board={codex} now={now} />
           <Board board={claude} now={now} />
         </section>

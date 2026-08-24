@@ -8,6 +8,13 @@
       "when": 1787562958136,
       "tag": "0000_conscious_epoch",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1787582846760,
+      "tag": "0001_claude_resets",
+      "breakpoints": true
     }
   ]
 }

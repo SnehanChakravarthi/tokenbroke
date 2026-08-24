@@ -552,7 +552,8 @@ describe("manual reset admin", () => {
       }),
     );
     expect(accepted.status).toBe(201);
-    expect((await database.query("select 1 from resets")).rowCount).toBe(2);
+    // 3 migration-seeded historical resets + the one appended above.
+    expect((await database.query("select 1 from resets")).rowCount).toBe(4);
   });
 });
 
