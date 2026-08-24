@@ -14,6 +14,7 @@ import {
   type LocalReadings,
   medianRemainingPercent,
   ordinal,
+  plausibleReadingTimes,
   SCHEMA_VERSION,
   type SubmissionFailureV1,
   type SubmissionSuccessV1,
@@ -21,6 +22,7 @@ import {
   type ToolId,
   type ToolReading,
   toolMisery,
+  validateSubmissionV1,
 } from "@tokenbroke/shared";
 import { deviceIdFor, verifyBytes } from "@tokenbroke/shared/node/signing";
 
@@ -156,21 +158,25 @@ async function requestBytes(request: IncomingMessage): Promise<Buffer> {
   return Buffer.concat(chunks);
 }
 
-const EXPECTED_TOOLS: readonly ToolId[] = ["claude-code", "codex"];
-
-/**
- * The readings tuple is the only part of a submission we index into positionally. Prove its shape
- * before anything touches it, so a hostile payload is a plain `invalid` and never a thrown
- * TypeError swallowed into a generic 400.
- */
-function validReadings(value: unknown): value is LocalReadings {
-  if (!Array.isArray(value) || value.length !== EXPECTED_TOOLS.length) return false;
-  return EXPECTED_TOOLS.every((tool, index) => {
-    const reading: unknown = value[index];
-    if (typeof reading !== "object" || reading === null) return false;
-    const item = reading as Partial<ToolReading>;
-    return item.tool === tool && Array.isArray(item.windows);
-  });
+function signatureKeys(value: unknown): { publicKey: string; deviceId: string } | null {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return null;
+  const publicKey = Object.getOwnPropertyDescriptor(value, "publicKey");
+  const deviceId = Object.getOwnPropertyDescriptor(value, "deviceId");
+  if (
+    !publicKey ||
+    !("value" in publicKey) ||
+    typeof publicKey.value !== "string" ||
+    publicKey.value.length === 0 ||
+    publicKey.value.length > 256 ||
+    !deviceId ||
+    !("value" in deviceId) ||
+    typeof deviceId.value !== "string" ||
+    deviceId.value.length === 0 ||
+    deviceId.value.length > 64
+  ) {
+    return null;
+  }
+  return { publicKey: publicKey.value, deviceId: deviceId.value };
 }
 
 function failure(reason: SubmissionFailureV1["reason"]): SubmissionFailureV1 {
@@ -195,38 +201,49 @@ export async function startStubServer(): Promise<StubServer> {
     }
     try {
       const raw = await requestBytes(request);
-      let payload: SubmissionV1;
+      let parsed: unknown;
       try {
-        payload = JSON.parse(raw.toString("utf8")) as SubmissionV1;
+        parsed = JSON.parse(raw.toString("utf8"));
       } catch {
         send(response, failure("invalid"));
         return;
       }
-      if (payload.schemaVersion !== SCHEMA_VERSION) {
-        send(response, failure("unsupported-version"));
-        return;
-      }
+      const keys = signatureKeys(parsed);
       const header = request.headers["x-tokenbroke-signature"];
       const signature =
         typeof header === "string" && header.startsWith("ed25519=")
           ? header.slice("ed25519=".length)
           : "";
       if (
-        deviceIdFor(payload.publicKey) !== payload.deviceId ||
-        !verifyBytes(raw, signature, payload.publicKey)
+        keys === null ||
+        deviceIdFor(keys.publicKey) !== keys.deviceId ||
+        !verifyBytes(raw, signature, keys.publicKey)
       ) {
         send(response, failure("signature"));
         return;
       }
-      if (!validReadings(payload.readings)) {
+      const schemaVersion =
+        typeof parsed === "object" && parsed !== null
+          ? Object.getOwnPropertyDescriptor(parsed, "schemaVersion")?.value
+          : undefined;
+      if (schemaVersion !== SCHEMA_VERSION) {
+        send(response, failure("unsupported-version"));
+        return;
+      }
+      const validated = validateSubmissionV1(parsed);
+      if (!validated.ok) {
         send(response, failure("invalid"));
         return;
       }
+      const payload = validated.payload;
       const now = new Date();
-      const submittedAt =
-        typeof payload.submittedAt === "string" ? Date.parse(payload.submittedAt) : Number.NaN;
-      if (!Number.isFinite(submittedAt) || Math.abs(now.getTime() - submittedAt) > 600_000) {
+      const submittedAt = Date.parse(payload.submittedAt);
+      if (Math.abs(now.getTime() - submittedAt) > 600_000) {
         send(response, failure("skew"));
+        return;
+      }
+      if (!plausibleReadingTimes(payload.readings, now.getTime())) {
+        send(response, failure("implausible"));
         return;
       }
       if (nonces.has(payload.nonce)) {

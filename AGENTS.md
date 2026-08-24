@@ -254,11 +254,11 @@ bun run readers        this machine's local readings as JSON (drain summarized; 
 
 ## 14. Current status / next steps
 
-**Status (2026-08-23):** Nothing published or committed. RFC 001/002/003 decided and **implemented**
-(readers; shared contracts + scoring + signing; CLI identity/submit/hooks/board/stub server). All
-reviewed by Claude Code with Opus adversarial audits; see each RFC's Review section. 68 tests, E2E
-against the local stub passes, full manual run p50 82 ms. No DB schema, no web API, no site yet.
-Codex quota reset landed 2026-08-24 (reset #1 for the radar); Codex-side work available again.
+**Status (2026-08-24):** RFC 001–004 decided and **implemented** (readers; shared contracts/scoring/
+signing/validation/plausibility; CLI; web API + Drizzle/Neon schema + claim flow). All reviewed by
+Claude Code with Opus adversarial audits — see each RFC's Review section. 118 tests, CLI E2E + web
+PGlite E2E green. Nothing deployed. Codex reset #1 landed 2026-08-24 (owner now ~73% Codex remaining).
+Phase 1 code is complete except the visible site UI (awaiting owner design references) and OG cards.
 
 **Decided:** Neon + Drizzle. npm package `tokenbroke`. Biome + vitest + bun workspaces. Versioned API
 (`/api/v1/submissions`, `schemaVersion: 1`). Ed25519 device identity, one stream per key. Hook-driven
@@ -270,10 +270,9 @@ three-state freshness (fresh/stale/hidden); plan tier is a facet. Names assigned
 remotes, and publishing still require an explicit owner ask.
 
 **Next:**
-1. RFC 004 **decided** (see its §9) → Codex implements web API + schema; Claude Code reviews.
+1. Claude Code reviews and commits the RFC 004 implementation.
 2. Board layout/voice polish (Claude Code + owner).
 3. Site after owner supplies design references.
 
 **Open decisions (need owner sign-off):**
-- DB schema shape (RFC 004, pending).
 - Misery constants (floor 50, exponent 3) are launch defaults to be calibrated on real data.

@@ -12,7 +12,14 @@ export function windowMisery(window: UsageWindow, now: Date): number | null {
   if (window.resetsAt === null) return null;
   const resetMs = Date.parse(window.resetsAt);
   if (!Number.isFinite(resetMs)) return null;
-  const hoursUntilReset = Math.max(0, (resetMs - now.getTime()) / 3_600_000);
+  const rawHoursUntilReset = Math.max(0, (resetMs - now.getTime()) / 3_600_000);
+  // A window cannot legitimately reset further out than its own length, so clamp the horizon to
+  // windowMinutes/60. This makes a forged `resetsAt` far in the future worthless for scoring even
+  // if it slips past the server-side plausibility bounds (submissions.ts). Unknown-length windows
+  // (windowMinutes === null) have no defined horizon and are left unclamped.
+  const maxHoursUntilReset =
+    window.windowMinutes === null ? rawHoursUntilReset : window.windowMinutes / 60;
+  const hoursUntilReset = Math.min(rawHoursUntilReset, maxHoursUntilReset);
   return hoursUntilReset * depletion(window.usedPercent) ** DEPLETION_EXPONENT;
 }
 

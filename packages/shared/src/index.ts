@@ -1,4 +1,10 @@
 export { BRAND, claimUrl } from "./brand";
+export {
+  OBSERVED_FUTURE_SKEW_MS,
+  OBSERVED_MAX_AGE_MS,
+  plausibleReadingTimes,
+  RESET_HORIZON_SLACK_MS,
+} from "./contract/plausibility";
 export type {
   LeaderboardRow,
   SubmissionFailureV1,
@@ -10,6 +16,8 @@ export {
   API_PATH_V1,
   SCHEMA_VERSION,
 } from "./contract/v1";
+export type { SubmissionValidationResult } from "./contract/validate";
+export { validateSubmissionV1 } from "./contract/validate";
 export { ordinal } from "./format";
 export {
   ANONYMOUS_NAME_PATTERN,

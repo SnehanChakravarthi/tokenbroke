@@ -66,6 +66,9 @@ export type SubmissionRejectReason =
   | "replay"
   | "rate-limited"
   | "invalid"
+  // Semantic time violations the pure shape validator cannot catch (it is `now`-free):
+  // forged reset horizons, future/ancient observation times. Emitted by the web write path.
+  | "implausible"
   | "unsupported-version";
 
 export interface SubmissionFailureV1 {

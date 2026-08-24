@@ -14,7 +14,7 @@
     "build": "bun run --filter '*' build",
     "lint": "biome check .",
     "format": "biome format --write .",
-    "test": "bun run --filter './packages/*' test",
+    "test": "bun run --filter '*' test",
     "typecheck": "bun run --filter '*' typecheck",
     "demo": "cd packages/cli && bun run demo",
     "readers": "cd packages/cli && bun run readers:dump"

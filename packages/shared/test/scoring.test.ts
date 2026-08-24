@@ -63,6 +63,16 @@ describe("RFC 003 scoring", () => {
     expect(depletion(90)).toBe(0.8);
   });
 
+  it("clamps a reset horizon beyond the window's own length (F2b)", () => {
+    // A 5h session window whose forged resetsAt is 100h out must score as if it reset in 5h
+    // (windowMinutes / 60), not 100h; depletion(100) = 1, so misery == 5.
+    const forged = window(100, 100, "claude:session:300:");
+    expect(forged.windowMinutes).toBe(300);
+    expect(windowMisery(forged, NOW)).toBe(5);
+    // A within-length horizon is unaffected by the clamp.
+    expect(windowMisery(window(100, 4, "claude:session:300:"), NOW)).toBe(4);
+  });
+
   it("binds only ranked windows with observed reset times", () => {
     const unknown = { ...window(100, 200, "claude:weird:42:"), windowMinutes: 42 };
     const weekly = window(100, 96);
@@ -195,5 +205,73 @@ describe("freshness, rank, and aggregates", () => {
     expect(medianRemainingPercent(rows, first.windows[0]?.seriesId ?? "", NOW)).toBe(5);
     expect(brokeFraction(rows, NOW)).toBe(0.5);
     expect(blockedHoursRemaining(rows, NOW)).toBe(4);
+  });
+});
+
+import { plausibleReadingTimes } from "../src/index";
+import type { LocalReadings } from "../src/readings";
+
+function readingWith(overrides: Partial<LocalReadings[number]>): LocalReadings {
+  const base = {
+    tool: "codex" as const,
+    install: "found" as const,
+    observation: "ok" as const,
+    toolVersion: null,
+    plan: { raw: "plus", label: "Plus" },
+    observedAt: "2026-08-24T00:00:00.000Z",
+    sourceFetchedAt: null,
+    windows: [
+      {
+        limitId: "codex",
+        rawKind: "primary",
+        windowMinutes: 10080,
+        scope: null,
+        seriesId: "codex:primary:10080:",
+        usedPercent: 100,
+        resetsAt: "2026-08-28T00:00:00.000Z",
+        group: null,
+        severity: null,
+        isActive: null,
+      },
+    ],
+    drain: [],
+    evidence: null,
+    warnings: [],
+  };
+  const claude = { ...base, tool: "claude-code" as const };
+  return [claude, { ...base, ...overrides }];
+}
+
+describe("plausibleReadingTimes", () => {
+  const now = Date.parse("2026-08-24T00:00:00.000Z");
+
+  it("accepts times within their windows", () => {
+    expect(plausibleReadingTimes(readingWith({}), now)).toBe(true);
+  });
+
+  it("rejects a resets_at far beyond the window length", () => {
+    const readings = readingWith({
+      windows: [
+        {
+          limitId: "codex",
+          rawKind: "primary",
+          windowMinutes: 10080,
+          scope: null,
+          seriesId: "codex:primary:10080:",
+          usedPercent: 100,
+          resetsAt: "2036-01-01T00:00:00.000Z",
+          group: null,
+          severity: null,
+          isActive: null,
+        },
+      ],
+    });
+    expect(plausibleReadingTimes(readings, now)).toBe(false);
+  });
+
+  it("rejects an observed_at in the future", () => {
+    expect(
+      plausibleReadingTimes(readingWith({ observedAt: "2026-09-01T00:00:00.000Z" }), now),
+    ).toBe(false);
   });
 });

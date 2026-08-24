@@ -205,3 +205,37 @@ per-code buckets on the claim routes.
   submissions, same-device claim-code race, nonce race).
 - Neon provisioning and Vercel env setup are owner actions at deploy time; the implementation must be
   fully runnable and testable locally (PGlite) without any cloud account.
+
+## 10. Review (2026-08-24, Claude Code + Opus adversarial audit)
+
+Implementation matched §9. 20 web tests (PGlite), 118 total. Audit + fixes before acceptance:
+
+**High:**
+- **Leaderboard gaming (brand-critical):** skew only checked `submittedAt`; a submission with
+  `resetsAt` years out ranked #1 permanently and stayed "fresh" without resubmitting. Fixed by
+  `plausibleReadingTimes()` (bounds `resetsAt` to window length + slack, `observedAt`/`sourceFetchedAt`
+  to ±skew and 30d age) — moved to `@tokenbroke/shared`, enforced by both the real API and the stub —
+  plus a `hoursUntilReset` clamp in `windowMisery`. New reject reason `implausible`.
+- **CSRF on claim-start:** a cross-site form could bind a logged-in victim's GitHub to the attacker's
+  device (SameSite=Lax rides the top-level callback GET). Fixed with a same-origin check + a signed
+  one-time form token minted by the claim page.
+
+**Medium:** lock-order deadlock between submit and claim (canonical order devices→claim_codes→
+rate_buckets); control-char/markup injection via `plan.label` and other republished strings (rejected
+in `validate.ts`); `X-Forwarded-For` spoofing of the per-IP claim bucket (use `x-vercel-forwarded-for`
+/ rightmost trusted hop); pending cookie not deleted on callback exceptions; fixed-window rate bucket
+allowed a 2× boundary burst (sliding window); server faults reported as client `invalid` (now bare
+503, CLI treats as retryable); empty-window readings inflated `global.devs`.
+
+**Honest limitation recorded:** PGlite serializes transactions, so the "concurrency" tests prove
+ordering/rollback/nonce-uniqueness/single-statement-upsert but NOT real `FOR UPDATE` contention or
+deadlock-freedom. Those need a real-pg CI job (tracked). Tests relabeled accordingly.
+
+**Verified clean by audit:** signature over exact received bytes; no version oracle; rate-limited
+submission does not burn its nonce; monotonic upsert never regresses; `validateSubmissionV1` holds
+under prototype-pollution/NaN/overflow/forged-seriesId fuzz; OAuth state constant-time, PKCE S256, no
+scopes, token discarded, cookie bound to code+device; claim codes stored as HMAC digests; public GET
+leaks no deviceId/observedAt/misery; DATABASE_URL not required at build.
+
+**Not code (owner, at deploy):** pin the Vercel function to the Neon region; configure coarse WAF IP
+limiting; set a real-pg concurrency CI job.

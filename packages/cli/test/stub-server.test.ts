@@ -30,22 +30,34 @@ async function post(mutate: (payload: SubmissionV1) => unknown): Promise<Submiss
 }
 
 describe("stub submission validation", () => {
-  it("rejects a non-finite submittedAt as skew rather than accepting it (F9)", async () => {
+  it("rejects an unparseable submittedAt during full validation", async () => {
     for (const submittedAt of ["", "not-a-date", "Invalid Date", "2026-13-45T99:99:99Z"]) {
       expect(await post((payload) => ({ ...payload, submittedAt }))).toMatchObject({
         ok: false,
-        reason: "skew",
+        reason: "invalid",
       });
     }
     expect(
       await post((payload) => ({ ...payload, submittedAt: null as unknown as string })),
-    ).toMatchObject({ ok: false, reason: "skew" });
+    ).toMatchObject({ ok: false, reason: "invalid" });
     expect(
       await post((payload) => ({
         ...payload,
         submittedAt: new Date(Date.now() - 20 * 60_000).toISOString(),
       })),
     ).toMatchObject({ ok: false, reason: "skew" });
+  });
+
+  it("does not reveal supported schema versions to an unsigned caller", async () => {
+    const identity = ephemeralIdentity();
+    const payload = { ...buildSubmission(localReadings(), identity), schemaVersion: 999 };
+    const body = Buffer.from(canonicalJson(payload));
+    const response = await fetch(new URL(API_PATH_V1, stub.url), {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body,
+    });
+    expect(await response.json()).toMatchObject({ ok: false, reason: "signature" });
   });
 
   it("rejects a readings field that is not the two-tool tuple as invalid (F10)", async () => {
