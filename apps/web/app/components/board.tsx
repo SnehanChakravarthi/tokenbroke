@@ -40,6 +40,36 @@ function Monogram({
   );
 }
 
+/** A battery reads instantly: full is good, empty is bad. Low charge = broke. */
+function Battery({ percent }: { percent: number | null }) {
+  const value = percent === null ? 0 : Math.max(0, Math.min(100, percent));
+  const tone = value <= 10 ? "text-broke" : value <= 30 ? "text-warn" : "text-ok";
+  return (
+    <div
+      className="flex items-center gap-1"
+      role="img"
+      aria-label={`Collective battery at ${percent ?? "unknown"} percent`}
+    >
+      <div className={`well relative h-6 flex-1 overflow-hidden ${tone}`}>
+        <div
+          className="meter-cells absolute inset-y-[3px] left-[3px] rounded-[4px]"
+          style={{ width: `calc(${Math.max(value, 3)}% - 3px)` }}
+        />
+      </div>
+      <div className="h-3 w-1.5 rounded-r-[3px] bg-line" aria-hidden />
+    </div>
+  );
+}
+
+function statusEmoji(remaining: number): string {
+  if (remaining <= 1) return "💀";
+  if (remaining <= 5) return "🪫";
+  if (remaining <= 15) return "😮‍💨";
+  return "";
+}
+
+const MEDALS = ["🥇", "🥈", "🥉"] as const;
+
 function Digits({ value }: { value: string }) {
   return (
     <FlapDigits
@@ -98,28 +128,19 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
         </div>
         <div>
           <p className="text-[10px] uppercase tracking-[0.2em] text-muted">
-            tokens left, all of us
+            our collective battery
           </p>
           <p className="display mt-1 text-3xl font-black tabular-nums text-paper">
             {median === null ? "—" : `${Math.round(median * 10) / 10}%`}
+            <span className="ml-2 align-middle text-lg" aria-hidden>
+              {median !== null && median <= 15 ? "🪫" : "🔋"}
+            </span>
           </p>
-          <div
-            className="well relative mt-2 h-3 overflow-hidden"
-            role="img"
-            aria-label={`Tokens left across everyone: ${median ?? "unknown"} percent; below 10 percent is broke`}
-          >
-            {median !== null && (
-              <div
-                className="meter-cells absolute inset-y-[2px] left-[2px] rounded-[4px] text-ok"
-                style={{ width: `${Math.max(2, Math.min(100, median))}%` }}
-              />
-            )}
-            <div className="absolute inset-y-[-3px] left-[10%] w-px bg-broke" />
+          <div className="mt-2">
+            <Battery percent={median} />
           </div>
-          <p className="mt-1 flex justify-between text-[9px] uppercase tracking-[0.14em] text-faint">
-            <span>0%</span>
-            <span className="text-broke">broke line</span>
-            <span>100%</span>
+          <p className="mt-1 text-[9px] uppercase tracking-[0.14em] text-faint">
+            what's left when you average all of us
           </p>
         </div>
       </div>
@@ -141,11 +162,11 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
                 } border-b border-line-soft last:border-b-0`}
               >
                 <span
-                  className={`text-right tabular-nums ${
-                    top3 ? `text-base font-bold ${accent}` : "text-sm text-faint"
-                  }`}
+                  className={`text-right tabular-nums ${top3 ? "text-lg" : "text-sm text-faint"}`}
+                  role="img"
+                  aria-label={`rank ${row.rank}`}
                 >
-                  {row.rank}
+                  {top3 ? MEDALS[row.rank - 1] : row.rank}
                 </span>
                 <span className="flex min-w-0 items-center gap-2.5">
                   <Monogram name={row.name} claimed={row.claimed} tool={board.tool} />
@@ -168,6 +189,11 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
                     className={`block text-sm font-semibold tabular-nums ${remainingTone(remaining)}`}
                   >
                     {remaining}%
+                    {statusEmoji(remaining) && (
+                      <span className="ml-1" aria-hidden>
+                        {statusEmoji(remaining)}
+                      </span>
+                    )}
                   </span>
                   <span className="block text-[10px] tabular-nums text-faint">
                     resets {resetsIn(row.resetsAt, now)}

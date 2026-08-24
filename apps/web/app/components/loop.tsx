@@ -97,19 +97,13 @@ export function TheLoop({
         </Node>
         <Flow />
         <Node step="03" label="the pain gets visible">
-          <div className="well relative mt-1 h-3 overflow-hidden">
-            {median !== null && (
-              <div
-                className="meter-cells absolute inset-y-[2px] left-[2px] rounded-[4px] text-broke/80"
-                style={{ width: `${Math.max(2, Math.min(100, median))}%` }}
-              />
-            )}
-            <div className="absolute inset-y-[-3px] left-[10%] w-px bg-broke" />
-          </div>
-          <p className="mt-1.5 text-[11px] text-muted">
-            together,{" "}
-            <span className="font-semibold text-warn">{median ?? "—"}% of our tokens left</span>
+          <p className="display text-2xl font-black tabular-nums text-broke">
+            {median === null ? "—" : `${Math.round((100 - median) * 10) / 10}%`}
+            <span className="ml-2 align-middle text-base" aria-hidden>
+              🔥
+            </span>
           </p>
+          <p className="mt-1 text-[11px] text-muted">of our tokens — already burned</p>
         </Node>
         <Flow />
         <Node step="04" label="resets happen">
@@ -120,23 +114,33 @@ export function TheLoop({
           <p className="mt-1 text-[11px] text-muted">both labs have folded before.</p>
         </Node>
       </div>
-      <p className="mt-5 text-center text-[11px] uppercase tracking-[0.24em] text-muted">
-        bigger number{" "}
-        <span aria-hidden className="text-faint">
-          →
-        </span>{" "}
-        sooner resets. <span className="text-paper">that&apos;s the whole game.</span>
+      <p className="mt-5 text-center text-[11px] uppercase tracking-[0.24em] leading-relaxed text-muted">
+        bigger number → sooner resets. we're counting until{" "}
+        <a
+          href="https://x.com/thsottiaux"
+          className="text-codex underline decoration-dotted underline-offset-2"
+        >
+          @thsottiaux
+        </a>{" "}
+        and{" "}
+        <a
+          href="https://x.com/bcherny"
+          className="text-claude underline decoration-dotted underline-offset-2"
+        >
+          @bcherny
+        </a>{" "}
+        have to play their hand. <span className="text-faint">(affectionately)</span>
       </p>
     </div>
   );
 }
 
 const MILESTONES = [
-  { at: 100, label: "a support group" },
-  { at: 1_000, label: "a statistic" },
-  { at: 10_000, label: "a dataset" },
-  { at: 50_000, label: "an open letter" },
-  { at: 100_000, label: "we schedule the resets" },
+  { at: 100, label: "a support group", emoji: "🤝" },
+  { at: 1_000, label: "a statistic", emoji: "📊" },
+  { at: 10_000, label: "a headline", emoji: "📣" },
+  { at: 50_000, label: "an open letter", emoji: "✍️" },
+  { at: 100_000, label: "we schedule the resets", emoji: "🗓️" },
 ];
 
 /** The avalanche as one log-scale line. */
@@ -147,7 +151,7 @@ export function MilestoneBar({ stats }: { stats: MovementStats }) {
   const next = MILESTONES.find((milestone) => milestone.at > count);
   return (
     <div>
-      <div className="well relative h-5 overflow-visible">
+      <div className="well relative mt-8 h-5 overflow-visible">
         <div
           className="absolute inset-y-[3px] left-[3px] rounded-full bg-gradient-to-r from-faint/40 to-broke/85"
           style={{ width: `calc(${Math.max(position, 2)}% - 3px)` }}
@@ -164,10 +168,16 @@ export function MilestoneBar({ stats }: { stats: MovementStats }) {
           return (
             <span
               key={milestone.at}
-              className={`absolute top-[-4px] h-[28px] w-px ${reached ? "bg-ok" : "bg-faint/50"}`}
+              className={`absolute -top-7 -translate-x-1/2 text-base ${
+                reached ? "" : "opacity-45 grayscale"
+              }`}
               style={{ left: `${at}%` }}
               title={`${milestone.at.toLocaleString("en-US")} — ${milestone.label}`}
-            />
+              aria-label={`${milestone.at.toLocaleString("en-US")}: ${milestone.label}${reached ? " (reached)" : ""}`}
+              role="img"
+            >
+              {milestone.emoji}
+            </span>
           );
         })}
       </div>

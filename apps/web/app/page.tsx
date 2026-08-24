@@ -8,7 +8,6 @@ import { FlapDigits } from "./components/flap";
 import { SEVERITY_LABEL, severityFor } from "./components/format";
 import { MilestoneBar, TheLoop } from "./components/loop";
 import { MovementCount } from "./components/movement";
-import { ThemeToggle } from "./components/theme-toggle";
 import { Ticker } from "./components/ticker";
 
 export const dynamic = "force-dynamic";
@@ -43,12 +42,14 @@ export default async function Home() {
   return (
     <div className="min-h-screen" style={{ "--glow-color": glow } as React.CSSProperties}>
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 pt-5 sm:px-6">
-        <p className="display text-lg font-black tracking-tight text-paper">{BRAND.name}</p>
+        <p className="display text-lg font-black tracking-tight text-paper">
+          {BRAND.name}
+          <span className="text-broke">{BRAND.domain.slice(BRAND.name.length)}</span>
+        </p>
         <div className="flex items-center gap-4">
           <p className="hidden text-[10px] uppercase tracking-[0.18em] text-faint sm:block">
             unaffiliated parody · reads local usage data only
           </p>
-          <ThemeToggle />
         </div>
       </header>
 

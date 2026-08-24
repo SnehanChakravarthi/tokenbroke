@@ -19,43 +19,8 @@
   --font-mono: var(--font-plex-mono);
 }
 
-/* Light: dawn sky. Pale azure into white into faint peach, on graph paper —
-   this is a measuring instrument, so the page sits on a dot grid. */
+/* Midnight indigo, graph paper, signal-bright accents. One mode; the console is nocturnal. */
 :root {
-  color-scheme: light;
-  --bg-top: #e9f2fe;
-  --bg-mid: #fcfdfd;
-  --bg-bot: #f7f9fc;
-  --dot: rgba(16, 24, 40, 0.07);
-  --ink: #f7fafd;
-  --panel: #ffffff;
-  --panel-2: #eef2f8;
-  --line: #d7dfe9;
-  --line-soft: #e4e9f1;
-  --paper: #101828;
-  --dim: #3d4a61;
-  --muted: #5d6b82;
-  --faint: #98a4b8;
-  --ok: #0ba05f;
-  --warn: #b98217;
-  --broke: #e5372b;
-  --codex: #2563eb;
-  --claude: #bd5b33;
-  --glow-default: rgba(37, 99, 235, 0.06);
-  --surface-hi: #ffffff;
-  --surface-lo: #f3f6fa;
-  --key-border: #cbd5e4;
-  --key-hi: #ffffff;
-  --key-lo: #e9eef6;
-  --well-border: #d2dae6;
-  --well-bg: #eaeef5;
-  --edge-light: rgba(255, 255, 255, 0.95);
-  --edge-dark: rgba(16, 24, 40, 0.12);
-  --drop: rgba(16, 24, 40, 0.2);
-}
-
-/* Dark: midnight indigo, same graph paper, signal-bright accents. */
-.dark {
   color-scheme: dark;
   --bg-top: #141b36;
   --bg-mid: #0c101f;

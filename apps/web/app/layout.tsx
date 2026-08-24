@@ -23,16 +23,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${archivo.variable} ${plexMono.variable}`} suppressHydrationWarning>
-      <head>
-        {/* Default is light; apply stored dark preference before paint. */}
-        <script
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: three-line theme bootstrap, no user input
-          dangerouslySetInnerHTML={{
-            __html: `try{if(localStorage.getItem("tokenbroke-theme")==="dark")document.documentElement.classList.add("dark")}catch(e){}`,
-          }}
-        />
-      </head>
+    <html lang="en" className={`${archivo.variable} ${plexMono.variable}`}>
       <body className="console-surface min-h-screen">{children}</body>
     </html>
   );
