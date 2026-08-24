@@ -25,10 +25,11 @@ describe("renderBoard", () => {
     if (!claude) throw new Error("missing Claude fixture");
     response.perTool[0] = { ...claude, rankable: false, misery: 0 };
     const output = renderBoard(response, [toolReading("claude-code", 12), toolReading("codex")]);
-    expect(output).toContain(`VERDICT: ${COPY.notBroke.toUpperCase()}`);
+    expect(output).toContain("NOT BROKE");
+    expect(output).toContain("come back when it hurts");
     // "not broke" is a verdict on the numbers, so the numbers stay on screen.
     expect(output).toContain("5h");
-    expect(output).toContain("88% left");
+    expect(output).toContain("88%");
     expect(output).toContain("Max 5x");
   });
 
@@ -48,7 +49,7 @@ describe("renderBoard", () => {
     if (!claude) throw new Error("missing Claude fixture");
     response.perTool[0] = { ...claude, misery: 0 };
     expect(renderBoard(response, [toolReading("claude-code", 40), toolReading("codex")])).toContain(
-      `VERDICT: ${COPY.notBroke.toUpperCase()}`,
+      "NOT BROKE",
     );
 
     const expired = toolReading("claude-code", 99, -1);

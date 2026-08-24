@@ -1,6 +1,6 @@
 {
   "name": "tokenbroke",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Are you tokenbroke? Prove it. Reads your local Codex CLI / Claude Code usage and ranks you on the leaderboard of the most rate-limited developers alive.",
   "license": "MIT",
   "type": "module",

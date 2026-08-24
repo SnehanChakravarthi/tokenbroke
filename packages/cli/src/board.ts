@@ -231,6 +231,24 @@ function kv(label: string, value: string): string {
   return `  ${paint(label.padEnd(18), "dim")}${value}`;
 }
 
+/** Receipt justification: label left, value right, dot leaders between. */
+function just(left: string, right: string): string {
+  const gap = W - stripAnsi(left).length - stripAnsi(right).length - 4;
+  const leaders = paint(` ${"·".repeat(Math.max(1, gap))} `, "dim");
+  return `  ${left}${leaders}${right}`;
+}
+
+/** A barcode only this device prints: bars derived from the device id. */
+function barcode(deviceId: string): string {
+  const GLYPHS = ["█", "▊", "▌", "▍", "▏"];
+  let bars = "";
+  for (const char of deviceId.repeat(3).slice(0, 26)) {
+    bars += GLYPHS[char.charCodeAt(0) % GLYPHS.length];
+    if (char.charCodeAt(0) % 3 === 0) bars += " ";
+  }
+  return center(paint(bars.slice(0, W - 8), "bold"));
+}
+
 function severityTone(remaining: number): Tone {
   if (remaining <= 10) return "red";
   if (remaining <= 30) return "yellow";
@@ -269,16 +287,21 @@ export function renderBoard(response: SubmissionSuccessV1, readings: LocalReadin
   for (const row of PIXEL_WORDMARK) lines.push(center(paint(row, "red")));
   lines.push(center(paint("t o k e n b r o k e . l o l", "dim")), dots());
 
-  lines.push(kv("OFFERING RECEIPT", paint(`№ ${response.identity.deviceId.slice(0, 9)}`, "bold")));
   lines.push(
-    kv(
-      "FILED BY",
+    just(
+      paint("OFFERING RECEIPT", "bold"),
+      paint(`№ ${response.identity.deviceId.slice(0, 9)}`, "bold"),
+    ),
+  );
+  lines.push(
+    just(
+      paint("FILED BY", "dim"),
       response.identity.claimed
         ? paint(`@${response.identity.claimed.githubLogin}`, "bold")
         : response.identity.anonymousName,
     ),
   );
-  lines.push(kv("DATE", now.toISOString().slice(0, 16).replace("T", " ")));
+  lines.push(just(paint("DATE", "dim"), now.toISOString().slice(0, 16).replace("T", " ")));
 
   for (const result of response.perTool) {
     lines.push(dots());
@@ -304,12 +327,17 @@ export function renderBoard(response: SubmissionSuccessV1, readings: LocalReadin
       )) {
       const remaining = Math.max(0, Math.round(100 - window.usedPercent));
       lines.push(
-        `    ${classified.shortLabel.padEnd(9)} ${chargeBar(remaining)} ${paint(`${String(remaining).padStart(3)}% left`, severityTone(remaining))}  ${paint(`resets ${timeRemaining(window.resetsAt, now)}`, "dim")}`,
+        just(
+          `${paint(classified.shortLabel.padEnd(9), "dim")} ${chargeBar(remaining)} ${paint(`${String(remaining).padStart(3)}%`, severityTone(remaining))}`,
+          paint(timeRemaining(window.resetsAt, now), "dim"),
+        ),
       );
     }
     const state = stateLine(reading, result.rankable, result.misery, now);
     if (state) {
-      lines.push(`  ${paint(`VERDICT: ${state.toUpperCase()}`, "dim")}`);
+      const [headline, ...aside] = state.split(". ");
+      lines.push(just(paint("VERDICT", "dim"), paint((headline ?? state).toUpperCase(), "bold")));
+      if (aside.length > 0) lines.push(`  ${paint(aside.join(". ").toLowerCase(), "dim")}`);
     } else {
       lines.push("");
       for (const row of rowsForBlock(result.top, result.neighbors)) {
@@ -325,16 +353,20 @@ export function renderBoard(response: SubmissionSuccessV1, readings: LocalReadin
   }
 
   lines.push(dots(), `  ${paint("THE RECORD", "bold")}`);
-  lines.push(
-    `    ${response.global.devs} dev${response.global.devs === 1 ? "" : "s"} on the record`,
-  );
+  lines.push(just(paint("devs on the record", "dim"), paint(String(response.global.devs), "bold")));
   for (const item of response.global.perTool) {
     const median = item.medianRemainingPercent;
+    const days =
+      item.daysSinceReset === null
+        ? "no reset yet"
+        : item.daysSinceReset === 0
+          ? "reset today"
+          : `reset ${item.daysSinceReset}d ago`;
     lines.push(
-      `    ${paint(TOOL_LABELS[item.tool].toLowerCase().padEnd(12), toolTone(item.tool))}${paint(
-        `median ${median === null ? "—" : `${Math.round(median)}%`} · ${item.daysSinceReset ?? "—"} days since reset`,
-        "dim",
-      )}`,
+      just(
+        paint(`${TOOL_LABELS[item.tool].toLowerCase()} median`, toolTone(item.tool)),
+        `${paint(median === null ? "—" : `${Math.round(median)}%`, "bold")} ${paint(`· ${days}`, "dim")}`,
+      ),
     );
   }
 
@@ -342,13 +374,16 @@ export function renderBoard(response: SubmissionSuccessV1, readings: LocalReadin
   if (response.identity.claimed) {
     lines.push(`  ${COPY.claimed(response.identity.claimed.githubLogin)}`);
   } else if (response.claim) {
-    lines.push(`  ${paint("CLAIM THIS ROW", "bold")} ${paint("(github, optional)", "dim")}`);
+    lines.push(just(paint("CLAIM THIS ROW", "bold"), paint("optional · ~30 seconds", "dim")));
+    lines.push(`  ${paint("you're anonymous. a github login puts your name", "dim")}`);
+    lines.push(`  ${paint("& avatar on this row — nothing else changes:", "dim")}`);
     lines.push(`  → ${paint(response.claim.url, "bold")}`);
-    lines.push(`  ${paint("vanity is free. rank is earned.", "dim")}`);
   }
   lines.push(dots());
   lines.push(center(paint("one small command for a dev —", "dim")));
   lines.push(center(paint("one giant leap for devkind.", "bold")));
+  lines.push("", barcode(response.identity.deviceId));
+  lines.push(center(paint(response.identity.anonymousName, "dim")));
   lines.push(tear(), "");
   return lines.join("\n");
 }
