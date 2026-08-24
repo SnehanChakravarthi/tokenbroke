@@ -57,7 +57,8 @@ export function PovertyMeter({ board }: { board: PublicLeaderboardV1 }) {
   return (
     <div className="flex flex-col justify-between gap-4 px-1 py-2 sm:px-5">
       <p className="text-[11px] uppercase tracking-[0.22em] text-muted">
-        <span className={TOOL_TEXT[board.tool]}>{TOOL_SHORT[board.tool]}</span> median remaining
+        <span className={TOOL_TEXT[board.tool]}>{TOOL_SHORT[board.tool]}</span> · tokens left, all
+        of us
       </p>
       <div>
         <p className={`display text-3xl font-black tabular-nums sm:text-4xl ${tone}`}>
@@ -66,7 +67,7 @@ export function PovertyMeter({ board }: { board: PublicLeaderboardV1 }) {
         <div
           className="relative mt-3 h-3 border border-line bg-ink"
           role="img"
-          aria-label={`Median remaining ${median ?? "unknown"} percent; the poverty line sits at 10 percent`}
+          aria-label={`Tokens left across everyone: ${median ?? "unknown"} percent; below 10 percent is broke`}
         >
           <div
             className={`meter-cells absolute inset-y-[2px] left-[2px] rounded-[5px] ${tone}`}
@@ -75,9 +76,9 @@ export function PovertyMeter({ board }: { board: PublicLeaderboardV1 }) {
           <div className="absolute inset-y-[-4px] left-[10%] w-px bg-broke" />
         </div>
         <p className="mt-1.5 flex justify-between text-[10px] uppercase tracking-[0.16em] text-faint">
-          <span>0</span>
-          <span className="text-broke">the poverty line</span>
-          <span>100</span>
+          <span>0%</span>
+          <span className="text-broke">red line = broke</span>
+          <span>100%</span>
         </p>
       </div>
     </div>

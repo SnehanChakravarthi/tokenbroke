@@ -1,39 +1,96 @@
 @import "tailwindcss";
 
-@theme {
-  /* Neutral cold-steel console: the observatory is lab-neutral; each board wears its lab's color.
-     Codex azure and Claude clay are the labs' documented brand accents. */
-  --color-ink: #0a0b0d;
-  --color-panel: #12141a;
-  --color-panel-2: #181b22;
-  --color-line: #262a33;
-  --color-line-soft: #1d2027;
-  --color-paper: #e7e9ee;
-  --color-dim: #9aa1ad;
-  --color-muted: #7e8592;
-  --color-faint: #545b68;
-  --color-ok: #3dd68c;
-  --color-warn: #f2b84b;
-  --color-broke: #ff4d4d;
-  --color-codex: #2b8fff;
-  --color-claude: #d97757;
-
+@theme inline {
+  --color-ink: var(--ink);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-paper: var(--paper);
+  --color-dim: var(--dim);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-broke: var(--broke);
+  --color-codex: var(--codex);
+  --color-claude: var(--claude);
   --font-display: var(--font-archivo);
   --font-mono: var(--font-plex-mono);
 }
 
+/* Light is home: bright, optimistic, a rally in daylight. */
 :root {
+  color-scheme: light;
+  --ink: #f6f5f0;
+  --panel: #ffffff;
+  --panel-2: #efeee8;
+  --line: #dddcd2;
+  --line-soft: #e7e6dd;
+  --paper: #1b1c20;
+  --dim: #4c5158;
+  --muted: #6d727c;
+  --faint: #a2a7ae;
+  --ok: #0e9152;
+  --warn: #c07c00;
+  --broke: #e8432e;
+  --codex: #2b8fff;
+  --claude: #d97757;
+  --glow-default: rgba(43, 143, 255, 0.08);
+  --surface-hi: #ffffff;
+  --surface-lo: #f4f3ec;
+  --key-border: #d8d7cc;
+  --key-hi: #ffffff;
+  --key-lo: #ecebe2;
+  --well-border: #dcdbd1;
+  --well-bg: #edece4;
+  --edge-light: rgba(255, 255, 255, 0.9);
+  --edge-dark: rgba(27, 28, 32, 0.08);
+  --drop: rgba(27, 28, 32, 0.14);
+  --scanline: transparent;
+}
+
+/* The console after dark. */
+.dark {
   color-scheme: dark;
+  --ink: #0a0b0d;
+  --panel: #12141a;
+  --panel-2: #181b22;
+  --line: #262a33;
+  --line-soft: #1d2027;
+  --paper: #e7e9ee;
+  --dim: #9aa1ad;
+  --muted: #7e8592;
+  --faint: #545b68;
+  --ok: #3dd68c;
+  --warn: #f2b84b;
+  --broke: #ff4d4d;
+  --codex: #4d9fff;
+  --claude: #e08a6d;
+  --glow-default: rgba(154, 168, 190, 0.11);
+  --surface-hi: #181c24;
+  --surface-lo: #101319;
+  --key-border: #333947;
+  --key-hi: #1e222b;
+  --key-lo: #0a0c10;
+  --well-border: #1c1f27;
+  --well-bg: #07080b;
+  --edge-light: rgba(231, 233, 238, 0.07);
+  --edge-dark: rgba(0, 0, 0, 0.5);
+  --drop: rgba(0, 0, 0, 0.9);
+  --scanline: rgba(231, 233, 238, 0.02);
 }
 
 body {
-  background: var(--color-ink);
-  color: var(--color-paper);
+  background: var(--ink);
+  color: var(--paper);
   font-family: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
   -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 250ms ease,
+    color 250ms ease;
 }
 
-/* Faint phosphor scanlines + vignette: atmosphere, not costume. */
 .console-surface {
   position: relative;
   isolation: isolate;
@@ -45,12 +102,8 @@ body {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(
-      110% 70% at 50% 0%,
-      var(--glow-color, rgba(154, 168, 190, 0.11)),
-      transparent 60%
-    ),
-    repeating-linear-gradient(0deg, rgba(231, 233, 238, 0.02) 0 1px, transparent 1px 3px);
+    radial-gradient(110% 70% at 50% 0%, var(--glow-color, var(--glow-default)), transparent 60%),
+    repeating-linear-gradient(0deg, var(--scanline) 0 1px, transparent 1px 3px);
   pointer-events: none;
 }
 
@@ -58,7 +111,6 @@ body {
   font-family: var(--font-archivo), "Archivo", system-ui, sans-serif;
 }
 
-/* Blinking record dot */
 @keyframes pip {
   0%,
   60% {
@@ -73,7 +125,6 @@ body {
   animation: pip 1.6s steps(1) infinite;
 }
 
-/* One staged page entrance: semantic chunks, ~90ms apart, then never again. */
 @keyframes fade-up {
   from {
     opacity: 0;
@@ -102,14 +153,7 @@ body {
 .fade-up-5 {
   animation-delay: 400ms;
 }
-@media (prefers-reduced-motion: reduce) {
-  .fade-up {
-    animation-duration: 200ms;
-    transform: none;
-  }
-}
 
-/* Flowing schematic connectors */
 @keyframes flow-dash {
   to {
     stroke-dashoffset: -9;
@@ -118,13 +162,7 @@ body {
 .flow-dash {
   animation: flow-dash 1.1s linear infinite;
 }
-@media (prefers-reduced-motion: reduce) {
-  .flow-dash {
-    animation: none;
-  }
-}
 
-/* Ticker */
 @keyframes ticker-scroll {
   from {
     transform: translateX(0);
@@ -139,81 +177,80 @@ body {
 .ticker-track:hover {
   animation-play-state: paused;
 }
+
 @media (prefers-reduced-motion: reduce) {
-  .ticker-track {
+  .ticker-track,
+  .pip,
+  .flow-dash {
     animation: none;
   }
-  .pip {
-    animation: none;
+  .fade-up {
+    animation-duration: 200ms;
   }
 }
 
-/* Depletion bar cells, drawn with a hard gradient so they read as segments, not a progress bar. */
-.meter-cells {
-  background-image: repeating-linear-gradient(90deg, currentColor 0 6px, transparent 6px 9px);
-}
-
-/* ---- Depth system: hardware-console surfaces, not flat panes. ---- */
-
+/* ---- Depth: hardware surfaces, themed by the vars above. ---- */
 .panel {
-  border-radius: 10px;
-  border: 1px solid var(--color-line);
-  background: linear-gradient(180deg, #181c24 0%, #101319 100%);
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--surface-hi) 0%, var(--surface-lo) 100%);
   box-shadow:
-    inset 0 1px 0 rgba(231, 233, 238, 0.05),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.5),
-    0 14px 28px -22px rgba(0, 0, 0, 0.95);
+    inset 0 1px 0 var(--edge-light),
+    inset 0 -1px 0 var(--edge-dark),
+    0 14px 28px -22px var(--drop);
 }
 
-/* Counter digits as keycaps. */
 .keycap {
-  border-radius: 7px;
-  border: 1px solid #333947;
-  background: linear-gradient(180deg, #1e222b 0%, #12151b 78%, #0a0c10 100%);
+  border-radius: 8px;
+  border: 1px solid var(--key-border);
+  background: linear-gradient(180deg, var(--key-hi) 0%, var(--key-lo) 100%);
   box-shadow:
-    inset 0 1px 0 rgba(231, 233, 238, 0.09),
-    0 2px 0 #05040366,
-    0 3px 8px -2px rgba(0, 0, 0, 0.8);
+    inset 0 1px 0 var(--edge-light),
+    0 2px 0 var(--edge-dark),
+    0 3px 8px -2px var(--drop);
 }
 
-/* Recessed wells: meters, the command line. */
 .well {
-  border-radius: 8px;
-  border: 1px solid #1c1f27;
-  background: #07080b;
+  border-radius: 9px;
+  border: 1px solid var(--well-border);
+  background: var(--well-bg);
   box-shadow:
-    inset 0 2px 5px rgba(0, 0, 0, 0.75),
-    inset 0 -1px 0 rgba(231, 233, 238, 0.03);
+    inset 0 2px 5px var(--edge-dark),
+    inset 0 -1px 0 var(--edge-light);
 }
 
 .raised {
-  border-radius: 9px;
-  border: 1px solid var(--color-line);
-  background: linear-gradient(180deg, #1a1e26 0%, #10131a 100%);
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--surface-hi) 0%, var(--surface-lo) 100%);
   box-shadow:
-    inset 0 1px 0 rgba(231, 233, 238, 0.07),
-    0 2px 0 rgba(0, 0, 0, 0.45),
-    0 10px 20px -14px rgba(0, 0, 0, 0.9);
+    inset 0 1px 0 var(--edge-light),
+    0 2px 0 var(--edge-dark),
+    0 10px 20px -14px var(--drop);
   transition:
-    transform 120ms ease,
-    box-shadow 120ms ease,
-    border-color 120ms ease;
+    transform 140ms cubic-bezier(0.23, 1, 0.32, 1),
+    box-shadow 140ms ease,
+    border-color 140ms ease;
 }
 .raised:hover {
   transform: translateY(-1px);
   box-shadow:
-    inset 0 1px 0 rgba(231, 233, 238, 0.09),
-    0 3px 0 rgba(0, 0, 0, 0.45),
-    0 14px 26px -14px rgba(0, 0, 0, 0.9);
+    inset 0 1px 0 var(--edge-light),
+    0 3px 0 var(--edge-dark),
+    0 14px 26px -14px var(--drop);
 }
 .raised:active {
   transform: translateY(1px) scale(0.97);
   box-shadow:
-    inset 0 2px 4px rgba(0, 0, 0, 0.6),
-    0 1px 0 rgba(0, 0, 0, 0.4);
+    inset 0 2px 4px var(--edge-dark),
+    0 1px 0 var(--edge-dark);
+}
+
+.meter-cells {
+  background-image: repeating-linear-gradient(90deg, currentColor 0 6px, transparent 6px 9px);
 }
 
 ::selection {
-  background: var(--color-broke);
-  color: var(--color-ink);
+  background: var(--broke);
+  color: var(--ink);
 }

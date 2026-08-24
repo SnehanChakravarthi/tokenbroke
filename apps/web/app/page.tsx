@@ -8,6 +8,7 @@ import { SEVERITY_LABEL, severityFor } from "./components/format";
 import { MilestoneBar, TheLoop } from "./components/loop";
 import { MovementCount } from "./components/movement";
 import { DaysSince, PovertyMeter } from "./components/stat-blocks";
+import { ThemeToggle } from "./components/theme-toggle";
 import { Ticker } from "./components/ticker";
 
 export const dynamic = "force-dynamic";
@@ -39,10 +40,10 @@ export default async function Home() {
 
   const glow =
     worst === "broke"
-      ? "rgba(255, 77, 77, 0.10)"
+      ? "rgba(232, 67, 46, 0.10)"
       : worst === "warn"
-        ? "rgba(242, 184, 75, 0.09)"
-        : "rgba(61, 214, 140, 0.07)";
+        ? "rgba(212, 148, 20, 0.10)"
+        : "rgba(24, 169, 87, 0.08)";
 
   return (
     <div className="min-h-screen" style={{ "--glow-color": glow } as React.CSSProperties}>
@@ -59,44 +60,47 @@ export default async function Home() {
           {BRAND.name}
           <span className="text-broke">_</span>
         </p>
-        <p className="hidden text-[10px] uppercase tracking-[0.18em] text-faint sm:block">
-          unaffiliated parody · reads local usage data only
-        </p>
+        <div className="flex items-center gap-4">
+          <p className="hidden text-[10px] uppercase tracking-[0.18em] text-faint sm:block">
+            unaffiliated parody · reads local usage data only
+          </p>
+          <ThemeToggle />
+        </div>
       </header>
 
       <main className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        {/* Hero: the condition, the ask, and the mechanism — drawn, not written. */}
-        <section className="fade-up pt-12 sm:pt-16">
-          <div className="grid gap-8 lg:grid-cols-[1.05fr_1fr] lg:items-end">
-            <div>
-              <h1 className="display max-w-3xl text-[clamp(2.4rem,10.5vw,4.5rem)] font-black leading-[0.95] tracking-tight text-paper [text-wrap:balance] sm:text-7xl">
-                ARE YOU
-                <br />
-                <span className="text-broke">TOKENBROKE?</span>
-              </h1>
-              <p className="mt-4 max-w-lg text-sm leading-relaxed text-dim sm:text-base">
-                Out of tokens with days on the clock? Nobody measures how rate-limited we are —
-                <span className="text-paper"> so we do.</span> Get on the record:
-              </p>
-              <div className="mt-6">
-                <CopyCommand command={BRAND.cliCommand} />
-              </div>
-              <p className="mt-4 text-[10px] uppercase tracking-[0.16em] leading-relaxed text-muted">
-                reads 2 numbers — never your code
-                <span className="mx-2 text-faint">·</span>anonymous, no signup
-                <span className="mx-2 text-faint">·</span>auto-updates:{" "}
-                <span className="text-dim">hooks install</span>
-              </p>
-            </div>
-            <div className="lg:pb-1">
-              <p className="mb-4 text-[11px] uppercase tracking-[0.22em] text-muted">
-                the record, growing
-              </p>
-              <MovementCount stats={movement} />
-              <div className="mt-7">
-                <MilestoneBar stats={movement} />
-              </div>
-            </div>
+        {/* Hero: one centered rally — the condition, the ask, nothing else. */}
+        <section className="fade-up flex flex-col items-center pt-14 text-center sm:pt-20">
+          <p className="mb-5 flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-muted">
+            <span className="pip inline-block size-1.5 rounded-full bg-broke" aria-hidden />
+            the public record of running dry
+          </p>
+          <h1 className="display max-w-3xl text-[clamp(2.6rem,11vw,5.5rem)] font-black leading-[0.95] tracking-tight text-paper [text-wrap:balance]">
+            ARE YOU <span className="text-broke">TOKENBROKE?</span>
+          </h1>
+          <p className="mt-5 max-w-md text-sm leading-relaxed text-dim sm:text-base">
+            Nobody measures how rate-limited we are.{" "}
+            <span className="whitespace-nowrap text-paper">So we do.</span>
+          </p>
+          <div className="mt-8">
+            <CopyCommand command={BRAND.cliCommand} />
+          </div>
+          <p className="mt-4 text-[10px] uppercase tracking-[0.16em] leading-relaxed text-muted">
+            reads 2 numbers — never your code
+            <span className="mx-2 text-faint">·</span>anonymous, no signup
+            <span className="mx-2 text-faint">·</span>auto-updates:{" "}
+            <span className="text-dim">hooks install</span>
+          </p>
+        </section>
+
+        {/* The record: the number that only goes up, and where it's headed. */}
+        <section
+          className="fade-up fade-up-1 mx-auto mt-14 flex max-w-2xl flex-col items-center text-center"
+          aria-label="The record"
+        >
+          <MovementCount stats={movement} />
+          <div className="mt-7 w-full">
+            <MilestoneBar stats={movement} />
           </div>
         </section>
 

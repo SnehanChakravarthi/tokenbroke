@@ -82,22 +82,18 @@ export function TheLoop({
             <span className="text-faint">$ </span>
             {BRAND.cliCommand}
           </p>
-          <p className="mt-1 text-[11px] text-muted">5 seconds. anonymous.</p>
         </Node>
         <Flow />
         <Node step="02" label="you're counted">
           <p className="display text-2xl font-black tabular-nums text-paper">
             {stats.devsOnRecord.toLocaleString("en-US")}
             <span className="ml-2 align-middle text-[11px] font-normal uppercase tracking-[0.18em] text-muted">
-              on the record
+              of us
             </span>
-          </p>
-          <p className="mt-1 text-[11px] text-muted">
-            {stats.offeringsTotal.toLocaleString("en-US")} offerings and counting
           </p>
         </Node>
         <Flow />
-        <Node step="03" label="pressure gets legible">
+        <Node step="03" label="the pain gets visible">
           <div className="well relative mt-1 h-3 overflow-hidden">
             {median !== null && (
               <div
@@ -108,8 +104,8 @@ export function TheLoop({
             <div className="absolute inset-y-[-3px] left-[10%] w-px bg-broke" />
           </div>
           <p className="mt-1.5 text-[11px] text-muted">
-            median <span className="text-warn">{median ?? "—"}%</span> left ·{" "}
-            <span className="text-broke">poverty line</span> at 10
+            together,{" "}
+            <span className="font-semibold text-warn">{median ?? "—"}% of our tokens left</span>
           </p>
         </Node>
         <Flow />
@@ -121,12 +117,12 @@ export function TheLoop({
           <p className="mt-1 text-[11px] text-muted">both labs have folded before.</p>
         </Node>
       </div>
-      <p className="mt-4 text-center text-[11px] uppercase tracking-[0.24em] text-muted lg:text-right">
-        <span aria-hidden className="mr-2 text-faint">
-          ↩
-        </span>
-        every reset zeroes the counters — one of us is a complaint,{" "}
-        <span className="text-paper">all of us is a negotiation</span>
+      <p className="mt-5 text-center text-[11px] uppercase tracking-[0.24em] text-muted">
+        bigger number{" "}
+        <span aria-hidden className="text-faint">
+          →
+        </span>{" "}
+        sooner resets. <span className="text-paper">that&apos;s the whole game.</span>
       </p>
     </div>
   );

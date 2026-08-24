@@ -25,9 +25,7 @@ export function MovementCount({ stats }: { stats: MovementStats }) {
     <div>
       <Digits value={stats.devsOnRecord} />
       <p className="mt-3 text-[11px] uppercase tracking-[0.24em] text-muted">
-        developers on the record ·{" "}
-        <span className="text-paper">{stats.offeringsTotal.toLocaleString("en-US")}</span> offerings
-        filed
+        developers on the record
       </p>
     </div>
   );
