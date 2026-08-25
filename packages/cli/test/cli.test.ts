@@ -132,10 +132,23 @@ describe("bin entry under npx-style symlink", () => {
     const link = join(dir, "tokenbroke");
     await symlink(resolve("dist/index.js"), link);
     try {
-      const { stdout } = await promisify(execFile)("node", [link, "--dry-run"], {
-        env: { ...process.env, TOKENBROKE_HOME: join(dir, "home") },
+      // Empty tool homes make this hermetic: with nothing to read, --dry-run exits 2
+      // everywhere (dev machines and CI alike). The regression under test is only that
+      // the bin entry reaches main() when invoked through npm's .bin symlink.
+      const result = await promisify(execFile)("node", [link, "--dry-run"], {
+        env: {
+          ...process.env,
+          TOKENBROKE_HOME: join(dir, "home"),
+          CLAUDE_CONFIG_DIR: join(dir, "claude"),
+          CODEX_HOME: join(dir, "codex"),
+        },
+      }).catch((error: { code?: number; stdout?: string }) => {
+        if (error.code === 2 && typeof error.stdout === "string") {
+          return { stdout: error.stdout };
+        }
+        throw error;
       });
-      expect(stdout).toContain("network skipped");
+      expect(result.stdout).toContain("network skipped");
     } finally {
       await rm(dir, { recursive: true, force: true });
     }
