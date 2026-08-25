@@ -13,9 +13,14 @@ export function ClaudeCodeMark({ className }: { className?: string }) {
   );
 }
 
-export function CodexMark({ className }: { className?: string }) {
+/**
+ * The Codex gradient lives in ONE always-rendered 0x0 svg (mounted in the root layout).
+ * Per-instance defs broke desktop: every mark referenced the first defs in the DOM,
+ * which sat inside the lg:hidden board toggle, and display:none defs resolve to nothing.
+ */
+export function CodexMarkDefs() {
   return (
-    <svg viewBox="0 0 24 24" role="img" aria-label="OpenAI Codex" className={className}>
+    <svg width="0" height="0" className="absolute" aria-hidden="true" focusable="false">
       <defs>
         <linearGradient
           id="codex-mark-grad"
@@ -30,6 +35,13 @@ export function CodexMark({ className }: { className?: string }) {
           <stop offset="1" stopColor="#3941ff" />
         </linearGradient>
       </defs>
+    </svg>
+  );
+}
+
+export function CodexMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" role="img" aria-label="OpenAI Codex" className={className}>
       <path
         d="M9.064 3.344a4.578 4.578 0 012.285-.312c1 .115 1.891.54 2.673 1.275.01.01.024.017.037.021a.104.104 0 00.043 0 4.556 4.556 0 013.046.275l.047.022.116.057a4.585 4.585 0 012.188 2.399c.209.51.313 1.041.315 1.595.015.412-.03.824-.134 1.223a.124.124 0 00.03.115c.594.607.988 1.33 1.183 2.17.289 1.425-.007 2.71-.887 3.854l-.136.166a4.548 4.548 0 01-2.201 1.388.12.12 0 00-.081.076c-.191.551-.383 1.023-.74 1.494-.9 1.187-2.222 1.846-3.711 1.838-1.187-.006-2.239-.44-3.157-1.302a.109.109 0 00-.105-.024c-.388.125-.78.143-1.204.138a4.438 4.438 0 01-1.945-.466 4.553 4.553 0 01-1.61-1.335c-.152-.202-.303-.392-.414-.617a5.797 5.797 0 01-.37-.961 4.575 4.575 0 01-.014-2.298.133.133 0 00.006-.056.083.083 0 00-.027-.048 4.467 4.467 0 01-1.034-1.651 3.898 3.898 0 01-.251-1.192 5.193 5.193 0 01.141-1.6c.337-1.112.982-1.985 1.933-2.618.212-.141.413-.251.601-.33a6.29 6.29 0 01.646-.227.1.1 0 00.065-.066 4.512 4.512 0 01.829-1.615 4.54 4.54 0 011.837-1.388zm3.482 10.565a.64.64 0 00-.601.636.64.64 0 00.601.636h3.636l.036.001a.64.64 0 00.637-.637.64.64 0 00-.637-.637l-.036.001h-3.636zM8.462 9.23a.64.64 0 00-.543-.304.64.64 0 00-.563.935l1.272 2.224-1.266 2.136a.638.638 0 001.095.649l1.454-2.455a.637.637 0 00.005-.64L8.462 9.23z"
         fill="url(#codex-mark-grad)"

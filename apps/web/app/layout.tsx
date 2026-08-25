@@ -2,6 +2,7 @@ import { BRAND } from "@tokenbroke/shared";
 import type { Metadata } from "next";
 import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import { CodexMarkDefs } from "./components/icons";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -32,7 +33,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${archivo.variable} ${plexMono.variable}`}>
-      <body className="console-surface min-h-screen">{children}</body>
+      <body className="console-surface min-h-screen">
+        <CodexMarkDefs />
+        {children}
+      </body>
     </html>
   );
 }
