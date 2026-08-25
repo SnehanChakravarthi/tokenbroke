@@ -1,5 +1,7 @@
 import { BRAND } from "@tokenbroke/shared";
 import { headers } from "next/headers";
+import Image from "next/image";
+import wordmark from "@/public/tokenbroke-3d.png";
 import { siteDatabase } from "@/src/lib/dev-db";
 import { getPublicLeaderboard } from "@/src/lib/leaderboard";
 import { movementStats } from "@/src/lib/movement";
@@ -88,8 +90,30 @@ export default async function Home() {
               views
             </span>
           </p>
-          <h1 className="display mt-8 max-w-3xl text-[clamp(2.6rem,11vw,5.5rem)] font-black leading-[0.95] tracking-tight text-paper [text-wrap:balance]">
-            ARE YOU <span className="text-broke">TOKENBROKE?</span>
+          <h1 className="relative mt-9 flex w-full flex-col items-center">
+            <span className="display text-[clamp(1.9rem,6.5vw,3.4rem)] font-black leading-none tracking-tight text-paper">
+              ARE YOU
+            </span>
+            {/* The wordmark rides over ARE YOU, tilted like a slapped-on sticker. */}
+            <span className="relative z-10 -mt-3 flex w-[min(90vw,46rem)] rotate-[-3.5deg] items-center sm:-mt-5">
+              <Image
+                src={wordmark}
+                alt="TOKENBROKE?"
+                priority
+                className="h-auto w-full min-w-0 flex-1"
+              />
+              <span
+                aria-hidden
+                className="display -ml-[0.14em] font-black leading-none"
+                style={{
+                  fontSize: "min(17vw, 8rem)",
+                  color: "#f85850",
+                  textShadow: "-0.05em 0.055em 0 #601818",
+                }}
+              >
+                ?
+              </span>
+            </span>
           </h1>
           <p className="display mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-2xl font-black tracking-tight text-paper sm:text-4xl">
             <FlapDigits

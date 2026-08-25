@@ -1,4 +1,3 @@
-import { BRAND } from "@tokenbroke/shared";
 import Image from "next/image";
 
 const HANDS = [
