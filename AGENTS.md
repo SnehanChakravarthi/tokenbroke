@@ -305,8 +305,7 @@ ships.
 - Artwork: owner will design a tokenbroke logo/icon, then it gets applied everywhere: site favicon,
   GitHub social preview, npm page, OG cards, maybe the wordmark.
 - Sponsors: revisit and define what sponsorship means here — GitHub Sponsors on the owner's account
-  vs. a single on-brand sponsor slot on the site (see monetization discussion: sponsor slot > ads;
-  data/API is the long-term product). Decide post-launch.
+  vs. a single on-brand sponsor slot on the site. Decide post-launch; nothing ships before then.
 - npm provenance: move `npm publish` to a GitHub Actions workflow with `--provenance` so the npm
   tarball is provably built from this repo (Actions are free now that the repo is public). Owner
   sets up the npm token in repo secrets when ready. The CLI README lands on npmjs.com only with the

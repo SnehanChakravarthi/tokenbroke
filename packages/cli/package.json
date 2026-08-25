@@ -1,8 +1,15 @@
 {
   "name": "tokenbroke",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Are you tokenbroke? Prove it. Reads your local Codex CLI / Claude Code usage and ranks you on the leaderboard of the most rate-limited developers alive.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SnehanChakravarthi/tokenbroke.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://tokenbroke.lol",
+  "bugs": "https://github.com/SnehanChakravarthi/tokenbroke/issues",
   "type": "module",
   "bin": {
     "tokenbroke": "dist/index.js"
@@ -30,13 +37,6 @@
     "typescript": "^5",
     "vitest": "^3.2.0"
   },
-  "homepage": "https://tokenbroke.lol",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SnehanChakravarthi/tokenbroke.git",
-    "directory": "packages/cli"
-  },
-  "bugs": "https://github.com/SnehanChakravarthi/tokenbroke/issues",
   "keywords": [
     "rate-limit",
     "claude-code",
