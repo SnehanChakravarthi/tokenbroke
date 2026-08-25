@@ -5,6 +5,7 @@ import { getPublicLeaderboard } from "@/src/lib/leaderboard";
 import { movementStats } from "@/src/lib/movement";
 import { recordPageView, viewStats } from "@/src/lib/views";
 import { LabUniverse } from "./components/board";
+import { CommandExplainer } from "./components/command-explainer";
 import { CopyCommand } from "./components/copy-command";
 import { FlapDigits } from "./components/flap";
 import { severityFor } from "./components/format";
@@ -100,19 +101,17 @@ export default async function Home() {
             <TheHands />
           </div>
 
-          <div className="fade-up fade-up-2 mt-10 flex flex-col items-center">
-            <p className="mb-4 text-center leading-snug">
-              <span className="block whitespace-nowrap text-[13px] text-dim sm:text-[15px]">
-                That's one small command for a dev —
-              </span>
-              <span className="display mt-0.5 block whitespace-nowrap text-base font-extrabold tracking-tight text-paper sm:text-lg">
-                one giant leap for devkind.
-              </span>
+          <div className="fade-up fade-up-2 mt-10 flex w-full flex-col items-center">
+            <p className="mb-2.5 text-center text-xs text-dim">
+              that&apos;s one small command for a dev&hellip;
             </p>
             <CopyCommand command={BRAND.cliCommand} />
-            <p className="mt-3 text-center text-[10px] uppercase tracking-[0.16em] text-muted">
-              reads 2 numbers — never your code · anonymous, no signup
+            <p className="display mt-2.5 text-center text-sm font-extrabold tracking-tight text-paper sm:text-base">
+              &hellip;and one giant leap for devkind.
             </p>
+            <div className="mt-2">
+              <CommandExplainer />
+            </div>
           </div>
         </section>
 

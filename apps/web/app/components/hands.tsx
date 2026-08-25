@@ -1,3 +1,4 @@
+import { BRAND } from "@tokenbroke/shared";
 import Image from "next/image";
 
 const HANDS = [
@@ -35,19 +36,23 @@ function HandBadge({ hand }: { hand: (typeof HANDS)[number] }) {
 }
 
 /**
- * The whole thesis in one breath, with the two hands inlined as badges —
- * faces stay legible, the command stays the hero.
+ * The whole thesis in one breath: what this is, who can end it, and why your row
+ * matters — with the two hands inlined as badges so faces stay legible without
+ * taking over the hero.
  */
 export function TheHands() {
   const [tibo, boris] = HANDS;
   return (
     <p className="mx-auto max-w-xl text-center text-sm leading-[1.9] text-dim sm:text-base">
-      The public record of how rate-limited developers really are —{" "}
-      <span className="text-paper">measured by us, because nobody else will.</span> It exists to
-      move two hands, <HandBadge hand={tibo} /> and <HandBadge hand={boris} />: when enough of us
-      are on it, <span className="text-paper">resets get scheduled, budgets get bigger,</span> and
-      intelligence gets <span className="text-paper">distributed — not rationed.</span>{" "}
-      <span className="text-faint">(affectionately)</span>
+      {BRAND.name} is{" "}
+      <span className="text-paper">the public leaderboard of rate-limited developers</span> — real
+      usage data, read straight from our machines. Only two hands can grant a reset:{" "}
+      <HandBadge hand={tibo} /> <span className="text-faint">(Codex)</span> and{" "}
+      <HandBadge hand={boris} /> <span className="text-faint">(Claude Code)</span>.{" "}
+      <span className="text-paper">
+        Enough of us on the record and they&apos;ll have to play them:
+      </span>{" "}
+      resets get scheduled, budgets get bigger. <span className="text-faint">(affectionately)</span>
     </p>
   );
 }
