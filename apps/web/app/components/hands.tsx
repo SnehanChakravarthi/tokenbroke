@@ -19,7 +19,7 @@ function HandBadge({ hand }: { hand: (typeof HANDS)[number] }) {
   return (
     <a
       href={`https://x.com/${hand.handle}`}
-      title={`${hand.name} — ${hand.role}`}
+      title={`${hand.name} · ${hand.role}`}
       className="mx-0.5 inline-flex -translate-y-px items-center gap-1.5 rounded-full border border-line bg-panel py-0.5 pl-0.5 pr-2 align-middle transition-colors duration-150 hover:border-paper/30"
     >
       <Image
@@ -44,10 +44,10 @@ export function TheHands() {
   return (
     <p className="mx-auto max-w-xl text-center text-sm leading-[1.9] text-dim sm:text-base">
       <span className="text-paper">They meter our tokens. We meter the misery.</span> A public
-      leaderboard of rate-limited developers — real usage, straight from our machines. Resets come
+      leaderboard of rate-limited developers: real usage, straight from our machines. Resets come
       from two hands, <HandBadge hand={tibo} /> <span className="text-faint">(Codex)</span> and{" "}
-      <HandBadge hand={boris} /> <span className="text-faint">(Claude Code)</span> —{" "}
-      <span className="text-paper">enough of us on the record forces them to play.</span>{" "}
+      <HandBadge hand={boris} /> <span className="text-faint">(Claude Code)</span>.{" "}
+      <span className="text-paper">Enough of us on the record forces them to play.</span>{" "}
       <span className="text-faint">(affectionately)</span>
     </p>
   );

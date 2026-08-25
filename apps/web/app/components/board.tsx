@@ -1,3 +1,5 @@
+import { BRAND } from "@tokenbroke/shared";
+import Link from "next/link";
 import type { PublicLeaderboardV1 } from "@/src/lib/leaderboard";
 import { FlapDigits } from "./flap";
 import { resetsIn } from "./format";
@@ -90,6 +92,15 @@ function Battery({ percent }: { percent: number | null }) {
   );
 }
 
+/** Every row gets its financial condition, stated flatly. */
+function verdictFor(remaining: number): { word: string; tone: string } {
+  if (remaining <= 1) return { word: "flatlined", tone: "text-broke" };
+  if (remaining <= 5) return { word: "destitute", tone: "text-broke" };
+  if (remaining <= 15) return { word: "rationed", tone: "text-warn" };
+  if (remaining <= 30) return { word: "strained", tone: "text-warn" };
+  return { word: "solvent", tone: "text-ok" };
+}
+
 function statusEmoji(remaining: number): string {
   if (remaining <= 1) return "💀";
   if (remaining <= 5) return "🪫";
@@ -121,7 +132,7 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
 
   return (
     <section
-      aria-label={`${title} — state and leaderboard`}
+      aria-label={`${title}: state and leaderboard`}
       className="panel relative overflow-hidden rounded-2xl"
     >
       {/* A faint wash of the lab's own color across the header. */}
@@ -183,60 +194,74 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
           {rows.map((row) => {
             const remaining = Math.round(row.remainingPercent * 10) / 10;
             const top3 = row.rank <= 3;
+            const verdict = verdictFor(remaining);
             return (
               <li
                 key={`${board.tool}-${row.rank}`}
-                className={`grid grid-cols-[2.2rem_1fr_auto] items-center gap-x-3 px-5 ${
-                  top3 ? "bg-panel-2/80 py-3" : "py-2.5"
-                } border-b border-line-soft last:border-b-0`}
+                className="border-b border-line-soft last:border-b-0"
               >
-                <span
-                  className={`text-right tabular-nums ${top3 ? "text-lg" : "text-sm text-faint"}`}
-                  role="img"
-                  aria-label={`rank ${row.rank}`}
+                <Link
+                  href={`/u/${encodeURIComponent(row.name)}`}
+                  className={`grid grid-cols-[2.2rem_1fr_auto] items-center gap-x-3 px-5 ${
+                    top3 ? "bg-panel-2/80 py-3" : "py-2.5"
+                  } transition-colors duration-150 hover:bg-panel-2`}
                 >
-                  {top3 ? MEDALS[row.rank - 1] : row.rank}
-                </span>
-                <span className="flex min-w-0 items-center gap-2.5">
-                  <Monogram name={row.name} claimed={row.claimed} tool={board.tool} />
-                  <span className="min-w-0">
-                    <span
-                      className={`block truncate text-sm ${
-                        row.claimed ? "font-semibold text-paper" : "text-dim"
-                      }`}
-                    >
-                      {row.name}
+                  <span
+                    className={`text-right tabular-nums ${top3 ? "text-lg" : "text-sm text-faint"}`}
+                    role="img"
+                    aria-label={`rank ${row.rank}`}
+                  >
+                    {top3 ? MEDALS[row.rank - 1] : row.rank}
+                  </span>
+                  <span className="flex min-w-0 items-center gap-2.5">
+                    <Monogram name={row.name} claimed={row.claimed} tool={board.tool} />
+                    <span className="min-w-0">
+                      <span
+                        className={`block truncate text-sm ${
+                          row.claimed ? "font-semibold text-paper" : "text-dim"
+                        }`}
+                      >
+                        {row.name}
+                      </span>
+                      <span className="block text-[10px] uppercase tracking-[0.14em] text-faint">
+                        <span className={verdict.tone}>{verdict.word}</span>
+                        {" · "}
+                        {row.plan ?? "plan unknown"}
+                        {row.claimed ? "" : " · anon"}
+                        {row.modelScoped && (
+                          <span className={`ml-1.5 ${accent}`}>
+                            {row.modelScoped.label} {row.modelScoped.remainingPercent}%
+                          </span>
+                        )}
+                      </span>
                     </span>
-                    <span className="block text-[10px] uppercase tracking-[0.14em] text-faint">
-                      {row.plan ?? "plan unknown"}
-                      {row.claimed ? "" : " · anon"}
-                      {row.modelScoped && (
-                        <span className={`ml-1.5 ${accent}`}>
-                          {row.modelScoped.label} {row.modelScoped.remainingPercent}%
+                  </span>
+                  <span className="text-right">
+                    <span
+                      className={`block text-sm font-semibold tabular-nums ${remainingTone(remaining)}`}
+                    >
+                      {remaining}%
+                      {statusEmoji(remaining) && (
+                        <span className="ml-1" aria-hidden>
+                          {statusEmoji(remaining)}
                         </span>
                       )}
                     </span>
+                    <span className="block text-[10px] tabular-nums text-faint">
+                      resets {resetsIn(row.resetsAt, now)}
+                    </span>
                   </span>
-                </span>
-                <span className="text-right">
-                  <span
-                    className={`block text-sm font-semibold tabular-nums ${remainingTone(remaining)}`}
-                  >
-                    {remaining}%
-                    {statusEmoji(remaining) && (
-                      <span className="ml-1" aria-hidden>
-                        {statusEmoji(remaining)}
-                      </span>
-                    )}
-                  </span>
-                  <span className="block text-[10px] tabular-nums text-faint">
-                    resets {resetsIn(row.resetsAt, now)}
-                  </span>
-                </span>
+                </Link>
               </li>
             );
           })}
         </ol>
+      )}
+      {board.rows.length > rows.length && (
+        <p className="border-t border-line-soft px-5 py-3 text-center text-[10px] uppercase tracking-[0.16em] text-faint">
+          top {rows.length} of {board.rows.length} on the record · find yourself:{" "}
+          <span className="text-dim">{BRAND.cliCommand}</span>
+        </p>
       )}
     </section>
   );

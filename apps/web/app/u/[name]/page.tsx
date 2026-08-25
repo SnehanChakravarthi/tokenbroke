@@ -27,7 +27,7 @@ function findRow(board: PublicLeaderboardV1, name: string): LeaderboardRow | nul
 export async function generateMetadata({ params }: { params: Promise<{ name: string }> }) {
   const { name } = await params;
   const decoded = decodeURIComponent(name).slice(0, 60);
-  return { title: `${decoded} — ${BRAND.domain}` };
+  return { title: `${decoded} · ${BRAND.domain}` };
 }
 
 /**
@@ -71,7 +71,7 @@ export default async function ProfilePage({
       <main className="mx-auto flex w-full max-w-2xl flex-col items-center px-4 pb-16 pt-12 text-center sm:px-6">
         {claimed && (
           <div className="fade-up mb-8 flex items-center gap-2 rounded-full border border-ok/40 bg-ok/10 px-5 py-2.5 text-sm text-ok">
-            <span aria-hidden>✓</span> row claimed. this page is yours now — share the link.
+            <span aria-hidden>✓</span> row claimed. this page is yours now. share the link.
           </div>
         )}
 
@@ -187,7 +187,7 @@ export default async function ProfilePage({
         ) : (
           <div className="fade-up fade-up-1 panel mt-10 w-full rounded-2xl px-6 py-8">
             <p className="text-sm leading-relaxed text-dim">
-              nobody by this name has a fresh reading. rows go quiet after 24 hours of silence — one
+              nobody by this name has a fresh reading. rows go quiet after 24 hours of silence; one
               command puts you back on the record:
             </p>
             <p className="mt-4 text-lg text-paper">

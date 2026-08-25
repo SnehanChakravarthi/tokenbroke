@@ -5,7 +5,7 @@ import { BRAND, claimUrl } from "@tokenbroke/shared";
 // Server-side roasts (per-rank) come in the API response; this file is the CLI's own voice.
 
 export const COPY = {
-  header: `${BRAND.name} — are you ${BRAND.name}? prove it.`,
+  header: `${BRAND.name} · are you ${BRAND.name}? prove it.`,
   reading: "reading your local usage state…",
   submitting: "filing your offering with the record…",
 
@@ -14,7 +14,7 @@ export const COPY = {
   youMarker: "◀ you",
   anonymousBadge: "anon",
   asOf: (hoursAgo: number): string => `as of ${Math.round(hoursAgo)}h ago`,
-  sentenceServed: "sentence served — run again to confirm you're still broke",
+  sentenceServed: "sentence served. run again to confirm you're still broke",
   notBroke: "not broke. come back when it hurts.",
 
   collective: (
@@ -74,7 +74,7 @@ export const COPY = {
       "  │                                             │",
       "  │  it's anonymous right now. a github login   │",
       "  │  (~30s) puts your name & avatar on the      │",
-      "  │  public board — and honestly, the record    │",
+      "  │  public board, and honestly, the record    │",
       "  │  hits harder with real faces on it.         │",
       "  │  nothing else changes. we'd love to have    │",
       "  │  you on it properly.                        │",
@@ -105,7 +105,7 @@ export const COPY = {
       installed: "installed, awaiting trust",
       trusted: "active",
       missing: "not installed",
-      "stale-node": "installed, but node moved — run hooks install again",
+      "stale-node": "installed, but node moved; run hooks install again",
     }[state];
     return `${tool}: ${label}`;
   },

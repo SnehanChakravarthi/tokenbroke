@@ -10,7 +10,7 @@ const FACTS: ReadonlyArray<{ id: string; yes: boolean; text: ReactNode }> = [
     yes: true,
     text: (
       <>
-        100% open source under MIT —{" "}
+        100% open source under MIT:{" "}
         <a
           href={BRAND.repoUrl}
           className="text-dim underline decoration-dotted underline-offset-2 hover:text-paper"
@@ -23,13 +23,13 @@ const FACTS: ReadonlyArray<{ id: string; yes: boolean; text: ReactNode }> = [
   {
     id: "reads",
     yes: true,
-    text: "reads the usage + rate-limit numbers Claude Code and Codex already keep on your machine — the same stats you see in /usage",
+    text: "reads the usage + rate-limit numbers Claude Code and Codex already keep on your machine (the same stats you see in /usage)",
   },
   { id: "never", yes: false, text: "never your code, prompts, conversations, or credentials" },
   {
     id: "anon",
     yes: true,
-    text: "files one signed snapshot under an anonymous name, in ~5 seconds — claiming your row with GitHub later is optional",
+    text: "files one signed snapshot under an anonymous name, in ~5 seconds. claiming your row with GitHub later is optional",
   },
   {
     id: "hooks",
@@ -105,7 +105,7 @@ export function CommandExplainer() {
           </ul>
           <p className="mt-3 border-t border-line-soft pt-2.5 text-[10px] leading-relaxed text-faint">
             everything runs locally, and submits only when you (or your hook) run it. don&apos;t
-            trust us —{" "}
+            trust us,{" "}
             <a
               href={BRAND.repoUrl}
               className="text-dim underline decoration-dotted underline-offset-2 hover:text-paper"

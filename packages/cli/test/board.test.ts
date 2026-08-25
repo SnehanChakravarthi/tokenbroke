@@ -55,9 +55,11 @@ describe("renderBoard", () => {
 
     const expired = toolReading("claude-code", 99, -1);
     response.perTool[0] = { ...claude, rankable: false, misery: null };
-    expect(renderBoard(response, [expired, toolReading("codex")])).toContain(
-      COPY.sentenceServed.toUpperCase(),
-    );
+    const served = renderBoard(response, [expired, toolReading("codex")]);
+    // The verdict renderer splits "headline. aside" into a bold line plus a dim aside.
+    const [headline, aside] = COPY.sentenceServed.split(". ");
+    expect(served).toContain((headline ?? "").toUpperCase());
+    expect(served).toContain(aside ?? "");
 
     const noSnapshot = {
       ...toolReading("claude-code"),

@@ -7,7 +7,7 @@ import { loadOgAssets } from "@/src/og/assets";
 import { Frame, INK, OG_SIZE, ogFonts, Pill } from "@/src/og/frame";
 
 export const dynamic = "force-dynamic";
-export const alt = `${BRAND.name} — the public leaderboard of rate-limited developers`;
+export const alt = `${BRAND.name} · the public leaderboard of rate-limited developers`;
 export const size = OG_SIZE;
 export const contentType = "image/png";
 
@@ -66,7 +66,7 @@ export default async function OpengraphImage() {
           display: "flex",
           alignItems: "baseline",
           gap: 18,
-          marginTop: 26,
+          marginTop: 32,
           fontSize: 40,
           color: INK.dim,
         }}
@@ -78,7 +78,7 @@ export default async function OpengraphImage() {
         )}
         <span>{devs === null ? "the record is live." : "of us are."}</span>
       </div>
-      <div style={{ display: "flex", gap: 20, marginTop: 34 }}>
+      <div style={{ display: "flex", gap: 20, marginTop: 32 }}>
         <Pill color={INK.codex}>{codexLine}</Pill>
         <Pill color={INK.claude}>{claudeLine}</Pill>
       </div>

@@ -114,7 +114,7 @@ export default async function Home() {
 
           <div className="fade-up fade-up-2 mt-10 flex w-full flex-col items-center">
             <p className="mb-4 max-w-lg text-center text-[13px] leading-relaxed text-dim [text-wrap:balance]">
-              That&apos;s one small command for a dev —{" "}
+              That&apos;s one small command for a dev,{" "}
               <span className="display text-sm font-extrabold tracking-tight text-paper">
                 one giant leap for devkind.
               </span>
@@ -160,7 +160,7 @@ export default async function Home() {
         <div className="flex flex-col gap-3 text-[11px] leading-relaxed text-faint sm:flex-row sm:justify-between">
           <p className="max-w-md">
             {BRAND.name} is an unaffiliated parody and community tool. Not endorsed by, associated
-            with, or speaking for OpenAI or Anthropic. The bit is affectionate — the endgame is the
+            with, or speaking for OpenAI or Anthropic. The bit is affectionate; the endgame is the
             labs reading this page. The data is serious.
             <span className="mt-2 block">
               <a
@@ -168,8 +168,8 @@ export default async function Home() {
                 className="text-muted underline decoration-dotted underline-offset-2 hover:text-paper"
               >
                 open source under MIT
-              </a>{" "}
-              — every line of the CLI and this site.
+              </a>
+              : every line of the CLI and this site.
             </span>
           </p>
           <p className="max-w-md sm:text-right">

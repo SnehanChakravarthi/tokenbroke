@@ -35,8 +35,8 @@ export default async function ClaimPage({ params }: PageProps<"/claim/[code]">) 
         <div className="panel mt-8 w-full rounded-2xl p-6 text-center">
           <h1 className="display text-xl font-black text-paper">claim code expired</h1>
           <p className="mt-3 text-sm leading-relaxed text-dim">
-            Codes live for 7 days. Run <span className="text-paper">{BRAND.cliCommand}</span> again
-            — your receipt prints a fresh one.
+            Codes live for 7 days. Run <span className="text-paper">{BRAND.cliCommand}</span> again;
+            your receipt prints a fresh one.
           </p>
         </div>
       ) : (
@@ -67,8 +67,8 @@ export default async function ClaimPage({ params }: PageProps<"/claim/[code]">) 
 
           <p className="mt-6 text-[13px] leading-relaxed text-dim">
             Right now this row is anonymous. Claiming puts your{" "}
-            <span className="text-paper">GitHub name and avatar</span> on it — on the public board
-            at {BRAND.domain}. Nothing else changes, and your usage data stays exactly as filed.
+            <span className="text-paper">GitHub name and avatar</span> on it, on the public board at{" "}
+            {BRAND.domain}. Nothing else changes, and your usage data stays exactly as filed.
           </p>
 
           <form method="post" action="/api/claim/start" className="mt-6">
@@ -97,7 +97,7 @@ export default async function ClaimPage({ params }: PageProps<"/claim/[code]">) 
             >
               GitHub profile's social accounts
             </a>
-            ? We'll show it on your row — that's the only way one gets there, so nobody can wear
+            ? We'll show it on your row; that's the only way one gets there, so nobody can wear
             someone else's handle.
           </p>
         </div>

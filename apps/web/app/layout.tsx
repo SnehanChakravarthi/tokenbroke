@@ -17,7 +17,7 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(BRAND.siteUrl),
-  title: `${BRAND.name} — the most rate-limited developers alive`,
+  title: `${BRAND.name} · the most rate-limited developers alive`,
   description:
     "A community leaderboard of the most rate-limited AI coding tool users alive. Real local usage data, one command, zero signup.",
   openGraph: {

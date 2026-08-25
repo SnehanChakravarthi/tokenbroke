@@ -68,7 +68,7 @@ export function TheLoop({
               🔥
             </span>
           </p>
-          <p className="mt-1 text-[11px] text-muted">of our tokens — already burned</p>
+          <p className="mt-1 text-[11px] text-muted">of our tokens, already burned</p>
         </>
       ),
     },

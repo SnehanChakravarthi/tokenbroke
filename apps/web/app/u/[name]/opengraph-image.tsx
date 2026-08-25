@@ -43,14 +43,14 @@ export default async function OpengraphImage({ params }: { params: Promise<{ nam
   const bestRank = entries.length ? Math.min(...entries.map(({ row }) => row.rank)) : null;
 
   return new ImageResponse(
-    <Frame footer={`claim yours — ${BRAND.cliCommand}`}>
+    <Frame footer={`claim yours: ${BRAND.cliCommand}`}>
       {/* biome-ignore lint/performance/noImgElement: satori renders plain img tags */}
       <img
         src={assets.wordmark}
         width={440}
         height={64}
         alt=""
-        style={{ transform: "rotate(-3deg)", marginBottom: 34 }}
+        style={{ transform: "rotate(-3deg)", marginBottom: 32 }}
       />
       <div
         style={{
@@ -58,7 +58,7 @@ export default async function OpengraphImage({ params }: { params: Promise<{ nam
           fontFamily: "Archivo Black",
           fontSize: name.length > 18 ? 52 : 68,
           color: INK.paper,
-          marginBottom: 10,
+          marginBottom: 12,
         }}
       >
         {name}
@@ -67,13 +67,13 @@ export default async function OpengraphImage({ params }: { params: Promise<{ nam
         {entries.length ? "ON THE RECORD" : "NO FRESH READING ON RECORD"}
       </div>
       {bestRank !== null && (
-        <div style={{ display: "flex", gap: 12, marginTop: 22, fontSize: 30, color: INK.dim }}>
+        <div style={{ display: "flex", gap: 12, marginTop: 24, fontSize: 30, color: INK.dim }}>
           <span>the</span>
           <span style={{ color: INK.broke, fontWeight: 600 }}>{ordinal(bestRank)}</span>
           <span>brokest developer alive.</span>
         </div>
       )}
-      <div style={{ display: "flex", gap: 22, marginTop: 36 }}>
+      <div style={{ display: "flex", gap: 22, marginTop: 32 }}>
         {entries.map(({ board, row }) => {
           const meta = TOOL_META[board.tool];
           return (

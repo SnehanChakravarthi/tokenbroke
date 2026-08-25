@@ -388,7 +388,7 @@ export function renderBoard(response: SubmissionSuccessV1, readings: LocalReadin
     lines.push(center(paint(COPY.claimed(response.identity.claimed.githubLogin), "bold")));
   }
   lines.push(dots());
-  lines.push(center(paint("one small command for a dev —", "dim")));
+  lines.push(center(paint("one small command for a dev,", "dim")));
   lines.push(center(paint("one giant leap for devkind.", "bold")));
   lines.push("", barcode(response.identity.deviceId));
   lines.push(center(paint(response.identity.anonymousName, "dim")));
