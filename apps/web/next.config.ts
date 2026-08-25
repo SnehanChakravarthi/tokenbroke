@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/opengraph-image": ["./src/og/fonts/*.ttf", "./public/tokenbroke-3d.png"],
     "/u/[name]/opengraph-image": ["./src/og/fonts/*.ttf", "./public/tokenbroke-3d.png"],
+    "/manifest/opengraph-image": ["./src/og/fonts/*.ttf", "./public/tokenbroke-3d.png"],
   },
 };
 

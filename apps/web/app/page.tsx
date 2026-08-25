@@ -1,6 +1,7 @@
 import { BRAND } from "@tokenbroke/shared";
 import { headers } from "next/headers";
 import Image from "next/image";
+import Link from "next/link";
 import wordmark from "@/public/tokenbroke-3d.png";
 import { siteDatabase } from "@/src/lib/dev-db";
 import { getPublicLeaderboard } from "@/src/lib/leaderboard";
@@ -62,6 +63,12 @@ export default async function Home() {
           <p className="hidden text-[10px] uppercase tracking-[0.18em] text-faint md:block">
             unaffiliated parody · reads local usage data only
           </p>
+          <Link
+            href="/manifest"
+            className="shrink-0 text-[10px] uppercase tracking-[0.18em] text-muted underline decoration-dotted underline-offset-4 transition-colors duration-150 hover:text-paper"
+          >
+            the manifest
+          </Link>
           <GitHubBadge />
         </div>
       </header>
@@ -176,7 +183,14 @@ export default async function Home() {
               >
                 open source under MIT
               </a>
-              : every line of the CLI and this site.
+              : every line of the CLI and this site. Read{" "}
+              <Link
+                href="/manifest"
+                className="text-muted underline decoration-dotted underline-offset-2 hover:text-paper"
+              >
+                the manifest
+              </Link>
+              .
             </span>
           </p>
           <p className="max-w-md sm:text-right">
