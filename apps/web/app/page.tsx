@@ -96,12 +96,7 @@ export default async function Home() {
             />
             <span>of us are.</span>
           </p>
-          <p className="mt-7 max-w-lg text-sm leading-relaxed text-dim sm:text-base">
-            The public record of how rate-limited developers really are —{" "}
-            <span className="text-paper">measured by us, because nobody else will.</span>
-          </p>
-
-          <div className="fade-up fade-up-1 mt-10">
+          <div className="fade-up fade-up-1 mt-8">
             <TheHands />
           </div>
 
