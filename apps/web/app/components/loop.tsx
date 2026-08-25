@@ -94,11 +94,11 @@ export function TheLoop({
           aria-hidden
           className="rail-x absolute left-[12.5%] right-[12.5%] top-[15px] hidden lg:block"
         />
-        <ol className="grid gap-8 pl-3 sm:grid-cols-2 sm:gap-x-8 sm:pl-0 lg:grid-cols-4 lg:gap-6">
+        <ol className="mx-auto grid w-fit gap-8 sm:mx-0 sm:w-full sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-4 lg:gap-6">
           {steps.map((step, index) => (
             <li
               key={step.label}
-              className="relative flex items-start gap-4 lg:flex-col lg:items-center lg:gap-3 lg:text-center"
+              className="relative flex items-start gap-4 sm:flex-col sm:items-center sm:gap-3 sm:text-center"
             >
               {/* Mobile rail: segment from this step's key down to the next one. */}
               {index < steps.length - 1 && (
@@ -110,7 +110,7 @@ export function TheLoop({
               <span className="keycap display relative z-10 grid size-8 shrink-0 place-items-center text-sm font-black text-paper">
                 {index + 1}
               </span>
-              <div className="min-w-0 pt-1 lg:pt-0">
+              <div className="min-w-0 pt-1 sm:pt-0">
                 <p className="text-[10px] uppercase tracking-[0.2em] text-muted">{step.label}</p>
                 <div className="mt-1.5">{step.body}</div>
               </div>
