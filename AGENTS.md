@@ -250,10 +250,11 @@ bun run readers        this machine's local readings as JSON (drain summarized; 
 
 ### Releasing the CLI
 Tokenless, provenance-attached, gated by CI (`.github/workflows/release.yml`). Never `npm publish`
-locally, and never `npm version -w` at the root (npm cannot parse bun's `workspace:*` protocol).
+locally, and never `npm version` anywhere in this repo (npm resolves the workspace root and cannot
+parse bun's `workspace:*` protocol).
 
 ```
-cd packages/cli && npm version patch --no-git-tag-version && cd ../..
+bun run bump:cli    # or: bun run bump:cli minor|major
 git add -A && git commit -m "chore(cli): v$(node -p "require('./packages/cli/package.json').version")"
 git push && git tag "v$(node -p "require('./packages/cli/package.json').version")" && git push origin --tags
 ```

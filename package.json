@@ -18,7 +18,8 @@
     "test": "bun run --filter '*' test",
     "typecheck": "bun run --filter '*' typecheck",
     "demo": "cd packages/cli && bun run demo",
-    "readers": "cd packages/cli && bun run readers:dump"
+    "readers": "cd packages/cli && bun run readers:dump",
+    "bump:cli": "node scripts/bump-cli.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.2",
