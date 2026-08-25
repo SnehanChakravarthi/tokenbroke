@@ -95,7 +95,7 @@ export default async function Home() {
               ARE YOU
             </span>
             {/* The wordmark rides over ARE YOU, tilted like a slapped-on sticker. */}
-            <span className="relative z-10 -mt-2 block w-[min(96vw,52rem)] rotate-[-3.5deg] sm:-mt-4">
+            <span className="relative z-10 -mt-3 block w-[min(90vw,46rem)] rotate-[-3.5deg] sm:-mt-5">
               <Image src={wordmark} alt="TOKENBROKE?" priority className="h-auto w-full" />
             </span>
           </h1>
