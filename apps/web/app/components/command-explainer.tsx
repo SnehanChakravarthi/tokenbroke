@@ -60,6 +60,15 @@ export function CommandExplainer() {
           <circle cx="8" cy="5" r="0.9" fill="currentColor" />
         </svg>
       </button>
+      <span aria-hidden className="mx-3 self-center text-faint">
+        ·
+      </span>
+      <a
+        href={BRAND.repoUrl}
+        className="inline-flex min-h-10 items-center gap-1 self-center text-[11px] text-muted underline decoration-faint decoration-dotted underline-offset-4 transition-colors duration-150 hover:text-paper"
+      >
+        open source ↗
+      </a>
       {open && (
         <div
           id="command-facts"
@@ -82,7 +91,15 @@ export function CommandExplainer() {
             ))}
           </ul>
           <p className="mt-3 border-t border-line-soft pt-2.5 text-[10px] leading-relaxed text-faint">
-            everything runs locally, and submits only when you (or your hook) run it.
+            everything runs locally, and submits only when you (or your hook) run it. don&apos;t
+            trust us —{" "}
+            <a
+              href={BRAND.repoUrl}
+              className="text-dim underline decoration-dotted underline-offset-2 hover:text-paper"
+            >
+              read every line (MIT)
+            </a>
+            .
           </p>
         </div>
       )}

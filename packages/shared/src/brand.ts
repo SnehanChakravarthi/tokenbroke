@@ -9,6 +9,7 @@ export const BRAND = {
   npmPackage: "tokenbroke",
   cliCommand: "npx tokenbroke",
   configDirName: ".tokenbroke",
+  repoUrl: "https://github.com/SnehanChakravarthi/tokenbroke",
 } as const;
 
 export function claimUrl(code: string): string {

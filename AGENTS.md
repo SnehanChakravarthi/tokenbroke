@@ -301,5 +301,16 @@ API edge, stored as a nullable column at submission time; never from the CLI, ne
 retroactive — history before the column stays geo-less. Requires a footer-disclosure update when it
 ships.
 
+**Owner to-dos (noted 2026-08-25):**
+- Artwork: owner will design a tokenbroke logo/icon, then it gets applied everywhere: site favicon,
+  GitHub social preview, npm page, OG cards, maybe the wordmark.
+- Sponsors: revisit and define what sponsorship means here — GitHub Sponsors on the owner's account
+  vs. a single on-brand sponsor slot on the site (see monetization discussion: sponsor slot > ads;
+  data/API is the long-term product). Decide post-launch.
+- npm provenance: move `npm publish` to a GitHub Actions workflow with `--provenance` so the npm
+  tarball is provably built from this repo (Actions are free now that the repo is public). Owner
+  sets up the npm token in repo secrets when ready. The CLI README lands on npmjs.com only with the
+  next publish.
+
 **Open decisions (need owner sign-off):**
 - Misery constants (floor 50, exponent 3) are launch defaults to be calibrated on real data.

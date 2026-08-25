@@ -9,6 +9,7 @@ import { CommandExplainer } from "./components/command-explainer";
 import { CopyCommand } from "./components/copy-command";
 import { FlapDigits } from "./components/flap";
 import { severityFor } from "./components/format";
+import { GitHubBadge } from "./components/github-badge";
 import { TheHands } from "./components/hands";
 import { TheLoop } from "./components/loop";
 
@@ -54,9 +55,10 @@ export default async function Home() {
           <span className="text-broke">{BRAND.domain.slice(BRAND.name.length)}</span>
         </p>
         <div className="flex items-center gap-4">
-          <p className="hidden text-[10px] uppercase tracking-[0.18em] text-faint sm:block">
+          <p className="hidden text-[10px] uppercase tracking-[0.18em] text-faint md:block">
             unaffiliated parody · reads local usage data only
           </p>
+          <GitHubBadge />
         </div>
       </header>
 
@@ -132,6 +134,15 @@ export default async function Home() {
             {BRAND.name} is an unaffiliated parody and community tool. Not endorsed by, associated
             with, or speaking for OpenAI or Anthropic. The bit is affectionate — the endgame is the
             labs reading this page. The data is serious.
+            <span className="mt-2 block">
+              <a
+                href={BRAND.repoUrl}
+                className="text-muted underline decoration-dotted underline-offset-2 hover:text-paper"
+              >
+                open source under MIT
+              </a>{" "}
+              — every line of the CLI and this site.
+            </span>
           </p>
           <p className="max-w-md sm:text-right">
             The CLI reads usage and rate-limit state from your machine, on your machine, and submits
