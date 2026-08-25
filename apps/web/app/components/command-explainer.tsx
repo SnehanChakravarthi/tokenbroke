@@ -29,7 +29,7 @@ const FACTS: ReadonlyArray<{ id: string; yes: boolean; text: ReactNode }> = [
   {
     id: "anon",
     yes: true,
-    text: "files one signed snapshot under an anonymous name — no signup, ~5 seconds",
+    text: "files one signed snapshot under an anonymous name, in ~5 seconds — claiming your row with GitHub later is optional",
   },
   {
     id: "hooks",
@@ -73,14 +73,14 @@ export function CommandExplainer() {
         onKeyDown={(event) => {
           if (event.key === "Escape") setOpen(false);
         }}
-        className="inline-flex min-h-10 items-center gap-1.5 text-[11px] text-muted underline decoration-faint decoration-dotted underline-offset-4 transition-colors duration-150 hover:text-paper"
+        className="relative inline-flex items-center gap-1.5 rounded-full border border-line bg-panel px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-muted transition-colors duration-150 after:absolute after:-inset-x-1 after:-inset-y-2 after:content-[''] hover:border-paper/30 hover:text-paper"
       >
-        what does this command actually do?
-        <svg viewBox="0 0 16 16" className="size-3.5 shrink-0" aria-hidden="true" fill="none">
+        <svg viewBox="0 0 16 16" className="size-3 shrink-0" aria-hidden="true" fill="none">
           <circle cx="8" cy="8" r="6.75" stroke="currentColor" strokeWidth="1.25" />
           <path d="M8 7.4v3.2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           <circle cx="8" cy="5" r="0.9" fill="currentColor" />
         </svg>
+        what does it do?
       </button>
       {open && (
         <div

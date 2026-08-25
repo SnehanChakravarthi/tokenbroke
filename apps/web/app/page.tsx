@@ -105,14 +105,14 @@ export default async function Home() {
           </div>
 
           <div className="fade-up fade-up-2 mt-10 flex w-full flex-col items-center">
-            <p className="mb-2.5 text-center text-xs text-dim">
-              that&apos;s one small command for a dev&hellip;
+            <p className="mb-4 max-w-lg text-center text-[13px] leading-relaxed text-dim [text-wrap:balance]">
+              That&apos;s one small command for a dev —{" "}
+              <span className="display text-sm font-extrabold tracking-tight text-paper">
+                one giant leap for devkind.
+              </span>
             </p>
             <CopyCommand command={BRAND.cliCommand} />
-            <p className="display mt-2.5 text-center text-sm font-extrabold tracking-tight text-paper sm:text-base">
-              &hellip;and one giant leap for devkind.
-            </p>
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+            <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2">
               <a
                 href={BRAND.repoUrl}
                 className="inline-flex items-center gap-1.5 rounded-full border border-line bg-panel px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-dim transition-colors duration-150 hover:border-paper/30 hover:text-paper"
@@ -130,10 +130,8 @@ export default async function Home() {
                 <span aria-hidden className="text-ok">
                   ✓
                 </span>
-                no signup
+                anonymous by default
               </span>
-            </div>
-            <div className="mt-1.5">
               <CommandExplainer />
             </div>
           </div>
