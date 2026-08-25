@@ -35,14 +35,14 @@ export function BoardSwitch({ codex, claude }: { codex: ReactNode; claude: React
                 aria-selected={selected}
                 aria-label={title}
                 onClick={() => setActive(id)}
-                className={`flex min-h-9 items-center rounded-full px-3 transition-colors duration-200 ${
+                className={`flex min-h-9 items-center rounded-full px-3 transition-colors duration-200 [--keycap-radius:999px] ${
                   selected ? "keycap text-paper" : "text-muted hover:text-dim active:scale-[0.96]"
                 }`}
               >
-                <Mark className="size-4 shrink-0" />
+                <Mark className="size-5 shrink-0" />
                 <span
-                  className={`overflow-hidden whitespace-nowrap text-xs font-semibold transition-[max-width,opacity,margin-left] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${
-                    selected ? "ml-2 max-w-[6.5rem] opacity-100" : "ml-0 max-w-0 opacity-0"
+                  className={`overflow-hidden whitespace-nowrap text-center text-xs font-semibold transition-[width,opacity,margin-left] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+                    selected ? "ml-1.5 w-[5.5rem] opacity-100" : "ml-0 w-0 opacity-0"
                   }`}
                 >
                   {title}

@@ -220,7 +220,7 @@ body {
 }
 
 .keycap {
-  border-radius: 8px;
+  border-radius: var(--keycap-radius, 8px);
   border: 1px solid var(--key-border);
   background: linear-gradient(180deg, var(--key-hi) 0%, var(--key-lo) 100%);
   box-shadow:
