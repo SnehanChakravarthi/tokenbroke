@@ -206,7 +206,7 @@ body {
 }
 
 .well {
-  border-radius: 9px;
+  border-radius: var(--well-radius, 9px);
   border: 1px solid var(--well-border);
   background: var(--well-bg);
   box-shadow:

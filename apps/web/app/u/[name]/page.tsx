@@ -2,6 +2,7 @@ import { BRAND, type LeaderboardRow, ordinal } from "@tokenbroke/shared";
 import Link from "next/link";
 import { siteDatabase } from "@/src/lib/dev-db";
 import { getPublicLeaderboard, type PublicLeaderboardV1 } from "@/src/lib/leaderboard";
+import { ToolLockup } from "../../components/board";
 import { resetsIn } from "../../components/format";
 import { ClaudeCodeMark, CodexMark } from "../../components/icons";
 
@@ -76,10 +77,10 @@ export default async function ProfilePage({
 
         <div className="fade-up flex flex-col items-center">
           {identity?.avatarUrl ? (
-            // Plain img on purpose: avatar hosts come from OAuth data, and next/image
-            // hard-crashes the page on any host it wasn't configured for.
-            // biome-ignore lint/performance/noImgElement: see above
             <span className="grid size-20 shrink-0 place-items-center overflow-hidden rounded-full ring-2 ring-line">
+              {/* Plain img on purpose: avatar hosts come from OAuth data, and next/image
+                  hard-crashes the page on any host it wasn't configured for. */}
+              {/* biome-ignore lint/performance/noImgElement: avoids the host-allowlist crash */}
               <img
                 src={identity.avatarUrl}
                 alt={`${name}'s avatar`}
@@ -128,11 +129,8 @@ export default async function ProfilePage({
                   className="panel relative overflow-hidden rounded-2xl p-5 text-left"
                 >
                   <Mark className="pointer-events-none absolute -right-5 -top-5 size-24 rotate-[-12deg] opacity-[0.07]" />
-                  <h2
-                    className={`display flex items-center gap-2 text-sm font-black tracking-[0.18em] ${accent}`}
-                  >
-                    <Mark className="size-4" />
-                    {title}
+                  <h2>
+                    <ToolLockup tool={board.tool} />
                   </h2>
                   {row ? (
                     <>

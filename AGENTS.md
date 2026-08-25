@@ -270,7 +270,7 @@ updates via native `Stop` hooks in both tools (Codex `hooks.json`, never `notify
 three-state freshness (fresh/stale/hidden); plan tier is a facet. Names assigned server-side.
 
 **Landing polish round (2026-08-25):** official tool marks (owner-supplied SVGs; accents
-harmonized to #7a9dff / #d97757), symmetric hands cards, well+keycap command box, continuous-rail
+harmonized to #7a9dff / #d97757), hands as inline badge pills, well+keycap command box (concentric radii), brand lockups atop each board (Codex grotesk/white, Claude Code mono/orange, faint brand wash), continuous-rail
 4-step pipeline (vertical timeline on mobile), milestone caption removed. New `/u/<name>` profile
 pages (claimed or anonymous, freshness-aware, graceful not-found); claim success now 303s to
 `/u/<login>?claimed=1` (homepage `?claimed` pill and LabUniverse `highlight` removed as dead).

@@ -4,14 +4,43 @@ import { resetsIn } from "./format";
 import { ClaudeCodeMark, CodexMark } from "./icons";
 
 const TOOL = {
-  codex: { title: "CODEX", accent: "text-codex", chip: "bg-codex/15 text-codex", Mark: CodexMark },
+  codex: {
+    title: "Codex",
+    by: "OpenAI",
+    // OpenAI's identity is a clean neutral grotesk — paper-white, tight, no shouting.
+    lockup: "display font-extrabold tracking-tight text-paper",
+    wash: "from-codex/10",
+    accent: "text-codex",
+    chip: "bg-codex/15 text-codex",
+    Mark: CodexMark,
+  },
   "claude-code": {
-    title: "CLAUDE CODE",
+    title: "Claude Code",
+    by: "Anthropic",
+    // Claude Code lives in a terminal — monospace, in its own orange.
+    lockup: "font-bold tracking-tight text-claude",
+    wash: "from-claude/10",
     accent: "text-claude",
     chip: "bg-claude/15 text-claude",
     Mark: ClaudeCodeMark,
   },
 } as const;
+
+/** Brand lockup: each tool's mark and name set in that tool's own voice, not ours. */
+export function ToolLockup({ tool }: { tool: keyof typeof TOOL }) {
+  const { title, by, lockup, Mark } = TOOL[tool];
+  return (
+    <span className="flex items-center gap-3">
+      <Mark className="size-8 shrink-0" />
+      <span className="flex flex-col">
+        <span className={`text-lg leading-none ${lockup}`}>{title}</span>
+        <span className="mt-1.5 text-[9px] uppercase leading-none tracking-[0.24em] text-faint">
+          {by}
+        </span>
+      </span>
+    </span>
+  );
+}
 
 function remainingTone(remaining: number): string {
   if (remaining <= 3) return "text-broke";
@@ -85,7 +114,7 @@ function Digits({ value }: { value: string }) {
  * The lab's color lives here and only here.
  */
 export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: Date }) {
-  const { title, accent, Mark } = TOOL[board.tool];
+  const { title, accent, wash, Mark } = TOOL[board.tool];
   const days = board.global.daysSinceReset;
   const median = board.global.medianRemainingPercent;
   const rows = board.rows.slice(0, 12);
@@ -95,17 +124,17 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
       aria-label={`${title} — state and leaderboard`}
       className="panel relative overflow-hidden rounded-2xl"
     >
-      {/* The lab's mark, big and off-kilter, clipped by its own universe. */}
-      <Mark
-        className={`pointer-events-none absolute -right-7 -top-7 size-40 rotate-[-12deg] ${accent} opacity-[0.08]`}
+      {/* A faint wash of the lab's own color across the header. */}
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b to-transparent ${wash}`}
       />
+      {/* The lab's mark, big and off-kilter, clipped by its own universe. */}
+      <Mark className="pointer-events-none absolute -right-7 -top-7 size-40 rotate-[-12deg] opacity-[0.08]" />
 
-      <header className="relative flex items-baseline justify-between gap-4 px-5 pt-5">
-        <h3
-          className={`display flex items-center gap-2.5 text-base font-black tracking-[0.18em] ${accent}`}
-        >
-          <Mark className="size-5" />
-          {title}
+      <header className="relative flex items-center justify-between gap-4 px-5 pt-5">
+        <h3>
+          <ToolLockup tool={board.tool} />
         </h3>
         <p className="text-[11px] uppercase tracking-[0.18em] text-faint">
           {board.global.devs} on the board
