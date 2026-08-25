@@ -41,6 +41,25 @@ Are you tokenbroke? Prove it.
 The CLI reads only usage and rate-limit data. It never reads or uploads prompts, code, or conversation
 content, and it only submits when you run it.
 
+## Audit it
+
+The paranoia is the point — this command reads files that live next to your credentials, so don't
+trust the author, read the code:
+
+- Every filesystem access in the CLI goes through one allowlist-enforcing layer:
+  [`packages/cli/src/readers/access.ts`](packages/cli/src/readers/access.ts). Paths not on the
+  allowlist cannot be opened; symlinks and hardlinks are rejected before reading.
+- Credential files (`~/.codex/auth.json`, `~/.claude/.credentials.json`), prompt history, memories,
+  and conversation logs are never opened. Where a mixed file must be read (`~/.claude.json`), only
+  allowlisted usage fields are extracted and the rest is discarded.
+- The published package is a single bundled file with **zero runtime dependencies** — run
+  `npm pack tokenbroke` and read the exact tarball `npx` would execute.
+- Update hooks are opt-in: the CLI asks before installing them, and uninstalling is deleting two
+  lines from your tool's config.
+
+Licensed [MIT](LICENSE). Security reports: [SECURITY.md](SECURITY.md). Contributions:
+[CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Repo
 
 ```

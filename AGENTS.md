@@ -279,6 +279,12 @@ sections over the popover; the popover also flips above/below the trigger by ava
 pages (claimed or anonymous, freshness-aware, graceful not-found); claim success now 303s to
 `/u/<login>?claimed=1` (homepage `?claimed` pill and LabUniverse `highlight` removed as dead).
 
+**Open source (2026-08-25, owner-decided):** whole monorepo MIT (LICENSE, SECURITY.md,
+CONTRIBUTING.md, README "Audit it" section, license fields in all package.jsons). History scanned
+clean. Owner flips repo visibility to public on GitHub; npm provenance publishing via GitHub Actions
+is the follow-up once publishes move to CI. Rationale: the monetizable assets (data, community,
+domain, npm name) are not in the repo; sole-author copyright keeps relicensing open.
+
 **Standing authority (2026-08-24):** Claude Code commits at milestones without asking. Pushing,
 remotes, and publishing still require an explicit owner ask.
 
