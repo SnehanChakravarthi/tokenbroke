@@ -70,10 +70,14 @@ export default async function ManifestPage() {
         </h1>
         <div className="mt-12 space-y-4 text-[15px] leading-relaxed text-dim">
           <p>
-            Every developer alive knows the moment. It&apos;s 2:47 on a Tuesday. The tests are
-            nearly green. And the agent stops mid-thought to say: come back Thursday.
+            You know the drill. You switch to the smaller model to save the good one for later. You
+            check the percentage before starting anything big. And when a reset is hours away with
+            tokens still left, you burn them on nothing, because unspent feels like wasted.
           </p>
-          <p>You planned your week around the work. The meter planned it around a quota.</p>
+          <p>
+            Rationing when it&apos;s scarce. Splurging before it expires. Either way, the meter is
+            making the decisions.
+          </p>
           <p className="text-paper">The condition has a name. You are {BRAND.name}.</p>
         </div>
 
