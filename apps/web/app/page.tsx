@@ -59,13 +59,10 @@ export default async function Home() {
           {BRAND.name}
           <span className="text-broke">{BRAND.domain.slice(BRAND.name.length)}</span>
         </p>
-        <div className="flex items-center gap-4">
-          <p className="hidden text-[10px] uppercase tracking-[0.18em] text-faint md:block">
-            unaffiliated parody · reads local usage data only
-          </p>
+        <div className="flex items-center gap-3">
           <Link
             href="/manifest"
-            className="shrink-0 text-[10px] uppercase tracking-[0.18em] text-muted underline decoration-dotted underline-offset-4 transition-colors duration-150 hover:text-paper"
+            className="raised shrink-0 px-3 py-1.5 text-[11px] font-semibold text-dim transition-colors duration-150 hover:text-paper"
           >
             the manifest
           </Link>
@@ -118,6 +115,15 @@ export default async function Home() {
           </p>
           <div className="fade-up fade-up-1 mt-8">
             <TheHands />
+            <p className="mt-5 text-center text-[11px] uppercase tracking-[0.18em] text-muted">
+              want the whole story?{" "}
+              <Link
+                href="/manifest"
+                className="text-dim underline decoration-dotted underline-offset-4 transition-colors duration-150 hover:text-paper"
+              >
+                read the manifest
+              </Link>
+            </p>
           </div>
 
           <div className="fade-up fade-up-2 mt-10 flex w-full flex-col items-center">

@@ -49,7 +49,7 @@ export default async function OpengraphImage() {
           fontStyle: "italic",
         }}
       >
-        a declaration of intent; also, the document listing everyone aboard.
+        signed in usage data, not ink.
       </div>
       {signed !== null && (
         <div style={{ display: "flex", gap: 14, marginTop: 34, fontSize: 30, color: INK.muted }}>

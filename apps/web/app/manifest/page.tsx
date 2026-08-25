@@ -12,8 +12,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: `the manifest · ${BRAND.domain}`,
-  description:
-    "A declaration of intent; also, the document listing everyone aboard. Signed in usage data.",
+  description: "Why the record exists. Signed in usage data, not ink.",
 };
 
 function Article({
@@ -69,37 +68,39 @@ export default async function ManifestPage() {
         <h1 className="display text-[clamp(2rem,7vw,3.2rem)] font-black leading-[1.05] tracking-tight text-paper">
           THE {BRAND.name.toUpperCase()} MANIFEST
         </h1>
-        <p className="mt-4 text-[13px] italic leading-relaxed text-muted">
-          manifest, n. a declaration of intent; also, the document listing everyone aboard.
-        </p>
-
         <div className="mt-12 space-y-4 text-[15px] leading-relaxed text-dim">
           <p>
-            It is 2:47 on a Tuesday. You are mid-refactor, the tests are almost green, and the agent
-            stops mid-thought to tell you to come back Thursday.
+            Every developer alive knows the moment. It&apos;s 2:47 on a Tuesday. The tests are
+            nearly green. And the agent stops mid-thought to say: come back Thursday.
           </p>
+          <p>You planned your week around the work. The meter planned it around a quota.</p>
           <p className="text-paper">The condition has a name. You are {BRAND.name}.</p>
         </div>
 
         <SectionTitle>how this happened</SectionTitle>
         <div className="mt-5 space-y-4 text-sm leading-relaxed text-dim">
           <p>
-            In the summer of 2026, developers got the most capable tools anyone had ever handed
-            them, with meters attached. We learned a new ritual: watch the percentage, ration the
-            prompts, time the reset, plan the week around a quota. The best engineers we know became
-            accountants of their own intelligence.
+            In the summer of 2026 we were handed the most powerful tools of our working lives. They
+            came with meters.
           </p>
           <p>
-            And we all watched the same loop run. Limits tighten. The timeline fills with grief.
-            Someone at a lab posts an apology and a reset. Everyone says thank you. Repeat.
+            We adapted, because adapting is what we do. We watched percentages the way farmers watch
+            the sky. We saved the hard problems for after the reset. We learned to spend curiosity
+            like a budget. The finest engineers of a generation taught themselves to think less, and
+            to feel grateful for it.
           </p>
           <p>
-            The data of this loop was everywhere and nowhere: every developer knew their own misery
-            precisely, and nobody could see the whole.
+            And beneath it all, one loop kept running. Limits tighten. The timeline fills with
+            grief. A lab grants a reset, and we applaud. Then it starts over.
+          </p>
+          <p>
+            Here is the strange part: every one of us knew our own suffering to the decimal point,
+            and none of us could see the whole of it. The labs hold the full picture. We, whose work
+            paints that picture, hold anecdotes.
           </p>
           <p className="text-paper">
-            {BRAND.name} exists to see the whole. It was built, naturally, with the very tools that
-            ration us.
+            So we built the instrument ourselves. {BRAND.name} reads the truth from our own machines
+            and files it on one public record. Built, of course, with the very tools that ration us.
           </p>
         </div>
 
