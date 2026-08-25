@@ -2,6 +2,7 @@ import { BRAND } from "@tokenbroke/shared";
 import type { Metadata } from "next";
 import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import { BuiltBy } from "./components/built-by";
 import { CodexMarkDefs } from "./components/icons";
 
 const archivo = Archivo({
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="console-surface min-h-screen">
         <CodexMarkDefs />
         {children}
+        <BuiltBy />
       </body>
     </html>
   );
