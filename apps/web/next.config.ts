@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@tokenbroke/shared"],
   // PGlite (dev-only seeded database) ships WASM assets that must be loaded by Node, not bundled.
   serverExternalPackages: ["@electric-sql/pglite"],
+  // OG cards read fonts + the wordmark off disk at render time; make sure tracing bundles them.
+  outputFileTracingIncludes: {
+    "/opengraph-image": ["./src/og/fonts/*.ttf", "./public/tokenbroke-3d.png"],
+    "/u/[name]/opengraph-image": ["./src/og/fonts/*.ttf", "./public/tokenbroke-3d.png"],
+  },
 };
 
 export default nextConfig;

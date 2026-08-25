@@ -1,5 +1,9 @@
 # tokenbroke
 
+[![npm version](https://img.shields.io/npm/v/tokenbroke?style=flat-square&color=ff6257)](https://www.npmjs.com/package/tokenbroke)
+[![npm downloads](https://img.shields.io/npm/dm/tokenbroke?style=flat-square&color=7a9dff)](https://www.npmjs.com/package/tokenbroke)
+[![license: MIT](https://img.shields.io/badge/license-MIT-2dd4a0?style=flat-square)](LICENSE)
+
 **A community leaderboard of the most rate-limited AI coding tool users alive.** One command reads your
 real local Codex CLI / Claude Code usage and ranks you against everyone else who is also out of tokens.
 
