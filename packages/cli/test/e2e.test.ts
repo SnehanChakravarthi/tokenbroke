@@ -109,9 +109,11 @@ async function waitForSubmissions(count: number): Promise<void> {
 }
 
 beforeAll(async () => {
+  // --no-clean: wiping dist/ mid-suite races other test files that execute the
+  // built CLI (the bin-symlink test dangled and failed nondeterministically in CI).
   await execFile(
     process.execPath,
-    [join(CLI_ROOT, "node_modules", "tsup", "dist", "cli-default.js")],
+    [join(CLI_ROOT, "node_modules", "tsup", "dist", "cli-default.js"), "--no-clean"],
     { cwd: CLI_ROOT, timeout: 30_000 },
   );
   testHome = await createTestHome();

@@ -124,13 +124,16 @@ describe("reportFailure hygiene", () => {
 describe("bin entry under npx-style symlink", () => {
   it("runs main when invoked through a symlink like npm's .bin shim", async () => {
     const { execFile } = await import("node:child_process");
-    const { mkdtemp, symlink, rm } = await import("node:fs/promises");
+    const { copyFile, mkdtemp, symlink, rm } = await import("node:fs/promises");
     const { tmpdir } = await import("node:os");
     const { join, resolve } = await import("node:path");
     const { promisify } = await import("node:util");
     const dir = await mkdtemp(join(tmpdir(), "tokenbroke-bin-"));
     const link = join(dir, "tokenbroke");
-    await symlink(resolve("dist/index.js"), link);
+    // Symlink to a private copy: the live dist/ can be rebuilt by the e2e suite mid-run.
+    const target = join(dir, "index.js");
+    await copyFile(resolve("dist/index.js"), target);
+    await symlink(target, link);
     try {
       // Empty tool homes make this hermetic: with nothing to read, --dry-run exits 2
       // everywhere (dev machines and CI alike). The regression under test is only that
