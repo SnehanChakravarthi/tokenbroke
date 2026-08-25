@@ -269,6 +269,12 @@ updates via native `Stop` hooks in both tools (Codex `hooks.json`, never `notify
 `--watch`. Structural window registry; misery = `hoursUntilReset × depletion³` with a 50 % floor;
 three-state freshness (fresh/stale/hidden); plan tier is a facet. Names assigned server-side.
 
+**Landing polish round (2026-08-25):** official tool marks (owner-supplied SVGs; accents
+harmonized to #7a9dff / #d97757), symmetric hands cards, well+keycap command box, continuous-rail
+4-step pipeline (vertical timeline on mobile), milestone caption removed. New `/u/<name>` profile
+pages (claimed or anonymous, freshness-aware, graceful not-found); claim success now 303s to
+`/u/<login>?claimed=1` (homepage `?claimed` pill and LabUniverse `highlight` removed as dead).
+
 **Standing authority (2026-08-24):** Claude Code commits at milestones without asking. Pushing,
 remotes, and publishing still require an explicit owner ask.
 

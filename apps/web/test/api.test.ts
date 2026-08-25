@@ -515,7 +515,7 @@ describe("claim flow", () => {
       }),
     );
     expect(first.status).toBe(303);
-    expect(first.headers.get("location")).toContain("claimed=octocat");
+    expect(first.headers.get("location")).toContain("/u/octocat?claimed=1");
     expect(first.headers.get("set-cookie")).toContain("Max-Age=0");
     expect(fetchMock).toHaveBeenCalledTimes(3);
     expect(

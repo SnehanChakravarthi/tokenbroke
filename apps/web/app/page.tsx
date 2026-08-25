@@ -9,16 +9,11 @@ import { CopyCommand } from "./components/copy-command";
 import { FlapDigits } from "./components/flap";
 import { severityFor } from "./components/format";
 import { TheHands } from "./components/hands";
-import { nextMilestone, TheLoop } from "./components/loop";
+import { TheLoop } from "./components/loop";
 
 export const dynamic = "force-dynamic";
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: Promise<{ claimed?: string }>;
-}) {
-  const { claimed: justClaimed } = await searchParams;
+export default async function Home() {
   const now = new Date();
   const database = await siteDatabase();
   const requestHeaders = await headers();
@@ -101,18 +96,6 @@ export default async function Home({
             />
             <span>of us are.</span>
           </p>
-          {nextMilestone(movement.devsOnRecord) && (
-            <p className="mt-4 text-[11px] uppercase tracking-[0.16em] text-muted">
-              <span className="pip mr-1.5 inline-block size-1.5 rounded-full bg-broke align-middle" />
-              <span className="text-paper">
-                {(
-                  (nextMilestone(movement.devsOnRecord)?.at ?? 0) - movement.devsOnRecord
-                ).toLocaleString("en-US")}{" "}
-                to "{nextMilestone(movement.devsOnRecord)?.label}"
-              </span>{" "}
-              — you count
-            </p>
-          )}
           <p className="mt-7 max-w-lg text-sm leading-relaxed text-dim sm:text-base">
             The public record of how rate-limited developers really are —{" "}
             <span className="text-paper">measured by us, because nobody else will.</span>
@@ -132,11 +115,8 @@ export default async function Home({
               </span>
             </p>
             <CopyCommand command={BRAND.cliCommand} />
-            <p className="mt-3 text-[10px] uppercase tracking-[0.16em] leading-relaxed text-muted">
-              reads 2 numbers — never your code
-              <span className="mx-2 text-faint">·</span>anonymous, no signup
-              <span className="mx-2 text-faint">·</span>auto-updates:{" "}
-              <span className="text-dim">hooks install</span>
+            <p className="mt-3 text-center text-[10px] uppercase tracking-[0.16em] text-muted">
+              reads 2 numbers — never your code · anonymous, no signup
             </p>
           </div>
         </section>
@@ -146,15 +126,9 @@ export default async function Home({
           <TheLoop stats={movement} boards={boards} />
         </section>
 
-        {justClaimed && (
-          <div className="fade-up mx-auto mt-10 flex max-w-md items-center justify-center gap-2 rounded-full border border-ok/40 bg-ok/10 px-5 py-2.5 text-center text-sm text-ok">
-            <span aria-hidden>✓</span> welcome to the record,{" "}
-            <span className="font-semibold">@{justClaimed.slice(0, 40)}</span> — that's you below.
-          </div>
-        )}
         <section className="fade-up fade-up-3 mt-14 grid items-start gap-5 lg:grid-cols-2">
-          <LabUniverse board={codex} now={now} highlight={justClaimed ?? null} />
-          <LabUniverse board={claude} now={now} highlight={justClaimed ?? null} />
+          <LabUniverse board={codex} now={now} />
+          <LabUniverse board={claude} now={now} />
         </section>
       </main>
 

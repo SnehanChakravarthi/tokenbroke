@@ -13,14 +13,18 @@ export function CopyCommand({ command }: { command: string }) {
           setTimeout(() => setCopied(false), 1600);
         });
       }}
-      className="raised group inline-flex w-full items-center justify-between gap-6 px-5 py-4 text-left hover:border-paper/30 sm:w-auto sm:min-w-[26rem]"
+      className="well group flex w-full max-w-[24rem] items-center gap-3 px-5 py-4 text-left transition-transform duration-150 active:scale-[0.98]"
       aria-label={`Copy ${command}`}
     >
-      <span className="text-lg text-paper sm:text-xl">
-        <span className="text-faint">$ </span>
-        {command}
+      <span aria-hidden className="select-none text-faint">
+        $
       </span>
-      <span className="shrink-0 text-[11px] uppercase tracking-[0.2em] text-muted transition-colors group-hover:text-paper">
+      <span className="flex-1 whitespace-nowrap text-lg text-paper sm:text-xl">{command}</span>
+      <span
+        className={`keycap min-w-[4.5rem] px-2.5 py-1 text-center text-[10px] uppercase tracking-[0.18em] transition-colors duration-150 ${
+          copied ? "text-ok" : "text-muted group-hover:text-paper"
+        }`}
+      >
         {copied ? "copied" : "copy"}
       </span>
     </button>

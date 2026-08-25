@@ -1,52 +1,11 @@
 import { BRAND } from "@tokenbroke/shared";
+import type { ReactNode } from "react";
 import type { PublicLeaderboardV1 } from "@/src/lib/leaderboard";
 import type { MovementStats } from "@/src/lib/movement";
 
-/** Animated flow connector: dashes drifting toward the next node. */
-function Flow() {
-  return (
-    <svg
-      viewBox="0 0 48 12"
-      role="img"
-      aria-label="flows into"
-      className="mt-6 hidden h-3 w-10 shrink-0 self-start text-faint lg:block"
-    >
-      <path
-        d="M2 6h38"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeDasharray="4 5"
-        className="flow-dash"
-      />
-      <path d="M40 2l6 4-6 4" fill="none" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  );
-}
-
-function Node({
-  step,
-  label,
-  children,
-}: {
-  step: string;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="relative flex-1">
-      <p className="display text-3xl font-black leading-none text-faint/70" aria-hidden>
-        {step}
-      </p>
-      <p className="mt-1.5 text-[10px] uppercase tracking-[0.2em] text-muted">{label}</p>
-      <div className="mt-2">{children}</div>
-    </div>
-  );
-}
-
 /**
- * The whole thesis as a schematic: run → recorded → pressure → reset → repeat.
- * Replaces three paragraphs and the standalone reset ledger.
+ * The whole thesis as a pipeline: run → recorded → pressure → reset. One continuous
+ * rail carries the flow — horizontal on desktop, a vertical timeline on mobile.
  */
 export function TheLoop({
   stats,
@@ -74,27 +33,35 @@ export function TheLoop({
       </p>
     );
   };
-  return (
-    <div className="relative">
-      <div className="grid gap-7 sm:grid-cols-2 sm:gap-8 lg:grid-cols-[1fr_auto_1fr_auto_1.2fr_auto_1.2fr] lg:items-start lg:gap-3">
-        <Node step="01" label="run it">
+
+  const steps: Array<{ label: string; body: ReactNode }> = [
+    {
+      label: "run it",
+      body: (
+        <>
           <p className="text-sm font-semibold text-paper">
             <span className="text-faint">$ </span>
             {BRAND.cliCommand}
           </p>
           <p className="mt-1 text-[11px] text-muted">5 seconds. anonymous.</p>
-        </Node>
-        <Flow />
-        <Node step="02" label="you're counted">
-          <p className="display text-2xl font-black tabular-nums text-paper">
-            {stats.devsOnRecord.toLocaleString("en-US")}
-            <span className="ml-2 align-middle text-[11px] font-normal uppercase tracking-[0.18em] text-muted">
-              of us
-            </span>
-          </p>
-        </Node>
-        <Flow />
-        <Node step="03" label="the pain gets visible">
+        </>
+      ),
+    },
+    {
+      label: "you're counted",
+      body: (
+        <p className="display text-2xl font-black tabular-nums text-paper">
+          {stats.devsOnRecord.toLocaleString("en-US")}
+          <span className="ml-2 align-middle text-[11px] font-normal uppercase tracking-[0.18em] text-muted">
+            of us
+          </span>
+        </p>
+      ),
+    },
+    {
+      label: "the pain gets visible",
+      body: (
+        <>
           <p className="display text-2xl font-black tabular-nums text-broke">
             {median === null ? "—" : `${Math.round((100 - median) * 10) / 10}%`}
             <span className="ml-2 align-middle text-base" aria-hidden>
@@ -102,17 +69,56 @@ export function TheLoop({
             </span>
           </p>
           <p className="mt-1 text-[11px] text-muted">of our tokens — already burned</p>
-        </Node>
-        <Flow />
-        <Node step="04" label="resets happen">
+        </>
+      ),
+    },
+    {
+      label: "resets happen",
+      body: (
+        <>
           <div className="space-y-1">
             {resetChip("codex", "text-codex", "codex")}
             {resetChip("claude-code", "text-claude", "claude")}
           </div>
           <p className="mt-1 text-[11px] text-muted">both labs have folded before.</p>
-        </Node>
+        </>
+      ),
+    },
+  ];
+
+  return (
+    <div>
+      <div className="relative mx-auto max-w-4xl">
+        {/* Desktop rail: one continuous line running through all four step keys. */}
+        <div
+          aria-hidden
+          className="rail-x absolute left-[12.5%] right-[12.5%] top-[15px] hidden lg:block"
+        />
+        <ol className="grid gap-8 lg:grid-cols-4 lg:gap-6">
+          {steps.map((step, index) => (
+            <li
+              key={step.label}
+              className="relative flex items-start gap-4 lg:flex-col lg:items-center lg:gap-3 lg:text-center"
+            >
+              {/* Mobile rail: segment from this step's key down to the next one. */}
+              {index < steps.length - 1 && (
+                <span
+                  aria-hidden
+                  className="rail-y absolute -bottom-8 left-[15px] top-8 lg:hidden"
+                />
+              )}
+              <span className="keycap display relative z-10 grid size-8 shrink-0 place-items-center text-sm font-black text-paper">
+                {index + 1}
+              </span>
+              <div className="min-w-0 pt-1 lg:pt-0">
+                <p className="text-[10px] uppercase tracking-[0.2em] text-muted">{step.label}</p>
+                <div className="mt-1.5">{step.body}</div>
+              </div>
+            </li>
+          ))}
+        </ol>
       </div>
-      <p className="mt-5 text-center text-[11px] uppercase tracking-[0.24em] text-muted">
+      <p className="mt-8 text-center text-[11px] uppercase tracking-[0.24em] text-muted">
         bigger number{" "}
         <span aria-hidden className="text-faint">
           →
@@ -121,16 +127,4 @@ export function TheLoop({
       </p>
     </div>
   );
-}
-
-const MILESTONES = [
-  { at: 100, label: "a support group" },
-  { at: 1_000, label: "a statistic" },
-  { at: 10_000, label: "a headline" },
-  { at: 50_000, label: "an open letter" },
-  { at: 100_000, label: "we schedule the resets" },
-];
-
-export function nextMilestone(count: number): { at: number; label: string } | null {
-  return MILESTONES.find((milestone) => milestone.at > Math.max(1, count)) ?? null;
 }

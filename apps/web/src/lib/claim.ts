@@ -608,10 +608,11 @@ async function runClaimCallback(
   const bound = await bindClaim(database, pending, user, now);
   if (bound) invalidateLeaderboardCache();
   if (!bound) return responseWithDeletedCookie("Claim rejected", 400);
-  // Land the new claimant on the board itself, with their row spotlit.
-  const home = new URL("/", configuredOrigin(request));
-  home.searchParams.set("claimed", user.login);
-  return responseWithDeletedCookie("", 303, { location: home.toString() });
+  // Land the new claimant on their own page: on a board of thousands nobody scrolls
+  // to their row, but everyone looks at their own page.
+  const profile = new URL(`/u/${encodeURIComponent(user.login)}`, configuredOrigin(request));
+  profile.searchParams.set("claimed", "1");
+  return responseWithDeletedCookie("", 303, { location: profile.toString() });
 }
 
 export async function handleClaimCallback(
