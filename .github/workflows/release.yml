@@ -23,6 +23,9 @@ jobs:
         with:
           node-version: 24 # npm >= 11.5 required for trusted publishing
       - run: bun install --frozen-lockfile
+      # The CLI test suite executes the built dist (symlink + e2e tests), so build first.
+      - run: bun run build
+        working-directory: packages/cli
       - run: bun run lint
       - run: bun run typecheck
       - run: bun run test
@@ -33,7 +36,5 @@ jobs:
           if [ "$TAG" != "$PKG" ]; then
             echo "tag v$TAG does not match packages/cli version $PKG" && exit 1
           fi
-      - run: bun run build
-        working-directory: packages/cli
       - run: npm publish
         working-directory: packages/cli
