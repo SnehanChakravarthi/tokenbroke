@@ -1,3 +1,7 @@
+<p align="center">
+  <img src=".github/social-preview.png" alt="tokenbroke: are you tokenbroke? the public leaderboard of rate-limited developers" width="760" />
+</p>
+
 # tokenbroke
 
 [![npm version](https://img.shields.io/npm/v/tokenbroke?style=flat-square&color=ff6257)](https://www.npmjs.com/package/tokenbroke)
