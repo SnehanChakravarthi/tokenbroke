@@ -306,10 +306,10 @@ ships.
   GitHub social preview, npm page, OG cards, maybe the wordmark.
 - Sponsors: revisit and define what sponsorship means here — GitHub Sponsors on the owner's account
   vs. a single on-brand sponsor slot on the site. Decide post-launch; nothing ships before then.
-- npm provenance: move `npm publish` to a GitHub Actions workflow with `--provenance` so the npm
-  tarball is provably built from this repo (Actions are free now that the repo is public). Owner
-  sets up the npm token in repo secrets when ready. The CLI README lands on npmjs.com only with the
-  next publish.
+- npm provenance: `.github/workflows/release.yml` publishes on `v*` tags via npm trusted
+  publishing (OIDC, tokenless, provenance automatic). Owner configures the trusted publisher once
+  on npmjs.com (package settings: GitHub Actions / SnehanChakravarthi / tokenbroke / release.yml).
+  Releases = bump packages/cli version, tag `v<version>`, push the tag.
 
 **Open decisions (need owner sign-off):**
 - Misery constants (floor 50, exponent 3) are launch defaults to be calibrated on real data.

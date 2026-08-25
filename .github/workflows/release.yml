@@ -1,0 +1,39 @@
+# Publishes the `tokenbroke` CLI to npm with provenance via OIDC trusted publishing:
+# no token lives anywhere — npmjs.com is configured to trust exactly this workflow
+# in this repository, and npm links the published tarball to this commit publicly.
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # OIDC exchange with npm; no NPM_TOKEN anywhere
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24 # npm >= 11.5 required for trusted publishing
+      - run: bun install --frozen-lockfile
+      - run: bun run lint
+      - run: bun run typecheck
+      - run: bun run test
+      - name: verify tag matches package version
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PKG=$(node -p "require('./packages/cli/package.json').version")
+          if [ "$TAG" != "$PKG" ]; then
+            echo "tag v$TAG does not match packages/cli version $PKG" && exit 1
+          fi
+      - run: bun run build
+        working-directory: packages/cli
+      - run: npm publish
+        working-directory: packages/cli
