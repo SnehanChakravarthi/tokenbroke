@@ -44,13 +44,17 @@ function HandBadge({ hand }: { hand: (typeof HANDS)[number] }) {
 export function TheHands() {
   const [tibo, boris] = HANDS;
   return (
-    <p className="mx-auto max-w-xl text-center text-sm leading-[1.9] text-dim sm:text-base">
-      <span className="text-paper">They meter our tokens. We meter the misery.</span> The public
-      leaderboard of rate-limited developers, built from real usage on our own machines. The two
-      hands closest to the reset button: <HandBadge hand={tibo} />{" "}
-      <span className="text-faint">(Codex)</span> and <HandBadge hand={boris} />{" "}
-      <span className="text-faint">(Claude Code)</span>.{" "}
-      <span className="text-paper">We intend to move them.</span>
-    </p>
+    <div className="mx-auto max-w-xl space-y-3 text-center text-sm leading-[1.8] text-dim sm:text-base">
+      <p>
+        <span className="text-paper">The public leaderboard of rate-limited developers,</span> built
+        from real usage on our own machines.
+      </p>
+      <p>
+        The two hands closest to the reset button: <HandBadge hand={tibo} />{" "}
+        <span className="text-faint">(Codex)</span> and <HandBadge hand={boris} />{" "}
+        <span className="text-faint">(Claude Code)</span>.{" "}
+        <span className="text-paper">We intend to move them.</span>
+      </p>
+    </div>
   );
 }
