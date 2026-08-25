@@ -273,8 +273,9 @@ three-state freshness (fresh/stale/hidden); plan tier is a facet. Names assigned
 harmonized to #7a9dff / #d97757), hands as inline badge pills, well+keycap command box (concentric radii), brand lockups atop each board (Codex grotesk/white, Claude Code mono/orange, faint brand wash), continuous-rail
 4-step pipeline (vertical timeline on mobile), milestone caption removed; hero paragraph v2 (what-it-is + the two hands inline as badges,
 "only two hands can grant a reset"); Armstrong line sandwiches the command box; trust line replaced
-by a "what does this command actually do?" popover (fade-up now ends at `transform: none` so
-completed entrances don't trap popovers under later sections). New `/u/<name>` profile
+by a "what does this command actually do?" popover (fade-up fills `backwards`, not `both` — a
+still-applied transform animation keeps its element a stacking context forever and painted later
+sections over the popover; the popover also flips above/below the trigger by available space). New `/u/<name>` profile
 pages (claimed or anonymous, freshness-aware, graceful not-found); claim success now 303s to
 `/u/<login>?claimed=1` (homepage `?claimed` pill and LabUniverse `highlight` removed as dead).
 

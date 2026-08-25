@@ -62,7 +62,7 @@ export default async function Home() {
 
       <main className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         {/* Hero: the whole story in one read — question, purpose, the hands, the ask. */}
-        <section className="fade-up flex flex-col items-center pt-10 text-center sm:pt-14">
+        <section className="fade-up relative z-10 flex flex-col items-center pt-10 text-center sm:pt-14">
           <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-full border border-line bg-panel px-4 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted">
             <span className="flex items-center gap-1.5">
               <span className="pip inline-block size-1.5 rounded-full bg-ok" aria-hidden />

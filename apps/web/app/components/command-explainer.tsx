@@ -1,7 +1,7 @@
 "use client";
 
 import { BRAND } from "@tokenbroke/shared";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const FACTS = [
   {
@@ -16,22 +16,38 @@ const FACTS = [
   },
 ] as const;
 
+/** Estimated popover height used to decide whether to open above or below the trigger. */
+const POP_HEIGHT = 360;
+
 /** The fine print, one hover away: exactly what the command does and doesn't touch. */
 export function CommandExplainer() {
+  const wrapRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+  const [placement, setPlacement] = useState<"above" | "below">("below");
+
+  const openPopover = () => {
+    const rect = wrapRef.current?.getBoundingClientRect();
+    if (rect) {
+      const below = window.innerHeight - rect.bottom;
+      setPlacement(below < POP_HEIGHT && rect.top > below ? "above" : "below");
+    }
+    setOpen(true);
+  };
+
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: hover is a mouse-only enhancement; keyboard/touch open via the button
     <div
+      ref={wrapRef}
       className="relative flex justify-center"
-      onMouseEnter={() => setOpen(true)}
+      onMouseEnter={openPopover}
       onMouseLeave={() => setOpen(false)}
     >
       <button
         type="button"
         aria-expanded={open}
         aria-controls="command-facts"
-        onClick={() => setOpen((value) => !value)}
-        onFocus={() => setOpen(true)}
+        onClick={() => (open ? setOpen(false) : openPopover())}
+        onFocus={openPopover}
         onKeyDown={(event) => {
           if (event.key === "Escape") setOpen(false);
         }}
@@ -48,7 +64,9 @@ export function CommandExplainer() {
         <div
           id="command-facts"
           role="note"
-          className="pop panel absolute left-1/2 top-full z-20 mt-1.5 w-[22rem] max-w-[calc(100vw-2rem)] rounded-xl p-4 text-left"
+          className={`pop panel absolute left-1/2 z-50 w-[22rem] max-w-[calc(100vw-2rem)] rounded-xl p-4 text-left ${
+            placement === "below" ? "pop-below top-full mt-1.5" : "pop-above bottom-full mb-1.5"
+          }`}
         >
           <p className="text-[10px] uppercase tracking-[0.2em] text-muted">
             what <span className="normal-case text-paper">{BRAND.cliCommand}</span> actually runs

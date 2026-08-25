@@ -111,7 +111,10 @@ body {
   }
 }
 .fade-up {
-  animation: fade-up 480ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  /* `backwards`, not `both`: a filled (still-applied) transform animation keeps the element
+     a stacking context forever — which painted later sections over the hero's popover.
+     After the entrance ends the animation must release entirely. */
+  animation: fade-up 480ms cubic-bezier(0.23, 1, 0.32, 1) backwards;
 }
 .fade-up-1 {
   animation-delay: 40ms;
@@ -132,8 +135,13 @@ body {
 /* Popover: scales in from its trigger, never from nothing. */
 .pop {
   transform: translateX(-50%);
-  transform-origin: 50% 0;
   animation: pop-in 180ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.pop-below {
+  transform-origin: 50% 0;
+}
+.pop-above {
+  transform-origin: 50% 100%;
 }
 @keyframes pop-in {
   from {
