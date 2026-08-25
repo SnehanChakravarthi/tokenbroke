@@ -248,6 +248,16 @@ bun run demo           build the CLI, run it once against the in-process stub se
 bun run readers        this machine's local readings as JSON (drain summarized; --full for all)
 ```
 
+### Releasing the CLI
+Tokenless, provenance-attached, gated by CI (`.github/workflows/release.yml`). Never `npm publish`
+locally, and never `npm version -w` at the root (npm cannot parse bun's `workspace:*` protocol).
+
+```
+cd packages/cli && npm version patch --no-git-tag-version && cd ../..
+git add -A && git commit -m "chore(cli): v$(node -p "require('./packages/cli/package.json').version")"
+git push && git tag "v$(node -p "require('./packages/cli/package.json').version")" && git push origin --tags
+```
+
 ### Code style
 - Named exports by default. Default exports only for Next.js page/layout/route files.
 - Explicit return types on exported functions.
