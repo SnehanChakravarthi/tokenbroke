@@ -7,6 +7,7 @@ import { getPublicLeaderboard } from "@/src/lib/leaderboard";
 import { movementStats } from "@/src/lib/movement";
 import { recordPageView, viewStats } from "@/src/lib/views";
 import { LabUniverse } from "./components/board";
+import { BoardSwitch } from "./components/board-switch";
 import { CommandExplainer } from "./components/command-explainer";
 import { CopyCommand } from "./components/copy-command";
 import { FlapDigits } from "./components/flap";
@@ -123,6 +124,8 @@ export default async function Home() {
             <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2">
               <a
                 href={BRAND.repoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 rounded-full border border-line bg-panel px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-dim transition-colors duration-150 hover:border-paper/30 hover:text-paper"
               >
                 <GitHubMark className="size-3" aria-hidden />
@@ -150,9 +153,11 @@ export default async function Home() {
           <TheLoop stats={movement} boards={boards} />
         </section>
 
-        <section className="fade-up fade-up-3 mt-14 grid items-start gap-5 lg:grid-cols-2">
-          <LabUniverse board={codex} now={now} />
-          <LabUniverse board={claude} now={now} />
+        <section className="fade-up fade-up-3 mt-14" aria-label="the record">
+          <BoardSwitch
+            codex={<LabUniverse board={codex} now={now} />}
+            claude={<LabUniverse board={claude} now={now} />}
+          />
         </section>
       </main>
 
@@ -165,6 +170,8 @@ export default async function Home() {
             <span className="mt-2 block">
               <a
                 href={BRAND.repoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-muted underline decoration-dotted underline-offset-2 hover:text-paper"
               >
                 open source under MIT
@@ -179,6 +186,8 @@ export default async function Home() {
               built by{" "}
               <a
                 href="https://x.com/theteknosaur"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-paper underline decoration-dotted underline-offset-2"
               >
                 Snehan Chakravarthi

@@ -13,6 +13,8 @@ const FACTS: ReadonlyArray<{ id: string; yes: boolean; text: ReactNode }> = [
         100% open source under MIT:{" "}
         <a
           href={BRAND.repoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-dim underline decoration-dotted underline-offset-2 hover:text-paper"
         >
           audit the exact code on GitHub
@@ -108,6 +110,8 @@ export function CommandExplainer() {
             trust us,{" "}
             <a
               href={BRAND.repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-dim underline decoration-dotted underline-offset-2 hover:text-paper"
             >
               read every line (MIT)

@@ -94,7 +94,7 @@ export function TheLoop({
           aria-hidden
           className="rail-x absolute left-[12.5%] right-[12.5%] top-[15px] hidden lg:block"
         />
-        <ol className="grid gap-8 lg:grid-cols-4 lg:gap-6">
+        <ol className="grid gap-8 pl-3 sm:grid-cols-2 sm:gap-x-8 sm:pl-0 lg:grid-cols-4 lg:gap-6">
           {steps.map((step, index) => (
             <li
               key={step.label}
@@ -104,7 +104,7 @@ export function TheLoop({
               {index < steps.length - 1 && (
                 <span
                   aria-hidden
-                  className="rail-y absolute -bottom-8 left-[15px] top-8 lg:hidden"
+                  className="rail-y absolute -bottom-8 left-[15px] top-8 sm:hidden"
                 />
               )}
               <span className="keycap display relative z-10 grid size-8 shrink-0 place-items-center text-sm font-black text-paper">

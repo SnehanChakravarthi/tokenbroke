@@ -93,6 +93,8 @@ export default async function ClaimPage({ params }: PageProps<"/claim/[code]">) 
             Have an X account on your{" "}
             <a
               href="https://github.com/settings/profile"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-dim underline decoration-dotted underline-offset-2"
             >
               GitHub profile's social accounts

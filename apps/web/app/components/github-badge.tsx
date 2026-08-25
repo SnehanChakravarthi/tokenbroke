@@ -24,6 +24,8 @@ export async function GitHubBadge() {
   return (
     <a
       href={BRAND.repoUrl}
+      target="_blank"
+      rel="noopener noreferrer"
       className="raised flex shrink-0 items-center gap-2 px-3 py-1.5 text-[11px] text-dim hover:text-paper"
       aria-label={`tokenbroke on GitHub${stars ? `, ${stars} stars` : ""}`}
     >

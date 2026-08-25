@@ -19,6 +19,8 @@ function HandBadge({ hand }: { hand: (typeof HANDS)[number] }) {
   return (
     <a
       href={`https://x.com/${hand.handle}`}
+      target="_blank"
+      rel="noopener noreferrer"
       title={`${hand.name} · ${hand.role}`}
       className="mx-0.5 inline-flex -translate-y-px items-center gap-1.5 rounded-full border border-line bg-panel py-0.5 pl-0.5 pr-2 align-middle transition-colors duration-150 hover:border-paper/30"
     >
