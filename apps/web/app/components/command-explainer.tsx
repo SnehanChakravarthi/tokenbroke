@@ -1,20 +1,42 @@
 "use client";
 
 import { BRAND } from "@tokenbroke/shared";
+import type { ReactNode } from "react";
 import { useRef, useState } from "react";
 
-const FACTS = [
+const FACTS: ReadonlyArray<{ id: string; yes: boolean; text: ReactNode }> = [
   {
+    id: "oss",
+    yes: true,
+    text: (
+      <>
+        100% open source under MIT —{" "}
+        <a
+          href={BRAND.repoUrl}
+          className="text-dim underline decoration-dotted underline-offset-2 hover:text-paper"
+        >
+          audit the exact code on GitHub
+        </a>
+      </>
+    ),
+  },
+  {
+    id: "reads",
     yes: true,
     text: "reads the usage + rate-limit numbers Claude Code and Codex already keep on your machine — the same stats you see in /usage",
   },
-  { yes: false, text: "never your code, prompts, conversations, or credentials" },
-  { yes: true, text: "files one signed snapshot under an anonymous name — no signup, ~5 seconds" },
+  { id: "never", yes: false, text: "never your code, prompts, conversations, or credentials" },
   {
+    id: "anon",
+    yes: true,
+    text: "files one signed snapshot under an anonymous name — no signup, ~5 seconds",
+  },
+  {
+    id: "hooks",
     yes: true,
     text: "asks first before installing the tiny keep-fresh hook that re-files after each session. uninstalling = deleting two lines",
   },
-] as const;
+];
 
 /** Estimated popover height used to decide whether to open above or below the trigger. */
 const POP_HEIGHT = 360;
@@ -60,15 +82,6 @@ export function CommandExplainer() {
           <circle cx="8" cy="5" r="0.9" fill="currentColor" />
         </svg>
       </button>
-      <span aria-hidden className="mx-3 self-center text-faint">
-        ·
-      </span>
-      <a
-        href={BRAND.repoUrl}
-        className="inline-flex min-h-10 items-center gap-1 self-center text-[11px] text-muted underline decoration-faint decoration-dotted underline-offset-4 transition-colors duration-150 hover:text-paper"
-      >
-        open source ↗
-      </a>
       {open && (
         <div
           id="command-facts"
@@ -82,7 +95,7 @@ export function CommandExplainer() {
           </p>
           <ul className="mt-3 space-y-2.5">
             {FACTS.map((fact) => (
-              <li key={fact.text} className="flex gap-2.5 text-[12px] leading-relaxed text-dim">
+              <li key={fact.id} className="flex gap-2.5 text-[12px] leading-relaxed text-dim">
                 <span aria-hidden className={fact.yes ? "text-ok" : "text-broke"}>
                   {fact.yes ? "✓" : "✗"}
                 </span>

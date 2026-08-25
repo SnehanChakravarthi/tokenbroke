@@ -11,6 +11,7 @@ import { FlapDigits } from "./components/flap";
 import { severityFor } from "./components/format";
 import { GitHubBadge } from "./components/github-badge";
 import { TheHands } from "./components/hands";
+import { GitHubMark } from "./components/icons";
 import { TheLoop } from "./components/loop";
 
 export const dynamic = "force-dynamic";
@@ -64,7 +65,7 @@ export default async function Home() {
 
       <main className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         {/* Hero: the whole story in one read — question, purpose, the hands, the ask. */}
-        <section className="fade-up relative z-10 flex flex-col items-center pt-10 text-center sm:pt-14">
+        <section className="fade-up relative z-30 flex flex-col items-center pt-10 text-center sm:pt-14">
           <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-full border border-line bg-panel px-4 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted">
             <span className="flex items-center gap-1.5">
               <span className="pip inline-block size-1.5 rounded-full bg-ok" aria-hidden />
@@ -111,7 +112,28 @@ export default async function Home() {
             <p className="display mt-2.5 text-center text-sm font-extrabold tracking-tight text-paper sm:text-base">
               &hellip;and one giant leap for devkind.
             </p>
-            <div className="mt-2">
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+              <a
+                href={BRAND.repoUrl}
+                className="inline-flex items-center gap-1.5 rounded-full border border-line bg-panel px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-dim transition-colors duration-150 hover:border-paper/30 hover:text-paper"
+              >
+                <GitHubMark className="size-3" aria-hidden />
+                open source · mit
+              </a>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-panel px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-muted">
+                <span aria-hidden className="text-ok">
+                  ✓
+                </span>
+                never reads your code
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-panel px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-muted">
+                <span aria-hidden className="text-ok">
+                  ✓
+                </span>
+                no signup
+              </span>
+            </div>
+            <div className="mt-1.5">
               <CommandExplainer />
             </div>
           </div>
