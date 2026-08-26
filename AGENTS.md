@@ -248,6 +248,11 @@ bun run demo           build the CLI, run it once against the in-process stub se
 bun run readers        this machine's local readings as JSON (drain summarized; --full for all)
 ```
 
+### Repo gotcha
+Inside this repo, bare `npx tokenbroke` fails with `sh: command not found`: npx resolves the local
+workspace package (whose bin bun does not link) instead of the registry. Use
+`npx tokenbroke@latest` here; everywhere else the bare command is correct. Strangers are unaffected.
+
 ### Releasing the CLI
 Tokenless, provenance-attached, gated by CI (`.github/workflows/release.yml`). Never `npm publish`
 locally, and never `npm version` anywhere in this repo (npm resolves the workspace root and cannot

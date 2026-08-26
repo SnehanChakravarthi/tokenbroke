@@ -36,9 +36,9 @@
     },
     "packages/cli": {
       "name": "tokenbroke",
-      "version": "0.0.0",
+      "version": "0.1.8",
       "bin": {
-        "tokenbroke": "./dist/index.js",
+        "tokenbroke": "dist/index.js",
       },
       "devDependencies": {
         "@tokenbroke/shared": "workspace:*",
