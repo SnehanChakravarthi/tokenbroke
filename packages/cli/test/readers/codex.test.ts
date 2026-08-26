@@ -48,6 +48,36 @@ describe("Codex reader", () => {
     expect(JSON.stringify(reading)).not.toContain("fixture-session");
   });
 
+  it("skips session-start placeholder events in favor of the last real snapshot", async () => {
+    const fixture = await createTestHome();
+    cleanups.push(fixture.cleanup);
+    const now = new Date("2026-08-22T12:00:00.000Z");
+    const file = await installCodexFixture(fixture.home, "placeholder-tail-rollout.jsonl");
+    await makeRecent(file, now);
+
+    const [, reading] = await readAll({ homeDir: fixture.home, now });
+
+    expect(reading.observation).toBe("ok");
+    expect(reading.windows).toEqual([
+      expect.objectContaining({ rawKind: "primary", windowMinutes: 10080, usedPercent: 30 }),
+    ]);
+    expect(reading.observedAt).toBe("2026-08-22T11:50:00.000Z");
+  });
+
+  it("falls back to the placeholder when it is the only snapshot", async () => {
+    const fixture = await createTestHome();
+    cleanups.push(fixture.cleanup);
+    const now = new Date("2026-08-22T12:00:00.000Z");
+    const file = await installCodexFixture(fixture.home, "placeholder-only-rollout.jsonl");
+    await makeRecent(file, now);
+
+    const [, reading] = await readAll({ homeDir: fixture.home, now });
+
+    expect(reading.observation).toBe("ok");
+    expect(reading.windows).toHaveLength(2);
+    expect(reading.observedAt).toBe("2026-08-22T11:59:00.000Z");
+  });
+
   it("falls back to archived sessions", async () => {
     const fixture = await createTestHome();
     cleanups.push(fixture.cleanup);

@@ -191,15 +191,34 @@ async function listRollouts(
   return { files, compressed, skipped, timedOut };
 }
 
+/**
+ * Codex writes an initializing rate_limits stub at session start, before any real API
+ * headers arrive: every window reads 0% used with resets_at anchored to the session's own
+ * timestamp plus the window length. Reading one as truth reported a fully-reset account
+ * for a dev who was 30% into his weekly (the first field bug report). Skip them unless
+ * they are all we have.
+ */
+function isSessionStartPlaceholder(event: CodexEvent): boolean {
+  const atMs = Date.parse(event.at ?? "");
+  if (!Number.isFinite(atMs) || event.windows.length === 0) return false;
+  return event.windows.every((window) => {
+    if (window.usedPercent !== 0 || window.windowMinutes === null) return false;
+    const resetMs = Date.parse(window.resetsAt ?? "");
+    if (!Number.isFinite(resetMs)) return false;
+    return Math.abs(resetMs - atMs - window.windowMinutes * 60_000) <= 120_000;
+  });
+}
+
 async function snapshotFromFiles(
   ctx: CodexReaderContext,
   files: RolloutFile[],
   deadlineAt: number,
 ): Promise<{ event: CodexEvent | null; malformedLines: number; timedOut: boolean }> {
   let malformedLines = 0;
+  let placeholderFallback: CodexEvent | null = null;
   for (const file of files) {
     if (performance.now() >= deadlineAt) {
-      return { event: null, malformedLines, timedOut: true };
+      return { event: placeholderFallback, malformedLines, timedOut: true };
     }
     let result: Awaited<ReturnType<typeof readJsonlTail<CodexEvent>>>;
     try {
@@ -208,10 +227,17 @@ async function snapshotFromFiles(
       continue;
     }
     malformedLines += result.malformedLines;
-    const event = result.items.at(-1) ?? null;
-    if (event !== null) return { event, malformedLines, timedOut: false };
+    for (let index = result.items.length - 1; index >= 0; index -= 1) {
+      const event = result.items[index];
+      if (event === undefined) continue;
+      if (isSessionStartPlaceholder(event)) {
+        placeholderFallback ??= event;
+        continue;
+      }
+      return { event, malformedLines, timedOut: false };
+    }
   }
-  return { event: null, malformedLines, timedOut: false };
+  return { event: placeholderFallback, malformedLines, timedOut: false };
 }
 
 async function readSnapshot(ctx: CodexReaderContext, deadlineAt: number): Promise<SnapshotResult> {
