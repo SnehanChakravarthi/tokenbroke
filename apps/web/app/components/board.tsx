@@ -213,7 +213,8 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
         <ol className="relative border-t border-line-soft">
           {rows.map((row) => {
             const remaining = Math.round(row.remainingPercent * 10) / 10;
-            const top3 = row.rank <= 3;
+            // Medals are for the genuinely miserable: a solvent board crowns nobody.
+            const top3 = row.rank <= 3 && (row.misery ?? 0) > 0;
             const verdict = verdictFor(remaining);
             return (
               <li
