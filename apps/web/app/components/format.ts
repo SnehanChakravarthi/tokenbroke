@@ -19,9 +19,10 @@ export function severityFor(medianRemaining: number | null): "ok" | "warn" | "br
 
 const compact = new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 });
 
-/** Misery spans fractions (solvent boards) to hundreds; keep small values visible. */
+/** Adaptive misery display (RFC 006): 0, <0.1, one decimal to 10, integers above. */
 export function compactNumber(value: number): string {
   if (value === 0) return "0";
-  if (value < 1) return value.toFixed(1) === "0.0" ? "<0.1" : value.toFixed(1);
-  return compact.format(value);
+  if (value < 0.1) return "<0.1";
+  if (value < 10) return value.toFixed(1);
+  return compact.format(Math.round(value));
 }

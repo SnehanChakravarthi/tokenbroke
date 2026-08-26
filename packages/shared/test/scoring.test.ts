@@ -163,6 +163,30 @@ describe("freshness, rank, and aggregates", () => {
     expect(devs([{ deviceId: "a", reading: dayOld }], NOW)).toBe(0);
   });
 
+  it("breaks equal-misery ties by most depleted binding window, not recency (RFC 006)", () => {
+    const base = { misery: 0, observedAt: NOW.toISOString() };
+    const rows = [
+      { ...base, deviceId: "ran-last", remainingPercent: 98, observedAt: NOW.toISOString() },
+      {
+        ...base,
+        deviceId: "most-burned",
+        remainingPercent: 69,
+        observedAt: new Date(NOW.getTime() - 3 * 3_600_000).toISOString(),
+      },
+      {
+        ...base,
+        deviceId: "untouched",
+        remainingPercent: 100,
+        observedAt: new Date(NOW.getTime() - 1 * 3_600_000).toISOString(),
+      },
+    ];
+    expect([...rows].sort(compareRows).map((row) => row.deviceId)).toEqual([
+      "most-burned",
+      "ran-last",
+      "untouched",
+    ]);
+  });
+
   it("orders equal-misery rows with unparseable timestamps independently of input order", () => {
     const rows = Array.from({ length: 12 }, (_, index) => ({
       misery: 4,

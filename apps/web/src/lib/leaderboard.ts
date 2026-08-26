@@ -170,6 +170,9 @@ async function rebuild(
             observedAt: reading.observedAt ?? "",
             reading,
             misery: score.misery,
+            remainingPercent: score.bindingWindow
+              ? 100 - score.bindingWindow.usedPercent
+              : undefined,
             source: row,
           };
     })
