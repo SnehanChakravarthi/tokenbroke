@@ -115,21 +115,14 @@ export default async function Home() {
           </p>
           <div className="fade-up fade-up-1 mt-8">
             <TheHands />
-            <p className="mt-3 text-center text-sm leading-[1.8] text-dim sm:text-base">
-              want the whole story?{" "}
-              <Link
-                href="/manifest"
-                className="text-paper underline decoration-faint decoration-dotted underline-offset-4 transition-colors duration-150 hover:decoration-paper"
-              >
-                read the manifest
-              </Link>
-            </p>
           </div>
 
           <div className="fade-up fade-up-2 mt-10 flex w-full flex-col items-center">
             <p className="mb-4 max-w-xl text-center text-sm leading-relaxed text-dim [text-wrap:balance] sm:text-base">
-              That&apos;s one small command for a dev,{" "}
-              <span className="font-semibold text-paper">one giant leap for devkind.</span>
+              <span className="font-semibold text-paper">
+                Copy it. Run it. You&apos;re on the record in five seconds.
+              </span>{" "}
+              Every row makes us harder to ignore.
             </p>
             <CopyCommand command={BRAND.cliCommand} />
             <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2">
