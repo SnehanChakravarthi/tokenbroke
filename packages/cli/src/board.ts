@@ -160,7 +160,8 @@ export function renderDryRun(
       lines.push(...ownStatusLines(reading, now));
       const ageHours = (now.getTime() - Date.parse(reading.observedAt ?? "")) / 3_600_000;
       if (Number.isFinite(ageHours) && ageHours >= 1) {
-        lines.push(`  ${paint(COPY.snapshotAge(Math.round(ageHours)), "dim")}`);
+        lines.push(fit(`  ${paint(COPY.snapshotAge(Math.round(ageHours)), "dim")}`));
+        lines.push(fit(`  ${paint(COPY.snapshotAgeHint, "dim")}`));
       }
     }
     const meta = [
@@ -352,7 +353,8 @@ export function renderBoard(response: SubmissionSuccessV1, readings: LocalReadin
     }
     const snapshotAgeHours = (now.getTime() - Date.parse(reading.observedAt ?? "")) / 3_600_000;
     if (Number.isFinite(snapshotAgeHours) && snapshotAgeHours >= 1 && snapshotAgeHours < 24) {
-      lines.push(`  ${paint(COPY.snapshotAge(Math.round(snapshotAgeHours)), "dim")}`);
+      lines.push(fit(`  ${paint(COPY.snapshotAge(Math.round(snapshotAgeHours)), "dim")}`));
+      lines.push(fit(`  ${paint(COPY.snapshotAgeHint, "dim")}`));
     }
     const state = stateLine(reading, result.rankable, result.misery, now);
     if (state) {
