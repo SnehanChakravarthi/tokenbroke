@@ -122,7 +122,8 @@ export default async function Home() {
               <span className="font-semibold text-paper">
                 Copy it, run it in your terminal. You&apos;re on the record in five seconds.
               </span>{" "}
-              Every row makes us harder to ignore.
+              Every row is pressure for{" "}
+              <span className="text-paper">more resets and bigger limits</span>, for every dev.
             </p>
             <CopyCommand command={BRAND.cliCommand} />
             <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2">
