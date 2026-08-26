@@ -120,7 +120,7 @@ export default async function Home() {
           <div className="fade-up fade-up-2 mt-10 flex w-full flex-col items-center">
             <p className="mb-4 max-w-xl text-center text-sm leading-relaxed text-dim [text-wrap:balance] sm:text-base">
               <span className="font-semibold text-paper">
-                Copy it. Run it. You&apos;re on the record in five seconds.
+                Copy it, run it in your terminal. You&apos;re on the record in five seconds.
               </span>{" "}
               Every row makes us harder to ignore.
             </p>
