@@ -46,8 +46,10 @@ export function TheHands() {
   return (
     <div className="mx-auto max-w-xl space-y-3 text-center text-sm leading-[1.8] text-dim sm:text-base">
       <p>
-        <span className="text-paper">The public leaderboard of rate-limited developers,</span> built
-        from real usage on our own machines.
+        <span className="text-paper">
+          This is the public leaderboard of rate-limited developers,
+        </span>{" "}
+        built from real usage on our own machines.
       </p>
       <p>
         The two hands closest to the reset button: <HandBadge hand={tibo} />{" "}
