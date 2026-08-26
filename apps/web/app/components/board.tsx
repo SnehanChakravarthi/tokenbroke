@@ -193,8 +193,17 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
       </div>
 
       <p className="relative border-t border-line-soft px-5 py-2 text-center text-[9px] uppercase tracking-[0.16em] text-faint">
-        ranked by <span className="text-muted">misery</span>: the less you have left and the longer
-        your wait, the higher you climb
+        {rows.length > 0 && rows.every((row) => (row.misery ?? 0) === 0) ? (
+          <>
+            ranked by <span className="text-muted">misery</span>, which starts past 50% burned.
+            nobody is there yet, so <span className="text-muted">least remaining leads</span>
+          </>
+        ) : (
+          <>
+            ranked by <span className="text-muted">misery</span>: the less you have left and the
+            longer your wait, the higher you climb
+          </>
+        )}
       </p>
       {rows.length === 0 ? (
         <p className="border-t border-line-soft px-5 py-10 text-center text-sm text-muted">
