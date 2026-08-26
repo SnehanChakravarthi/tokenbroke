@@ -29,6 +29,8 @@ export interface LeaderboardRow {
   isYou: boolean;
   /** Worst model-scoped weekly window (e.g. Claude's Fable limit): visible, never ranked. */
   modelScoped?: { label: string; remainingPercent: number } | null;
+  /** The sort key, made visible: hoursUntilReset x depletion^3 (depletion floored at 50). */
+  misery?: number;
 }
 
 export interface SubmissionSuccessV1 {

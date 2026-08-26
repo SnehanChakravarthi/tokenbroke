@@ -2,7 +2,7 @@ import { BRAND } from "@tokenbroke/shared";
 import Link from "next/link";
 import type { PublicLeaderboardV1 } from "@/src/lib/leaderboard";
 import { FlapDigits } from "./flap";
-import { resetsIn } from "./format";
+import { compactNumber, resetsIn } from "./format";
 import { ClaudeCodeMark, CodexMark } from "./icons";
 
 const TOOL = {
@@ -101,6 +101,13 @@ function verdictFor(remaining: number): { word: string; tone: string } {
   return { word: "solvent", tone: "text-ok" };
 }
 
+/** Per-row charge bar tone: same thresholds as the collective battery. */
+function meterTone(remaining: number): string {
+  if (remaining <= 10) return "text-broke";
+  if (remaining <= 30) return "text-warn";
+  return "text-ok";
+}
+
 function statusEmoji(remaining: number): string {
   if (remaining <= 1) return "💀";
   if (remaining <= 5) return "🪫";
@@ -185,6 +192,10 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
         </div>
       </div>
 
+      <p className="relative border-t border-line-soft px-5 py-2 text-center text-[9px] uppercase tracking-[0.16em] text-faint">
+        ranked by <span className="text-muted">misery</span>: the less you have left and the longer
+        your wait, the higher you climb
+      </p>
       {rows.length === 0 ? (
         <p className="border-t border-line-soft px-5 py-10 text-center text-sm text-muted">
           nobody has suffered here yet. be the first.
@@ -203,7 +214,7 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
                 <Link
                   href={`/u/${encodeURIComponent(row.name)}`}
                   className={`grid grid-cols-[2.2rem_1fr_auto] items-center gap-x-3 px-5 ${
-                    top3 ? "bg-panel-2/80 py-3" : "py-2.5"
+                    top3 ? "bg-panel-2/80 py-3.5" : "py-3"
                   } transition-colors duration-150 hover:bg-panel-2`}
                 >
                   <span
@@ -237,19 +248,34 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
                     </span>
                   </span>
                   <span className="text-right">
-                    <span
-                      className={`block text-sm font-semibold tabular-nums ${remainingTone(remaining)}`}
-                    >
-                      {remaining}%
+                    <span className="block text-sm tabular-nums">
+                      <span className="mr-1.5 text-[9px] uppercase tracking-[0.14em] text-muted">
+                        misery
+                      </span>
+                      <span className="font-semibold text-paper">
+                        {row.misery !== undefined ? compactNumber(row.misery) : "—"}
+                      </span>
+                    </span>
+                    <span className="block text-[10px] tabular-nums text-faint">
+                      <span className={remainingTone(remaining)}>{remaining}% left</span>
                       {statusEmoji(remaining) && (
                         <span className="ml-1" aria-hidden>
                           {statusEmoji(remaining)}
                         </span>
                       )}
+                      {" · resets in "}
+                      <span className="text-dim">{resetsIn(row.resetsAt, now)}</span>
                     </span>
-                    <span className="block text-[10px] tabular-nums text-faint">
-                      resets {resetsIn(row.resetsAt, now)}
-                    </span>
+                  </span>
+                  {/* The "why" made visible: how much charge this dev has left. */}
+                  <span
+                    aria-hidden
+                    className={`col-span-full mt-2 block h-[4px] overflow-hidden rounded-full bg-[var(--well-bg)] ${meterTone(remaining)}`}
+                  >
+                    <span
+                      className="meter-cells block h-full rounded-full"
+                      style={{ width: `${Math.max(remaining, 2)}%` }}
+                    />
                   </span>
                 </Link>
               </li>

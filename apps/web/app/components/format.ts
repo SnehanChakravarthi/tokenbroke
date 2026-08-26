@@ -16,3 +16,10 @@ export function severityFor(medianRemaining: number | null): "ok" | "warn" | "br
   if (medianRemaining <= 35) return "warn";
   return "ok";
 }
+
+const compact = new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 });
+
+/** 17_875_000 -> "17.9M": misery scores are big by construction. */
+export function compactNumber(value: number): string {
+  return compact.format(value);
+}
