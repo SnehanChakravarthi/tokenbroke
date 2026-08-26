@@ -19,7 +19,9 @@ export function severityFor(medianRemaining: number | null): "ok" | "warn" | "br
 
 const compact = new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 });
 
-/** 17_875_000 -> "17.9M": misery scores are big by construction. */
+/** Misery spans fractions (solvent boards) to hundreds; keep small values visible. */
 export function compactNumber(value: number): string {
+  if (value === 0) return "0";
+  if (value < 1) return value.toFixed(1) === "0.0" ? "<0.1" : value.toFixed(1);
   return compact.format(value);
 }

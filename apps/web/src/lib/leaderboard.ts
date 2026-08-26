@@ -113,7 +113,7 @@ function leaderboardRow(
     resetsAt: binding?.resetsAt ?? null,
     isYou: false,
     modelScoped: worstScoped(state.reading),
-    misery: Math.round(state.misery),
+    misery: Math.round(state.misery * 10) / 10,
   };
 }
 
