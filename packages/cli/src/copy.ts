@@ -14,6 +14,8 @@ export const COPY = {
   youMarker: "◀ you",
   anonymousBadge: "anon",
   asOf: (hoursAgo: number): string => `as of ${Math.round(hoursAgo)}h ago`,
+  snapshotAge: (hoursAgo: number): string =>
+    `read from your last session, ${hoursAgo}h ago. use the tool, then run me again.`,
   sentenceServed: "sentence served. run again to confirm you're still broke",
   notBroke: "not broke. come back when it hurts.",
 

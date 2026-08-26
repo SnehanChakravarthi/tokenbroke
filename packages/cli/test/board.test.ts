@@ -11,6 +11,15 @@ beforeEach(() => {
 afterEach(() => vi.useRealTimers());
 
 describe("renderBoard", () => {
+  it("discloses snapshot age when the source reading is hours old", () => {
+    const stale = {
+      ...toolReading("codex", 0, 5),
+      observedAt: new Date(TEST_NOW.getTime() - 11 * 3_600_000).toISOString(),
+    };
+    const output = renderBoard(successResponse(), [toolReading("claude-code", 12), stale]);
+    expect(output).toContain("read from your last session, 11h ago");
+  });
+
   it("renders top rows, neighbors, server roast, collective state, and claim", () => {
     const output = renderBoard(successResponse(), localReadings());
     expect(output).toMatchSnapshot();

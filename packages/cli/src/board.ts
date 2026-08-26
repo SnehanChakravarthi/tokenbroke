@@ -158,6 +158,10 @@ export function renderDryRun(
       lines.push(`  ${COPY.noSnapshot(TOOL_LABELS[reading.tool])}`);
     } else {
       lines.push(...ownStatusLines(reading, now));
+      const ageHours = (now.getTime() - Date.parse(reading.observedAt ?? "")) / 3_600_000;
+      if (Number.isFinite(ageHours) && ageHours >= 1) {
+        lines.push(`  ${paint(COPY.snapshotAge(Math.round(ageHours)), "dim")}`);
+      }
     }
     const meta = [
       `status ${reading.install}/${reading.observation}`,
@@ -345,6 +349,10 @@ export function renderBoard(response: SubmissionSuccessV1, readings: LocalReadin
           paint(timeRemaining(window.resetsAt, now), "dim"),
         ),
       );
+    }
+    const snapshotAgeHours = (now.getTime() - Date.parse(reading.observedAt ?? "")) / 3_600_000;
+    if (Number.isFinite(snapshotAgeHours) && snapshotAgeHours >= 1 && snapshotAgeHours < 24) {
+      lines.push(`  ${paint(COPY.snapshotAge(Math.round(snapshotAgeHours)), "dim")}`);
     }
     const state = stateLine(reading, result.rankable, result.misery, now);
     if (state) {
