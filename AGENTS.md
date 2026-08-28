@@ -295,6 +295,17 @@ sections over the popover; the popover also flips above/below the trigger by ava
 pages (claimed or anonymous, freshness-aware, graceful not-found); claim success now 303s to
 `/u/<login>?claimed=1` (homepage `?claimed` pill and LabUniverse `highlight` removed as dead).
 
+**Stale lane shipped (2026-08-28):** the board was dropping rows older than 24 h entirely (a
+launch-week regression against the decided RFC 003 §8.3 spec: stale = visible, unranked, numbers
+frozen at the row's own last observation). Fixed in `leaderboard.ts` (7-day query cutoff, fresh/stale
+partition, `staleRows` added to `PublicLeaderboardV1` — additive, so `/api/v1/leaderboard` stays
+compatible), rendered as a dimmed "gone quiet" lane under the ranked list, and `/u/<name>` now shows
+a gone-quiet profile for stale rows instead of "no fresh reading". Aggregates (devs, median) remain
+fresh-only per F11. Open bug, undiagnosed: one user (isharizh) has Claude Code in active use but the
+CLI submitted codex-only — their Claude reader found nothing; needs their `--dry-run` output
+(install/observation status) to distinguish missing `~/.claude.json` from missing
+`cachedUsageUtilization` (API-key billing has no usage cache) from unreadable/oversized state.
+
 **Open source (2026-08-25, owner-decided):** whole monorepo MIT (LICENSE, SECURITY.md,
 CONTRIBUTING.md, README "Audit it" section, license fields in all package.jsons). History scanned
 clean. Owner flips repo visibility to public on GitHub; npm provenance publishing via GitHub Actions
