@@ -1,9 +1,13 @@
 import { BRAND, type LeaderboardRow, ordinal } from "@tokenbroke/shared";
 import Link from "next/link";
 import { siteDatabase } from "@/src/lib/dev-db";
-import { getPublicLeaderboard, type PublicLeaderboardV1 } from "@/src/lib/leaderboard";
+import {
+  getPublicLeaderboard,
+  type PublicLeaderboardV1,
+  type StaleLeaderboardRow,
+} from "@/src/lib/leaderboard";
 import { ToolLockup } from "../../components/board";
-import { resetsIn } from "../../components/format";
+import { lastSeen, resetsIn } from "../../components/format";
 import { ClaudeCodeMark, CodexMark } from "../../components/icons";
 
 export const dynamic = "force-dynamic";
@@ -22,6 +26,11 @@ function remainingTone(remaining: number): string {
 function findRow(board: PublicLeaderboardV1, name: string): LeaderboardRow | null {
   const needle = name.toLowerCase();
   return board.rows.find((row) => row.name.toLowerCase() === needle) ?? null;
+}
+
+function findStale(board: PublicLeaderboardV1, name: string): StaleLeaderboardRow | null {
+  const needle = name.toLowerCase();
+  return board.staleRows.find((row) => row.name.toLowerCase() === needle) ?? null;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ name: string }> }) {
@@ -49,11 +58,18 @@ export default async function ProfilePage({
     getPublicLeaderboard("codex", { now, database }),
     getPublicLeaderboard("claude-code", { now, database }),
   ]);
-  const entries = [codex, claude].map((board) => ({ board, row: findRow(board, name) }));
+  const entries = [codex, claude].map((board) => ({
+    board,
+    row: findRow(board, name),
+    stale: findStale(board, name),
+  }));
   const found = entries.filter(
-    (entry): entry is { board: PublicLeaderboardV1; row: LeaderboardRow } => entry.row !== null,
+    (entry): entry is { board: PublicLeaderboardV1; row: LeaderboardRow; stale: null } =>
+      entry.row !== null,
   );
-  const identity = found[0]?.row ?? null;
+  const staleFound = entries.filter((entry) => entry.stale !== null);
+  const identity = found[0]?.row ?? staleFound[0]?.stale ?? null;
+  const onlyStale = found.length === 0 && staleFound.length > 0;
   const bestRank = found.length ? Math.min(...found.map(({ row }) => row.rank)) : null;
 
   return (
@@ -103,7 +119,8 @@ export default async function ProfilePage({
           </h1>
           {identity ? (
             <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-muted">
-              {identity.claimed ? "claimed · on the record" : "anonymous · on the record"}
+              {identity.claimed ? "claimed" : "anonymous"}
+              {onlyStale ? " · gone quiet · still on the record" : " · on the record"}
             </p>
           ) : (
             <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-muted">
@@ -118,9 +135,9 @@ export default async function ProfilePage({
           )}
         </div>
 
-        {found.length > 0 ? (
+        {found.length > 0 || staleFound.length > 0 ? (
           <div className="fade-up fade-up-1 mt-10 grid w-full gap-4 sm:grid-cols-2">
-            {entries.map(({ board, row }) => {
+            {entries.map(({ board, row, stale }) => {
               const { title, accent, Mark } = TOOL[board.tool];
               return (
                 <section
@@ -174,6 +191,39 @@ export default async function ProfilePage({
                           </div>
                         )}
                       </dl>
+                    </>
+                  ) : stale ? (
+                    <>
+                      <p className="display mt-4 text-2xl font-black uppercase tracking-tight text-muted">
+                        gone quiet
+                      </p>
+                      <dl className="mt-4 space-y-2 text-sm">
+                        <div className="flex items-baseline justify-between gap-3">
+                          <dt className="text-[10px] uppercase tracking-[0.16em] text-muted">
+                            tokens left, as of then
+                          </dt>
+                          <dd className="tabular-nums text-dim">{stale.remainingPercent}%</dd>
+                        </div>
+                        <div className="flex items-baseline justify-between gap-3">
+                          <dt className="text-[10px] uppercase tracking-[0.16em] text-muted">
+                            last seen
+                          </dt>
+                          <dd className="tabular-nums text-dim">
+                            {lastSeen(stale.observedAt, now)}
+                          </dd>
+                        </div>
+                        <div className="flex items-baseline justify-between gap-3">
+                          <dt className="text-[10px] uppercase tracking-[0.16em] text-muted">
+                            plan
+                          </dt>
+                          <dd className="text-dim">{stale.plan ?? "unknown"}</dd>
+                        </div>
+                      </dl>
+                      <p className="mt-4 text-[10px] uppercase tracking-[0.16em] text-faint">
+                        {stale.servedSentence
+                          ? "sentence served. the reset landed without them."
+                          : "unranked until the next run."}
+                      </p>
                     </>
                   ) : (
                     <p className="mt-6 text-sm leading-relaxed text-muted">

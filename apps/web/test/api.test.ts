@@ -26,7 +26,7 @@ import {
   type DatabaseQuery,
   setDatabaseForTests,
 } from "../src/lib/db";
-import { invalidateLeaderboardCache } from "../src/lib/leaderboard";
+import { getPublicLeaderboard, invalidateLeaderboardCache } from "../src/lib/leaderboard";
 import { admitRateBucket } from "../src/lib/rate-limit";
 
 const CLAIM_SECRET = "test-claim-secret-with-enough-entropy";
@@ -343,6 +343,46 @@ describe("write-path ordering (PGlite serializes; not a concurrency proof)", () 
       await getLeaderboard(new Request(`${TEST_ORIGIN}/api/v1/leaderboard?tool=codex`))
     ).json();
     expect(codex).toMatchObject({ ok: true, tool: "codex", global: { devs: 1 } });
+  });
+
+  it("moves an aging row to the visible stale lane instead of dropping it (RFC 003 §8.3)", async () => {
+    const owner = identity();
+    const submitted = await submit(payload(owner), owner);
+    expect(submitted.ok).toBe(true);
+    const name = submitted.ok ? submitted.identity.anonymousName : "";
+
+    invalidateLeaderboardCache();
+    const later = new Date(Date.now() + 30 * 60 * 60 * 1_000);
+    const board = await getPublicLeaderboard("codex", { now: later, database });
+    expect(board.rows).toHaveLength(0);
+    expect(board.global.devs).toBe(0);
+    expect(board.staleRows).toHaveLength(1);
+    expect(board.staleRows[0]).toMatchObject({
+      name,
+      claimed: false,
+      remainingPercent: 4,
+      servedSentence: true,
+    });
+
+    invalidateLeaderboardCache();
+    const muchLater = new Date(Date.now() + 8 * 24 * 60 * 60 * 1_000);
+    const hidden = await getPublicLeaderboard("codex", { now: muchLater, database });
+    expect(hidden.rows).toHaveLength(0);
+    expect(hidden.staleRows).toHaveLength(0);
+  });
+
+  it("marks a fresh-aged row whose reset already landed as stale, sentence served", async () => {
+    const owner = identity();
+    expect((await submit(payload(owner), owner)).ok).toBe(true);
+
+    invalidateLeaderboardCache();
+    // The test window resets 4 hours after observation: at +5h the row is younger than 24h
+    // but its sentence has been served, so it leaves the ranked lane yet stays visible.
+    const afterReset = new Date(Date.now() + 5 * 60 * 60 * 1_000);
+    const board = await getPublicLeaderboard("codex", { now: afterReset, database });
+    expect(board.rows).toHaveLength(0);
+    expect(board.staleRows).toHaveLength(1);
+    expect(board.staleRows[0]).toMatchObject({ servedSentence: true });
   });
 });
 

@@ -45,15 +45,33 @@ interface ToolLeaderboardInternal {
   tool: ToolId;
   generatedAt: string;
   ranked: RankedState[];
+  stale: StaleLeaderboardRow[];
   freshDeviceIds: string[];
   medianRemainingPercent: number | null;
   daysSinceReset: number | null;
+}
+
+/**
+ * A row that went quiet (RFC 003 §8.3): older than 24 hours, or its binding reset has landed.
+ * Visible with numbers frozen at its own last observation; excluded from rank and aggregates.
+ */
+export interface StaleLeaderboardRow {
+  name: string;
+  claimed: boolean;
+  avatarUrl: string | null;
+  plan: string | null;
+  /** Remaining % of the window that was binding at the row's last observation. */
+  remainingPercent: number;
+  observedAt: string;
+  /** The binding window's reset has since landed: the sentence was served off-board. */
+  servedSentence: boolean;
 }
 
 export interface PublicLeaderboardV1 {
   tool: ToolId;
   generatedAt: string;
   rows: LeaderboardRow[];
+  staleRows: StaleLeaderboardRow[];
   global: {
     devs: number;
     /** Median remaining percentage over fresh structurally ranked weekly (7d) windows. */
@@ -117,6 +135,34 @@ function leaderboardRow(
   };
 }
 
+/**
+ * A stale row's numbers are evaluated at its OWN observation time, not now: "as of their last
+ * run" is the only honest reading once the clock has moved on. Rows that were never rankable
+ * (no ranked window with a parseable reset) stay out of the stale lane, mirroring the fresh lane.
+ */
+function staleLeaderboardRow(
+  reading: ToolReading,
+  row: StateRow,
+  now: Date,
+): StaleLeaderboardRow | null {
+  const observedAt = iso(row.observed_at);
+  if (observedAt === null) return null;
+  const asOf = toolMisery(reading, new Date(observedAt));
+  if (asOf.misery === null || asOf.bindingWindow === null) return null;
+  const resetMs = asOf.bindingWindow.resetsAt
+    ? Date.parse(asOf.bindingWindow.resetsAt)
+    : Number.NaN;
+  return {
+    name: row.github_login ?? row.anonymous_name,
+    claimed: row.github_login !== null,
+    avatarUrl: row.avatar_url,
+    plan: row.plan_label,
+    remainingPercent: Math.round((100 - asOf.bindingWindow.usedPercent) * 10) / 10,
+    observedAt,
+    servedSentence: Number.isFinite(resetMs) && resetMs <= now.getTime(),
+  };
+}
+
 /** Worst model-scoped window (secondary by registry design): shown as a chip, never ranked. */
 function worstScoped(reading: ToolReading): { label: string; remainingPercent: number } | null {
   let worst: { label: string; remainingPercent: number } | null = null;
@@ -146,12 +192,19 @@ async function rebuild(
       where ts.tool = $1
         and ts.observed_at > $2
         and d.shadow_banned = false`,
-    [tool, new Date(now.getTime() - 24 * 60 * 60 * 1_000)],
+    [tool, new Date(now.getTime() - 7 * 24 * 60 * 60 * 1_000)],
   );
   const fresh: Array<{ row: StateRow; reading: ToolReading; hasRankedWindow: boolean }> = [];
+  const stale: StaleLeaderboardRow[] = [];
   for (const row of result.rows) {
     const reading = readingFor(row, tool);
-    if (freshnessState(reading, now) !== "fresh") continue;
+    const state = freshnessState(reading, now);
+    if (state === "hidden") continue;
+    if (state === "stale") {
+      const staleRow = staleLeaderboardRow(reading, row, now);
+      if (staleRow !== null) stale.push(staleRow);
+      continue;
+    }
     // A device only "participates" in this tool if it reports at least one structurally ranked
     // window. A reading with empty (or only secondary/hidden) windows is fresh but must not inflate
     // the tool's devs count or median (F11).
@@ -160,6 +213,7 @@ async function rebuild(
     );
     fresh.push({ row, reading, hasRankedWindow });
   }
+  stale.sort((left, right) => Date.parse(right.observedAt) - Date.parse(left.observedAt));
   const rankedWithoutRows = fresh
     .map(({ row, reading }) => {
       const score = toolMisery(reading, now);
@@ -206,6 +260,7 @@ async function rebuild(
     tool,
     generatedAt: now.toISOString(),
     ranked,
+    stale,
     freshDeviceIds: fresh
       .filter(({ hasRankedWindow }) => hasRankedWindow)
       .map(({ row }) => row.device_id),
@@ -256,6 +311,7 @@ export async function getPublicLeaderboard(
     tool,
     generatedAt: snapshot.generatedAt,
     rows: snapshot.ranked.map(({ row }) => row),
+    staleRows: snapshot.stale,
     global: {
       devs: snapshot.freshDeviceIds.length,
       medianRemainingPercent: snapshot.medianRemainingPercent,

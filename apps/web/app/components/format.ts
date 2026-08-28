@@ -10,6 +10,14 @@ export function resetsIn(resetsAt: string | null, now: Date): string {
   return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
 }
 
+/** How long ago a stale row was last observed: hours under two days, whole days after. */
+export function lastSeen(observedAt: string, now: Date): string {
+  const hours = Math.max(1, Math.round((now.getTime() - Date.parse(observedAt)) / 3_600_000));
+  if (!Number.isFinite(hours)) return "a while ago";
+  if (hours < 48) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
+}
+
 export function severityFor(medianRemaining: number | null): "ok" | "warn" | "broke" {
   if (medianRemaining === null) return "ok";
   if (medianRemaining <= 10) return "broke";

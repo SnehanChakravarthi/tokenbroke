@@ -2,7 +2,7 @@ import { BRAND } from "@tokenbroke/shared";
 import Link from "next/link";
 import type { PublicLeaderboardV1 } from "@/src/lib/leaderboard";
 import { FlapDigits } from "./flap";
-import { compactNumber, resetsIn } from "./format";
+import { compactNumber, lastSeen, resetsIn } from "./format";
 import { ClaudeCodeMark, CodexMark } from "./icons";
 
 const TOOL = {
@@ -136,6 +136,7 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
   const days = board.global.daysSinceReset;
   const median = board.global.medianRemainingPercent;
   const rows = board.rows.slice(0, 12);
+  const staleRows = board.staleRows.slice(0, 8);
 
   return (
     <section
@@ -207,7 +208,9 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
       </p>
       {rows.length === 0 ? (
         <p className="border-t border-line-soft px-5 py-10 text-center text-sm text-muted">
-          nobody has suffered here yet. be the first.
+          {staleRows.length > 0
+            ? "everyone here has gone quiet. one command wakes the board."
+            : "nobody has suffered here yet. be the first."}
         </p>
       ) : (
         <ol className="relative border-t border-line-soft">
@@ -292,6 +295,60 @@ export function LabUniverse({ board, now }: { board: PublicLeaderboardV1; now: D
             );
           })}
         </ol>
+      )}
+      {/* The stale lane (RFC 003 §8.3): rows gone quiet stay visible, unranked, numbers frozen
+          at their own last run. The board forgets nobody inside seven days. */}
+      {staleRows.length > 0 && (
+        <div className="relative border-t border-line-soft">
+          <p className="px-5 pt-3 text-center text-[9px] uppercase tracking-[0.16em] text-faint">
+            gone quiet · unranked · numbers as of each row&apos;s last run
+          </p>
+          <ul className="pb-1 pt-2">
+            {staleRows.map((row) => (
+              <li key={`${board.tool}-stale-${row.name}`}>
+                <Link
+                  href={`/u/${encodeURIComponent(row.name)}`}
+                  className="grid grid-cols-[2.2rem_1fr_auto] items-center gap-x-3 px-5 py-2 opacity-60 transition-opacity duration-150 hover:opacity-100"
+                >
+                  <span aria-hidden className="text-right text-sm text-faint">
+                    ·
+                  </span>
+                  <span className="flex min-w-0 items-center gap-2.5">
+                    <Monogram name={row.name} claimed={row.claimed} tool={board.tool} />
+                    <span className="min-w-0">
+                      <span
+                        className={`block truncate text-sm ${
+                          row.claimed ? "font-semibold text-dim" : "text-muted"
+                        }`}
+                      >
+                        {row.name}
+                      </span>
+                      <span className="block text-[10px] uppercase tracking-[0.14em] text-faint">
+                        {row.servedSentence ? "sentence served" : "gone stale"}
+                        {" · "}
+                        {row.plan ?? "plan unknown"}
+                        {row.claimed ? "" : " · anon"}
+                      </span>
+                    </span>
+                  </span>
+                  <span className="text-right">
+                    <span className="block text-sm tabular-nums text-dim">
+                      {row.remainingPercent}% left
+                    </span>
+                    <span className="block text-[10px] tabular-nums text-faint">
+                      last seen {lastSeen(row.observedAt, now)}
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          {board.staleRows.length > staleRows.length && (
+            <p className="pb-3 text-center text-[9px] uppercase tracking-[0.16em] text-faint">
+              and {board.staleRows.length - staleRows.length} more, quieter still
+            </p>
+          )}
+        </div>
       )}
       {board.rows.length > rows.length && (
         <p className="border-t border-line-soft px-5 py-3 text-center text-[10px] uppercase tracking-[0.16em] text-faint">

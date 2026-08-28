@@ -36,7 +36,7 @@
     },
     "packages/cli": {
       "name": "tokenbroke",
-      "version": "0.1.8",
+      "version": "0.1.12",
       "bin": {
         "tokenbroke": "dist/index.js",
       },
